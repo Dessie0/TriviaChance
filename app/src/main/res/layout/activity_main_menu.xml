@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -9,33 +9,75 @@
 
     <Button
         android:id="@+id/play_online"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/play_online" />
+        android:layout_width="340dp"
+        android:layout_height="75dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginBottom="204dp"
+        android:text="@string/play_online"
+        app:cornerRadius="25dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <Button
         android:id="@+id/play_solo"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/play_solo" />
+        android:layout_width="340dp"
+        android:layout_height="75dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginBottom="36dp"
+        android:text="@string/play_solo"
+        app:cornerRadius="25dp"
+        app:layout_constraintBottom_toTopOf="@+id/play_online"
+        app:layout_constraintStart_toStartOf="parent" />
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="horizontal">
+    <ImageButton
+        android:id="@+id/settings"
+        android:layout_width="110dp"
+        android:layout_height="110dp"
+        android:layout_marginStart="25dp"
+        android:layout_marginBottom="25dp"
+        android:layout_weight="1"
+        android:backgroundTint="#00FFFFFF"
+        android:scaleType="fitCenter"
+        android:src="@drawable/ic_settings"
+        android:text="@string/settings"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
-        <Button
-            android:id="@+id/settings"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/settings" />
+    <ImageButton
+        android:id="@+id/inventory"
+        android:layout_width="110dp"
+        android:layout_height="110dp"
+        android:layout_marginEnd="25dp"
+        android:layout_marginBottom="25dp"
+        android:layout_weight="1"
+        android:backgroundTint="#00FFFFFF"
+        android:scaleType="fitCenter"
+        android:src="@drawable/ic_inventory"
+        android:text="@string/inventory"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
 
-        <Button
-            android:id="@+id/inventory"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/inventory" />
-    </LinearLayout>
-</LinearLayout>
+    <ImageView
+        android:id="@+id/playerIcon"
+        android:layout_width="160dp"
+        android:layout_height="160dp"
+        android:layout_marginBottom="48dp"
+        app:layout_constraintBottom_toTopOf="@+id/play_solo"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:srcCompat="@mipmap/ic_launcher"
+        tools:srcCompat="@tools:sample/avatars" />
+
+    <ImageButton
+        android:id="@+id/editIconButton"
+        android:layout_width="64dp"
+        android:layout_height="62dp"
+        android:layout_marginStart="120dp"
+        android:layout_marginTop="124dp"
+        android:backgroundTint="#00FFFFFF"
+        android:scaleType="fitCenter"
+        app:layout_constraintStart_toStartOf="@+id/playerIcon"
+        app:layout_constraintTop_toTopOf="@+id/playerIcon"
+        app:srcCompat="@android:drawable/ic_menu_edit" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

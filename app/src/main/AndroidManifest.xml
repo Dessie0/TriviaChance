@@ -14,9 +14,20 @@
         android:theme="@style/Theme.TriviaChance"
         tools:targetApi="31">
         <activity
-            android:name=".QuestionActivity"
+            android:name=".ResultsActivity"
             android:exported="false"
             android:parentActivityName=".MainMenu"/>
+        <activity
+            android:name=".RedeemActivity"
+            android:exported="false" />
+        <activity
+            android:name=".SettingsActivity"
+            android:exported="false"
+            android:parentActivityName=".MainMenu" />
+        <activity
+            android:name=".QuestionActivity"
+            android:exported="false"
+            android:parentActivityName=".MainMenu" />
         <activity
             android:name=".InventoryActivity"
             android:exported="false"
