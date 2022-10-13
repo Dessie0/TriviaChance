@@ -20,4 +20,13 @@
         <item>Alligator</item>
     </string-array>
     <string name="question">The Florida Poly mascot is the: </string>
+
+
+    <string-array name="questions">
+        <item>The Florida Poly mascot is the: </item>
+        <item>Which planet has the strongest gravity?</item>
+        <item>What was Twitter’s original name?</item>
+        <item>What is the symbol for potassium?</item>
+    </string-array>
+
 </resources>
