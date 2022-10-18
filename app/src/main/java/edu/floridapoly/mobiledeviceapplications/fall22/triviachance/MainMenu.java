@@ -1,21 +1,26 @@
 package edu.floridapoly.mobiledeviceapplications.fall22.triviachance;
 
-import androidx.activity.result.ActivityResult;
-import androidx.activity.result.ActivityResultCallback;
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import java.util.UUID;
+
+import edu.floridapoly.mobiledeviceapplications.fall22.triviachance.api.TriviaChanceAPI;
+import edu.floridapoly.mobiledeviceapplications.fall22.triviachance.gameplay.Player;
+import edu.floridapoly.mobiledeviceapplications.fall22.triviachance.gameplay.TriviaGame;
+import edu.floridapoly.mobiledeviceapplications.fall22.triviachance.profile.Profile;
+
 public class MainMenu extends AppCompatActivity {
+
+    private TriviaChanceAPI api;
+    private Profile localProfile;
 
     Button playOnline;
     Button playSolo;
@@ -24,7 +29,7 @@ public class MainMenu extends AppCompatActivity {
     ImageButton editIcon;
     ImageView playerIcon;
 
-/*
+    /*
     ActivityResultLauncher<Intent> activityResultLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
             new ActivityResultCallback<ActivityResult>() {
@@ -34,17 +39,24 @@ public class MainMenu extends AppCompatActivity {
                 }
             }
     );
-
- */
-
-
+    */
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_menu);
 
+        //Create the API.
+        this.api = new TriviaChanceAPI();
 
+        //TODO Make this use a Persistent UUID instead of a random one.
+        this.getAPI().retrieveProfile(UUID.randomUUID()).thenAccept(profile -> {
+            this.localProfile = profile;
+            System.out.println("Local profile set to " + this.getLocalProfile());
+        }).exceptionally(err -> {
+            Toast.makeText(getBaseContext(), "Unable to connect to server.", Toast.LENGTH_LONG).show();
+            return null;
+        });
 
         playOnline = findViewById(R.id.play_online);
         playOnline.setOnClickListener(new View.OnClickListener() {
@@ -59,6 +71,10 @@ public class MainMenu extends AppCompatActivity {
         playSolo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                //Create the game
+                TriviaGame game = new TriviaGame(MainMenu.this.getAPI(), UUID.randomUUID());
+                game.addPlayer(new Player(MainMenu.this.getLocalProfile()));
+
                 Intent intent = new Intent(MainMenu.this, QuestionActivity.class);
                 startActivity(intent);
             }
@@ -95,9 +111,13 @@ public class MainMenu extends AppCompatActivity {
                 //startActivityForResult();
             }
         });
-
-
     }
 
+    public TriviaChanceAPI getAPI() {
+        return this.api;
+    }
 
+    public Profile getLocalProfile() {
+        return localProfile;
+    }
 }
