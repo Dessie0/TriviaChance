@@ -28,4 +28,10 @@ public class ResultsActivity extends AppCompatActivity {
         progressBar.setProgress(correct * 25);
 
     }
+
+    @Override
+    public void onBackPressed() {
+        Intent intent = new Intent(ResultsActivity.this, MainMenu.class);
+        startActivity(intent);
+    }
 }

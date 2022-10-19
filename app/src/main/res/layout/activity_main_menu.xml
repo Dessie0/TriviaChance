@@ -40,6 +40,7 @@
         android:scaleType="fitCenter"
         android:src="@drawable/ic_settings"
         android:text="@string/settings"
+        android:tint="@color/blue_grey"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
@@ -54,6 +55,7 @@
         android:scaleType="fitCenter"
         android:src="@drawable/ic_inventory"
         android:text="@string/inventory"
+        android:tint="@color/blue_grey"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
