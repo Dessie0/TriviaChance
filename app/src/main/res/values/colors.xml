@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- Im assuming these names will be confusing without context
+     these are the names from https://www.canva.com/colors/color-palettes/ to make it easier to look them up-->
+
+    <!-- Default Android Colors -->
     <color name="purple_200">#FFBB86FC</color>
     <color name="purple_500">#FF6200EE</color>
     <color name="purple_700">#FF3700B3</color>
@@ -7,4 +11,15 @@
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+
+    <!-- Extra Colors -->
+    <color name="celadon">#A1AFA0</color>
+    <color name="red">#970C10</color>
+
+    <!-- Foil-Covered Sneakers -->
+    <color name="blue_grey">#90ADC6</color>
+    <color name="pewter">#E9EAEC</color>
+    <color name="yellow">#FAD02C</color>
+    <color name="dark_blue">#333652</color>
+
 </resources>

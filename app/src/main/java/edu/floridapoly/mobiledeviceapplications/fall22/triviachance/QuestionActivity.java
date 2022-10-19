@@ -57,24 +57,27 @@ public class QuestionActivity extends AppCompatActivity {
 
     public void initQuestion(int index) {
         for (int i = 0; i < 4; i++) {
-            answerButtons[i].setBackgroundColor(getResources().getColor(R.color.purple_500));
+            answerButtons[i].setBackgroundColor(getResources().getColor(R.color.dark_blue));
+            answerButtons[i].setTextColor(getResources().getColor(R.color.pewter));
+            answerButtons[i].setText(answers[index][i]);
         }
         questionText.setText(questions[index]);
 
         for (int i = 0; i < 4; i++) {
-            answerButtons[i].setText(answers[index][i]);
+
         }
     }
 
     public void onClickAnswer(View view) {
         if (view.getId() == answer3.getId()) {
             //Toast.makeText(this, "Correct", Toast.LENGTH_SHORT).show();
-            view.setBackgroundColor(Color.GREEN);
+            view.setBackgroundColor(getResources().getColor(R.color.yellow));
+            ((Button) view).setTextColor(getResources().getColor(R.color.dark_blue));
             numberCorrect++;
         }
         else {
             //Toast.makeText(this, "Wrong", Toast.LENGTH_SHORT).show();
-            view.setBackgroundColor(Color.RED);
+            view.setBackgroundColor(getResources().getColor(R.color.red));
             numberWrong++;
         }
 
