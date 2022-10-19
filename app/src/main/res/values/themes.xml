@@ -14,7 +14,5 @@
         <!-- Customize your theme here. -->
         <item name="android:windowBackground">@color/pewter</item>
         <item name="android:textColor">@color/dark_blue</item>
-
-
     </style>
 </resources>
