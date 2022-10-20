@@ -4,8 +4,11 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.animation.Animation;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Toast;
@@ -24,6 +27,9 @@ public class MainMenu extends AppCompatActivity {
 
     Button playOnline;
     Button playSolo;
+    Button hostGame;
+    EditText joinGame;
+    ImageButton back;
     ImageButton settings;
     ImageButton inventory;
     ImageButton editIcon;
@@ -62,10 +68,29 @@ public class MainMenu extends AppCompatActivity {
         playOnline.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
                 Intent intent = new Intent(MainMenu.this, QuestionActivity.class);
                 startActivity(intent);
             }
         });
+        back = findViewById(R.id.backButton);
+        back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
+
+        hostGame = findViewById(R.id.hostButton);
+        hostGame.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
+        joinGame = findViewById(R.id.joinGame);
+        joinGame.setHintTextColor(getResources().getColor(R.color.dark_blue));
+
 
         playSolo = findViewById(R.id.play_solo);
         playSolo.setOnClickListener(new View.OnClickListener() {
@@ -111,6 +136,8 @@ public class MainMenu extends AppCompatActivity {
                 //startActivityForResult();
             }
         });
+
+
     }
 
     public TriviaChanceAPI getAPI() {
