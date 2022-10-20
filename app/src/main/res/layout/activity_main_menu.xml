@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.motion.widget.MotionLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    app:layoutDescription="@xml/activity_main_menu_scene"
     tools:context=".MainMenu">
 
     <Button
@@ -82,4 +83,45 @@
         app:layout_constraintTop_toTopOf="@+id/playerIcon"
         app:srcCompat="@android:drawable/ic_menu_edit" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <Button
+        android:id="@+id/hostButton"
+        android:layout_width="230dp"
+        android:layout_height="61dp"
+        android:layout_marginBottom="44dp"
+        android:alpha="0"
+        android:text="@string/host"
+        app:layout_constraintBottom_toTopOf="@+id/joinGame"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="1.0"
+        tools:visibility="invisible" />
+
+    <EditText
+        android:id="@+id/joinGame"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="340dp"
+        android:alpha="0"
+        android:ems="10"
+        android:hint="@string/join"
+        android:inputType="textPersonName"
+        android:textColor="@color/dark_blue"
+        android:textColorHint="@color/dark_blue"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        tools:visibility="invisible" />
+
+    <ImageButton
+        android:id="@+id/backButton"
+        android:layout_width="80dp"
+        android:layout_height="71dp"
+        android:alpha="0"
+        android:backgroundTint="#00FFFFFF"
+        android:scaleType="fitCenter"
+        android:tint="@color/blue_grey"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:srcCompat="@drawable/ic_back"
+        tools:visibility="invisible" />
+
+</androidx.constraintlayout.motion.widget.MotionLayout>
