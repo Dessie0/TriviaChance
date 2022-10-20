@@ -1,6 +1,7 @@
 package edu.floridapoly.mobiledeviceapplications.fall22.triviachance;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.motion.widget.MotionLayout;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -25,6 +26,7 @@ public class MainMenu extends AppCompatActivity {
     private TriviaChanceAPI api;
     private Profile localProfile;
 
+    MotionLayout layout;
     Button playOnline;
     Button playSolo;
     Button hostGame;
@@ -64,13 +66,18 @@ public class MainMenu extends AppCompatActivity {
             return null;
         });
 
+        joinGame = findViewById(R.id.joinGame);
+        layout = findViewById(R.id.motionLayout);
         playOnline = findViewById(R.id.play_online);
         playOnline.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                layout.transitionToEnd();
 
-                Intent intent = new Intent(MainMenu.this, QuestionActivity.class);
-                startActivity(intent);
+                if (joinGame.getText().toString().length() != 0){
+                    Intent intent = new Intent(MainMenu.this, QuestionActivity.class);
+                    startActivity(intent);
+                }
             }
         });
         back = findViewById(R.id.backButton);
@@ -88,8 +95,6 @@ public class MainMenu extends AppCompatActivity {
 
             }
         });
-        joinGame = findViewById(R.id.joinGame);
-        joinGame.setHintTextColor(getResources().getColor(R.color.dark_blue));
 
 
         playSolo = findViewById(R.id.play_solo);

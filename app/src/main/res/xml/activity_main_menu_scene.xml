@@ -115,8 +115,5 @@
     <Transition
         motion:constraintSetStart="@+id/start"
         motion:constraintSetEnd="@+id/end"
-        motion:duration="300">
-        <OnClick motion:clickAction="transitionToEnd"
-            motion:targetId="@id/play_online" />
-    </Transition>
+        motion:duration="300"></Transition>
 </MotionScene>
