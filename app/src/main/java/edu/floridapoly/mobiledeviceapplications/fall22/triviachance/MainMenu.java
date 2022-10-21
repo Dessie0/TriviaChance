@@ -1,9 +1,12 @@
 package edu.floridapoly.mobiledeviceapplications.fall22.triviachance;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.motion.widget.MotionLayout;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.Animation;
@@ -25,6 +28,7 @@ public class MainMenu extends AppCompatActivity {
     private TriviaChanceAPI api;
     private Profile localProfile;
 
+    MotionLayout layout;
     Button playOnline;
     Button playSolo;
     Button hostGame;
@@ -34,6 +38,8 @@ public class MainMenu extends AppCompatActivity {
     ImageButton inventory;
     ImageButton editIcon;
     ImageView playerIcon;
+
+    int SELECT_PICTURE = 200;
 
     /*
     ActivityResultLauncher<Intent> activityResultLauncher = registerForActivityResult(
@@ -64,13 +70,19 @@ public class MainMenu extends AppCompatActivity {
             return null;
         });
 
+        joinGame = findViewById(R.id.joinGame);
+        layout = findViewById(R.id.motionLayout);
         playOnline = findViewById(R.id.play_online);
         playOnline.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                layout.transitionToEnd();
 
-                Intent intent = new Intent(MainMenu.this, QuestionActivity.class);
-                startActivity(intent);
+                if (joinGame.getText().toString().length() != 0){
+                    Intent intent = new Intent(MainMenu.this, QuestionActivity.class);
+                    joinGame.setText("");
+                    startActivity(intent);
+                }
             }
         });
         back = findViewById(R.id.backButton);
@@ -88,8 +100,6 @@ public class MainMenu extends AppCompatActivity {
 
             }
         });
-        joinGame = findViewById(R.id.joinGame);
-        joinGame.setHintTextColor(getResources().getColor(R.color.dark_blue));
 
 
         playSolo = findViewById(R.id.play_solo);
@@ -130,14 +140,41 @@ public class MainMenu extends AppCompatActivity {
         editIcon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(getBaseContext(), "Opening Gallery", Toast.LENGTH_SHORT).show();
-                // started Idea to open gallery
-                //Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                //startActivityForResult();
+
+                //Toast.makeText(getBaseContext(), "Opening Gallery", Toast.LENGTH_SHORT).show();
+
+                Intent intent = new Intent();
+                intent.setType("image/*");
+                intent.setAction(Intent.ACTION_GET_CONTENT);
+                startActivityForResult(Intent.createChooser(intent, "Select Picture"), SELECT_PICTURE);
             }
         });
+    }
 
+    // only works per instance, still resets when app is killed
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == RESULT_OK) {
+            if (requestCode == SELECT_PICTURE) {
+                Uri selectedImageUri = data.getData();
+                if (null != selectedImageUri) {
+                    playerIcon.setImageURI(selectedImageUri);
+                }
+            }
+        }
+    }
 
+    @Override
+    public void onBackPressed() {
+        //overrides phone back button to undo animation instead of killing app
+        //without this, if user presses back while their in the play online screen they killed the app instead of showing main menu
+        // will still kill app if user is in main menu
+        if (layout.getProgress() != 0.0f) {
+            layout.transitionToStart();
+        }
+        else {
+            super.onBackPressed();
+        }
     }
 
     public TriviaChanceAPI getAPI() {
