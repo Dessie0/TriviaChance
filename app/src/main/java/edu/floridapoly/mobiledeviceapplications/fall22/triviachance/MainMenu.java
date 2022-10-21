@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.animation.Animation;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -16,9 +15,9 @@ import android.widget.Toast;
 import java.util.UUID;
 
 import edu.floridapoly.mobiledeviceapplications.fall22.triviachance.api.TriviaChanceAPI;
-import edu.floridapoly.mobiledeviceapplications.fall22.triviachance.gameplay.Player;
-import edu.floridapoly.mobiledeviceapplications.fall22.triviachance.gameplay.TriviaGame;
-import edu.floridapoly.mobiledeviceapplications.fall22.triviachance.profile.Profile;
+import edu.floridapoly.mobiledeviceapps.fall22.api.gameplay.Player;
+import edu.floridapoly.mobiledeviceapps.fall22.api.gameplay.TriviaGame;
+import edu.floridapoly.mobiledeviceapps.fall22.api.profile.Profile;
 
 public class MainMenu extends AppCompatActivity {
 
@@ -97,7 +96,7 @@ public class MainMenu extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 //Create the game
-                TriviaGame game = new TriviaGame(MainMenu.this.getAPI(), UUID.randomUUID());
+                TriviaGame game = new TriviaGame(UUID.randomUUID());
                 game.addPlayer(new Player(MainMenu.this.getLocalProfile()));
 
                 Intent intent = new Intent(MainMenu.this, QuestionActivity.class);
@@ -136,7 +135,6 @@ public class MainMenu extends AppCompatActivity {
                 //startActivityForResult();
             }
         });
-
 
     }
 

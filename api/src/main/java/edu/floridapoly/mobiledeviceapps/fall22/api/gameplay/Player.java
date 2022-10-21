@@ -1,6 +1,6 @@
-package edu.floridapoly.mobiledeviceapplications.fall22.triviachance.gameplay;
+package edu.floridapoly.mobiledeviceapps.fall22.api.gameplay;
 
-import edu.floridapoly.mobiledeviceapplications.fall22.triviachance.profile.Profile;
+import edu.floridapoly.mobiledeviceapps.fall22.api.profile.Profile;
 
 public class Player {
 
