@@ -25,7 +25,7 @@ public class ResultsActivity extends AppCompatActivity {
         numCorrectText.setText(String.format("You got %d correct", correct));
 
         progressBar = findViewById(R.id.progressBar);
-        progressBar.setProgress(correct * 25);
+        progressBar.setProgress(correct * 10);
 
     }
 
