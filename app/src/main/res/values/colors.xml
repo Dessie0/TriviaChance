@@ -22,4 +22,10 @@
     <color name="yellow">#FAD02C</color>
     <color name="dark_blue">#333652</color>
 
+    <!-- Emerald Enterance -->
+    <color name="tan">#B68D40</color>
+    <color name="cream">#F4EBD0</color>
+    <color name="charcoal">#122620</color>
+    <color name="gold">#D6AD60</color>
+
 </resources>

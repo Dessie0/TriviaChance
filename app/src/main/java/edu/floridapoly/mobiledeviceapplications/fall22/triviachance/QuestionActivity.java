@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.TypedValue;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -44,10 +45,14 @@ public class QuestionActivity extends AppCompatActivity {
     int numberCorrect;
     int numberWrong;
 
+    TypedValue typedValue;
+    int colorPrimary, colorSecondary;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        ThemeUtil.onActivityCreateTheme(this);
         setContentView(R.layout.activity_question);
 
 
@@ -60,6 +65,12 @@ public class QuestionActivity extends AppCompatActivity {
         questions = new String[10];
         answers = new String[10][4];
         answerButtons = new Button[]{answer1, answer2, answer3, answer4};
+
+        typedValue = new TypedValue();
+        getTheme().resolveAttribute(com.google.android.material.R.attr.colorPrimary, typedValue, true);
+        colorPrimary = typedValue.resourceId;
+        getTheme().resolveAttribute(com.google.android.material.R.attr.colorSecondary, typedValue, true);
+        colorSecondary = typedValue.resourceId;
 
         //random trivia question API
         // can always change if we don't like the questions
@@ -103,8 +114,11 @@ public class QuestionActivity extends AppCompatActivity {
         Collections.shuffle(list);
         list.toArray(randomIndexes);
 
+
+
         for (int i = 0; i < 4; i++) {
-            answerButtons[i].setBackgroundColor(getResources().getColor(R.color.dark_blue));
+            answerButtons[i].setBackgroundColor(getResources().getColor(colorPrimary));
+            //answerButtons[i].setBackgroundColor(getResources().getColor(R.color.dark_blue));
             answerButtons[i].setTextColor(getResources().getColor(R.color.pewter));
             answerButtons[i].setText(answers[index][randomIndexes[i]]);
         }
@@ -114,8 +128,8 @@ public class QuestionActivity extends AppCompatActivity {
     public void onClickAnswer(View view) {
         // 0 index in answers[index] is always set as the correct answer
         if (((Button) view).getText() == answers[currentQuestionIndex][0]) {
-            view.setBackgroundColor(getResources().getColor(R.color.yellow));
-            ((Button) view).setTextColor(getResources().getColor(R.color.dark_blue));
+            view.setBackgroundColor(getResources().getColor(colorSecondary));
+            ((Button) view).setTextColor(getResources().getColor(colorPrimary));
             numberCorrect++;
         }
         else {

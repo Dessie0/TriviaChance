@@ -15,4 +15,21 @@
         <item name="android:windowBackground">@color/pewter</item>
         <item name="android:textColor">@color/dark_blue</item>
     </style>
+
+    <style name="Theme.TriviaChance.Gold">
+        <!-- Primary brand color. -->
+        <item name="colorPrimary">@color/tan</item>
+        <item name="colorPrimaryVariant">@color/gold</item>
+        <item name="colorOnPrimary">@color/charcoal</item>
+        <!-- Secondary brand color. -->
+        <item name="colorSecondary">@color/charcoal</item>
+        <item name="colorSecondaryVariant">@color/charcoal</item>
+        <item name="colorOnSecondary">@color/gold</item>
+        <!-- Status bar color. -->
+        <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimary</item>
+        <!-- Customize your theme here. -->
+        <item name="android:windowBackground">@color/cream</item>
+        <item name="android:textColor">@color/charcoal</item>
+
+    </style>
 </resources>
