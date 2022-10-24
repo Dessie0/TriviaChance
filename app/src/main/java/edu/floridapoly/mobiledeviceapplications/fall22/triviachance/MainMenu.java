@@ -96,7 +96,7 @@ public class MainMenu extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 //Create the game
-                TriviaGame game = new TriviaGame(UUID.randomUUID());
+                TriviaGame game = new TriviaGame(UUID.randomUUID().toString());
                 game.addPlayer(new Player(MainMenu.this.getLocalProfile()));
 
                 Intent intent = new Intent(MainMenu.this, QuestionActivity.class);

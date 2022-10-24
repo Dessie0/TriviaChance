@@ -9,8 +9,8 @@ public class TriviaGame {
     private final UUID uuid;
     private final List<Player> players = new ArrayList<>();
 
-    public TriviaGame(UUID uuid) {
-        this.uuid = uuid;
+    public TriviaGame(String uuid) {
+        this.uuid = UUID.fromString(uuid);
     }
 
     public UUID getUUID() {
