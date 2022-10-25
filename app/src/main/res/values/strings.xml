@@ -15,20 +15,12 @@
 
     <string name="redeem">Redeem Prizes Here</string>
 
-    <string-array name="answers">
-        <item>Squirrel</item>
-        <item>Bat</item>
-        <item>Phoenix</item>
-        <item>Alligator</item>
-    </string-array>
-    <string name="question">The Florida Poly mascot is the: </string>
-
-
-    <string-array name="questions">
-        <item>The Florida Poly mascot is the: </item>
-        <item>Which planet has the strongest gravity?</item>
-        <item>What was Twitter’s original name?</item>
-        <item>What is the symbol for potassium?</item>
+    <string-array name="theme_choices">
+        <item>Choose One</item>
+        <item>Gold</item>
+        <item>Green</item>
+        <item>Red</item>
+        <item>Main</item>
     </string-array>
 
 </resources>

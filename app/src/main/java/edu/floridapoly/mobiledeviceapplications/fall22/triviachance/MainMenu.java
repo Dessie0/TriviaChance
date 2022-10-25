@@ -67,7 +67,7 @@ public class MainMenu extends AppCompatActivity {
             this.localProfile = profile;
             System.out.println("Local profile set to " + this.getLocalProfile());
         }).exceptionally(err -> {
-            Toast.makeText(getBaseContext(), "Unable to connect to server.", Toast.LENGTH_LONG).show();
+            Toast.makeText(getBaseContext(), "Unable to connect to server.", Toast.LENGTH_SHORT).show();
             return null;
         });
 
