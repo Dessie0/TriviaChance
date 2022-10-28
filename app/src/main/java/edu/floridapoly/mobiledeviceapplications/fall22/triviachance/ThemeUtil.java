@@ -25,7 +25,7 @@ public class ThemeUtil {
                 activity.setTheme(R.style.Theme_TriviaChance_Red);
                 break;
             default:
-                activity.setTheme(R.style.Theme_TriviaChance_Main);
+                activity.setTheme(R.style.Theme_TriviaChance);
                 break;
         }
 

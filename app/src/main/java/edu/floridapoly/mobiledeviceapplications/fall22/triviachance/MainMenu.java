@@ -121,6 +121,7 @@ public class MainMenu extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(MainMenu.this, SettingsActivity.class);
+                //startActivity(intent);
                 startActivity(intent);
             }
         });
@@ -177,6 +178,17 @@ public class MainMenu extends AppCompatActivity {
             super.onBackPressed();
         }
     }
+
+    @Override
+    public void onResume() {
+        // need to change main menu with rest of the activities
+        // issue is that main menu was already created with old theme so the menu needs to be reset before coming back from settings
+        //super.onRestart();
+        Log.d("Testing", "OnResume() called");
+        super.onResume();
+        ThemeUtil.onActivityCreateTheme(this);
+    }
+
 
     public TriviaChanceAPI getAPI() {
         return this.api;

@@ -50,7 +50,7 @@ public class SettingsActivity extends AppCompatActivity {
                         ThemeUtil.changeToTheme(SettingsActivity.this, R.style.Theme_TriviaChance_Red);
                         break;
                     case 4:
-                        ThemeUtil.changeToTheme(SettingsActivity.this, R.style.Theme_TriviaChance_Main);
+                        ThemeUtil.changeToTheme(SettingsActivity.this, R.style.Theme_TriviaChance);
                         break;
                 }
             }
