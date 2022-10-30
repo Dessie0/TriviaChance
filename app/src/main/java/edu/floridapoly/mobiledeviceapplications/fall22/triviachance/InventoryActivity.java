@@ -39,6 +39,7 @@ public class InventoryActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        ThemeUtil.onActivityCreateTheme(this);
         setContentView(R.layout.activity_inventory);
 
         redeemPrizesButton = findViewById(R.id.redeemPrizesButton);

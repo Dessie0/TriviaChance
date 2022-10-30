@@ -3,6 +3,7 @@ package edu.floridapoly.mobiledeviceapplications.fall22.triviachance;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 
+import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -60,6 +61,12 @@ public class SettingsActivity extends AppCompatActivity {
             }
         });
 
+    }
+
+    @Override
+    public void onBackPressed() {
+        Intent intent = new Intent(SettingsActivity.this, MainMenu.class);
+        startActivity(intent);
     }
 
 }

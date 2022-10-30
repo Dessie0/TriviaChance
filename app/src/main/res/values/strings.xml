@@ -18,6 +18,8 @@
 
     <string name="current_progress">Current Progress:</string>
 
+    <string name="locked_item">This item is locked</string>
+
     <string-array name="theme_choices">
         <item>Choose One</item>
         <item>Gold</item>
