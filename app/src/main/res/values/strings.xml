@@ -16,6 +16,8 @@
     <string name="redeem">Redeem Prizes Here</string>
     <string name="results">Game Results:</string>
 
+    <string name="current_progress">Current Progress:</string>
+
     <string-array name="theme_choices">
         <item>Choose One</item>
         <item>Gold</item>

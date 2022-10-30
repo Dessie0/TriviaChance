@@ -22,7 +22,7 @@ public class ResultsActivity extends AppCompatActivity {
     Button redeemButton;
 
     static int currentProgress = 80;
-    static int unlocksAvaliable = 0;
+    public static int unlocksAvaliable = 0;
 
     @SuppressLint("ResourceAsColor")
     @Override
@@ -44,23 +44,17 @@ public class ResultsActivity extends AppCompatActivity {
 
 
         // need to have bar fill up like normal, wait, then start at 0 and refil whats left in a different color
-        /*
-        if (currentProgress > 100) {
+
+        if (currentProgress >= 100) {
             currentProgress -= 100;
             unlocksAvaliable++;
-            progressBar.setProgressTintList(ColorStateList.valueOf(R.color.black));
-            progressBar.setProgress(0);
-            progressBar.setSecondaryProgress(currentProgress);
 
-            ObjectAnimator animator = new ObjectAnimator();
-            animator.ofInt(progressBar, "progress", currentProgress);
-            animator.setStartDelay(700);
-            animator.setDuration(500);
-            animator.start();
+           progressBar.setSecondaryProgress(currentProgress);
 
+            ObjectAnimator.ofInt(progressBar, "progress", currentProgress).setDuration(700).start();
         }
 
-         */
+
 
 
         numCorrectText = findViewById(R.id.numCorrectText);
