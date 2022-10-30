@@ -111,6 +111,15 @@
             android:layout_marginStart="20dp"
             motion:layout_constraintBottom_toBottomOf="parent"
             android:layout_marginBottom="20dp" />
+        <Constraint
+            android:id="@+id/cardView"
+            motion:layout_constraintEnd_toEndOf="parent"
+            android:layout_width="210dp"
+            android:layout_height="210dp"
+            android:layout_marginBottom="50dp"
+            motion:layout_constraintBottom_toTopOf="@+id/play_solo"
+            motion:layout_constraintStart_toStartOf="parent"
+            android:visibility="gone" />
     </ConstraintSet>
     <Transition
         motion:constraintSetStart="@+id/start"
