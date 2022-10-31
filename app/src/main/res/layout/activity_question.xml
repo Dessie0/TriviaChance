@@ -1,56 +1,71 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.motion.widget.MotionLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:gravity="bottom"
     android:orientation="vertical"
+    app:layoutDescription="@xml/activity_question_scene2"
     tools:context=".QuestionActivity">
 
     <TextView
         android:id="@+id/questionTextView"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="260dp"
+        android:autoSizeMaxTextSize="36dp"
+        android:autoSizeTextType="uniform"
         android:paddingStart="30dp"
         android:paddingTop="30dp"
         android:paddingRight="30dp"
         android:paddingBottom="50dp"
-        android:textSize="36dp" />
-
-    <Space
-        android:layout_width="match_parent"
-        android:layout_height="121dp" />
+        android:textSize="36dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <Button
         android:id="@+id/answer1"
         android:layout_width="330dp"
         android:layout_height="75dp"
         android:layout_gravity="center_horizontal"
-        android:layout_marginBottom="20dp"
-        android:onClick="onClickAnswer" />
+        android:layout_marginBottom="28dp"
+        android:onClick="onClickAnswer"
+        app:layout_constraintBottom_toTopOf="@+id/answer2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <Button
         android:id="@+id/answer2"
         android:layout_width="330dp"
         android:layout_height="75dp"
         android:layout_gravity="center_horizontal"
-        android:layout_marginBottom="20dp"
-        android:onClick="onClickAnswer" />
+        android:layout_marginBottom="28dp"
+        android:onClick="onClickAnswer"
+        app:layout_constraintBottom_toTopOf="@+id/answer3"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <Button
         android:id="@+id/answer3"
         android:layout_width="330dp"
         android:layout_height="75dp"
         android:layout_gravity="center_horizontal"
-        android:layout_marginBottom="20dp"
-        android:onClick="onClickAnswer" />
+        android:layout_marginBottom="28dp"
+        android:onClick="onClickAnswer"
+        app:layout_constraintBottom_toTopOf="@+id/answer4"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <Button
         android:id="@+id/answer4"
         android:layout_width="330dp"
         android:layout_height="75dp"
         android:layout_gravity="center_horizontal"
-        android:layout_marginBottom="120dp"
-        android:onClick="onClickAnswer" />
-</LinearLayout>
+        android:layout_marginBottom="88dp"
+        android:onClick="onClickAnswer"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.506"
+        app:layout_constraintStart_toStartOf="parent" />
+</androidx.constraintlayout.motion.widget.MotionLayout>

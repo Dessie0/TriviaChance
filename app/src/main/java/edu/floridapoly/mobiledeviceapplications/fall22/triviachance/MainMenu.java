@@ -60,7 +60,7 @@ public class MainMenu extends AppCompatActivity {
             this.localProfile = profile;
             System.out.println("Local profile set to " + this.getLocalProfile());
         }).exceptionally(err -> {
-            Toast.makeText(getBaseContext(), "Unable to connect to server.", Toast.LENGTH_LONG).show();
+            Toast.makeText(getBaseContext(), "Unable to connect to server.", Toast.LENGTH_SHORT).show();
             return null;
         });
 
@@ -110,6 +110,7 @@ public class MainMenu extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(MainMenu.this, SettingsActivity.class);
+                //startActivity(intent);
                 startActivity(intent);
             }
         });
@@ -138,6 +139,17 @@ public class MainMenu extends AppCompatActivity {
         });
 
     }
+
+    @Override
+    public void onResume() {
+        // need to change main menu with rest of the activities
+        // issue is that main menu was already created with old theme so the menu needs to be reset before coming back from settings
+        //super.onRestart();
+        Log.d("Testing", "OnResume() called");
+        super.onResume();
+        ThemeUtil.onActivityCreateTheme(this);
+    }
+
 
     public TriviaChanceAPI getAPI() {
         return this.api;

@@ -6,4 +6,78 @@
     android:layout_height="match_parent"
     tools:context=".RedeemActivity">
 
+    <Button
+        android:id="@+id/unlockButton"
+        android:layout_width="256dp"
+        android:layout_height="102dp"
+        android:layout_marginTop="41dp"
+        android:text="Unlock 0"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/unlocksAvaliableText" />
+
+    <Button
+        android:id="@+id/decreaseButton"
+        android:layout_width="128dp"
+        android:layout_height="69dp"
+        android:paddingHorizontal="0dp"
+        android:paddingVertical="0dp"
+        android:text="-"
+        app:cornerRadius="0dp"
+        app:layout_constraintStart_toStartOf="@+id/unlockButton"
+        app:layout_constraintTop_toBottomOf="@+id/unlockButton" />
+
+    <Button
+        android:id="@+id/increaseButton"
+        android:layout_width="128dp"
+        android:layout_height="69dp"
+        android:paddingHorizontal="0dp"
+        android:paddingVertical="0dp"
+        android:text="+"
+        app:cornerRadius="0dp"
+        app:layout_constraintEnd_toEndOf="@+id/unlockButton"
+        app:layout_constraintTop_toBottomOf="@+id/unlockButton" />
+
+
+    <TextView
+        android:id="@+id/unlocksAvaliableText"
+        android:layout_width="204dp"
+        android:layout_height="41dp"
+        android:layout_marginTop="268dp"
+        android:text="Unlocks Avaliable : 3"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageButton
+        android:id="@+id/homeButton"
+        android:layout_width="80dp"
+        android:layout_height="71dp"
+        android:layout_marginStart="40dp"
+        android:layout_marginBottom="40dp"
+        android:backgroundTint="#00FFFFFF"
+        android:scaleType="fitCenter"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:srcCompat="@drawable/ic_back"
+        app:tint="?attr/colorPrimaryVariant" />
+
+    <ImageButton
+        android:id="@+id/inventoryButton"
+        android:layout_width="110dp"
+        android:layout_height="110dp"
+        android:layout_marginEnd="25dp"
+        android:layout_marginBottom="25dp"
+        android:layout_weight="1"
+        android:backgroundTint="#00FFFFFF"
+        android:scaleType="fitCenter"
+        android:src="@drawable/ic_inventory"
+        android:text="@string/inventory"
+        app:tint="?attr/colorPrimaryVariant"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+
 </androidx.constraintlayout.widget.ConstraintLayout>
