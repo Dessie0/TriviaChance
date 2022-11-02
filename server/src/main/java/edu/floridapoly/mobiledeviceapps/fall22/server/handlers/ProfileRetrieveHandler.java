@@ -4,10 +4,8 @@ import com.google.gson.JsonObject;
 import com.sun.net.httpserver.HttpExchange;
 
 import java.io.IOException;
-import java.io.OutputStream;
 import java.util.Map;
 
-import edu.floridapoly.mobiledeviceapps.fall22.api.profile.Profile;
 import edu.floridapoly.mobiledeviceapps.fall22.server.TriviaChanceServer;
 
 public class ProfileRetrieveHandler extends TriviaChanceHandler {
@@ -20,22 +18,20 @@ public class ProfileRetrieveHandler extends TriviaChanceHandler {
         Map<String, String> params = this.getParams(exchange.getRequestURI().getQuery());
         String uuid = params.get("uuid");
 
-        this.getServer().getProfileContainer().retrieveAsync(Profile.class, "profiles." + uuid)
-                .thenAccept(profile -> {
-                    try {
-                        if(profile == null) {
-                            this.sendNotFoundError(exchange, "No profile found by uuid " + uuid);
-                            return;
-                        }
+        JsonObject object = this.getServer().getProfileContainer().getObject().get("profiles")
+                .getAsJsonObject().get(uuid).getAsJsonObject();
 
-                        JsonObject object = new JsonObject();
-                        object.addProperty("uuid", profile.getUUID().toString());
-                        object.addProperty("username", profile.getUsername());
-                        this.sendResponse(exchange, object);
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                });
+        System.out.println("Sending " + object);
+
+        try {
+            if(object == null) {
+                this.sendNotFoundError(exchange, "No profile found by uuid " + uuid);
+            } else {
+                this.sendResponse(exchange, object);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
 }

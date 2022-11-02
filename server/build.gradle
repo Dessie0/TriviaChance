@@ -1,5 +1,6 @@
 plugins {
     id 'java-library'
+    id "com.github.johnrengelman.shadow" version "7.1.2"
 }
 
 java {
@@ -8,14 +9,13 @@ java {
 }
 
 repositories {
-    google()
     mavenCentral()
 
     maven {
         url "https://maven.pkg.github.com/dessie0/dessielib"
         credentials {
-            username = project.findProperty("gpr.user") ?: System.getenv("GITHUB_USERNAME")
-            password = project.findProperty("gpr.key") ?: System.getenv("GITHUB_TOKEN")
+            username = project.findProperty("github_user") ?: System.getenv("GITHUB_USERNAME")
+            password = project.findProperty("github_key") ?: System.getenv("GITHUB_TOKEN")
         }
     }
 }
@@ -23,5 +23,19 @@ repositories {
 dependencies {
     implementation project(":api")
     implementation 'com.google.code.gson:gson:2.9.1'
+
     implementation 'me.dessie.dessielib.storage-api:standalone:1.3.4'
+    annotationProcessor 'me.dessie.dessielib:annotations:1.3.4'
+}
+
+jar {
+    manifest {
+        attributes "Main-Class": "edu.floridapoly.mobiledeviceapps.fall22.server.TriviaChanceServer"
+    }
+}
+
+build.dependsOn {
+    shadowJar {
+        archiveFileName = "${project.name}-${project.version}.jar"
+    }
 }

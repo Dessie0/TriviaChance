@@ -1,26 +1,28 @@
 package edu.floridapoly.mobiledeviceapplications.fall22.triviachance;
 
-import androidx.appcompat.app.AppCompatActivity;
-
-import android.os.Bundle;
 import android.content.Intent;
 import android.graphics.Color;
+import android.os.Bundle;
 import android.util.TypedValue;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
-import org.jetbrains.annotations.NotNull;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import java.util.HashMap;
 import java.util.Random;
+
+import edu.floridapoly.mobiledeviceapps.fall22.api.gameplay.item;
+import edu.floridapoly.mobiledeviceapps.fall22.api.profile.Profile;
 
 public class RedeemActivity extends AppCompatActivity {
 
     HashMap<Integer, item> listOfItems; //List of all items in the game
     private int numOfCommonItems = 12, numOfRareItems = 4;
 
-    void redeemItem(float gachaPercentage) { //Decides if item is a rare drop, selects an item from the list
+    void redeemItem(Profile profile, float gachaPercentage) { //Decides if item is a rare drop, selects an item from the list
         //of items, and sends it to addToInventory()
         item gachaReward;
         Random random = new Random();
@@ -36,7 +38,7 @@ public class RedeemActivity extends AppCompatActivity {
                 gachaReward.RarityType = item.rarity.RARE;
             }
 
-            InventoryActivity.addToInventory(gachaReward);
+            InventoryActivity.addToInventory(profile, gachaReward);
         } catch (NullPointerException nullPointerException) {
             System.out.println("'gachaReward' failed to acquire an item from the 'listOfItems' list.");
         }

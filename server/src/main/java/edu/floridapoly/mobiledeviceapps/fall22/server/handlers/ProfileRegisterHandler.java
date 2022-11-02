@@ -1,9 +1,9 @@
 package edu.floridapoly.mobiledeviceapps.fall22.server.handlers;
 
-import com.google.gson.JsonObject;
 import com.sun.net.httpserver.HttpExchange;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Map;
 import java.util.UUID;
 
@@ -21,14 +21,12 @@ public class ProfileRegisterHandler extends TriviaChanceHandler {
         String uuid = params.get("uuid");
         String username = params.get("username");
 
-        Profile profile = new Profile(UUID.fromString(uuid), username);
+        Profile profile = new Profile(UUID.fromString(uuid), username, new ArrayList<>());
 
         this.getServer().getProfileContainer().store("profiles." + uuid, profile)
                 .thenRun(() -> {
                     try {
-                        JsonObject object = new JsonObject();
-                        object.addProperty("boolean", true);
-                        this.sendResponse(exchange, object);
+                        this.sendResponse(exchange, "true");
                     } catch (IOException e) {
                         e.printStackTrace();
                     }

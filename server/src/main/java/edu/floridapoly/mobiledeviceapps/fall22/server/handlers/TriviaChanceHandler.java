@@ -30,9 +30,13 @@ public abstract class TriviaChanceHandler implements HttpHandler {
     }
 
     public void sendResponse(HttpExchange exchange, JsonObject object) throws IOException {
-        exchange.sendResponseHeaders(200, object.toString().getBytes().length);
+        this.sendResponse(exchange, object.toString());
+    }
+
+    public void sendResponse(HttpExchange exchange, String s) throws IOException {
+        exchange.sendResponseHeaders(200, s.getBytes().length);
         OutputStream os = exchange.getResponseBody();
-        os.write(object.toString().getBytes());
+        os.write(s.getBytes());
         os.close();
     }
 

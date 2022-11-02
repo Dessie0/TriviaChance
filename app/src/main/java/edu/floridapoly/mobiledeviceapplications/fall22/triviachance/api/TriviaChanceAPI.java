@@ -18,7 +18,7 @@ public class TriviaChanceAPI {
 
     //Timeout to retrieve requests, in Milliseconds.
     private static final int TIMEOUT = 10000;
-    private static final String LOCAL_IP = "10.221.86.113";
+    private static final String LOCAL_IP = "192.168.193.24";
 
     private final Retrofit connection;
     private final TriviaChanceService service;

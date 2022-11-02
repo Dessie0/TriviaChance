@@ -1,10 +1,9 @@
 package edu.floridapoly.mobiledeviceapplications.fall22.triviachance;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.view.MotionEvent;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -12,6 +11,9 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AppCompatActivity;
+
+import java.util.ArrayList;
 import java.util.UUID;
 
 import edu.floridapoly.mobiledeviceapplications.fall22.triviachance.api.TriviaChanceAPI;
@@ -21,6 +23,7 @@ import edu.floridapoly.mobiledeviceapps.fall22.api.profile.Profile;
 
 public class MainMenu extends AppCompatActivity {
 
+    private SharedPreferences preferences;
     private TriviaChanceAPI api;
     private Profile localProfile;
 
@@ -52,17 +55,30 @@ public class MainMenu extends AppCompatActivity {
         ThemeUtil.onActivityCreateTheme(this);
         setContentView(R.layout.activity_main_menu);
 
+        //Get the private shared preferences for TriviaChance
+        this.preferences = this.getSharedPreferences("triviachance", MODE_PRIVATE);
+
         //Create the API.
         this.api = new TriviaChanceAPI();
 
-        //TODO Make this use a Persistent UUID instead of a random one.
-        this.getAPI().retrieveProfile(UUID.randomUUID()).thenAccept(profile -> {
-            this.localProfile = profile;
-            System.out.println("Local profile set to " + this.getLocalProfile());
-        }).exceptionally(err -> {
-            Toast.makeText(getBaseContext(), "Unable to connect to server.", Toast.LENGTH_SHORT).show();
-            return null;
-        });
+        Log.d("MainMenu", "Start setting local profile");
+        if(this.getPreferences().contains("profileUUID")) {
+            System.out.println("Found profileUUID in preferences.");
+            this.setLocalProfile(UUID.fromString(this.getPreferences().getString("profileUUID", null)));
+        } else {
+            System.out.println("Generating");
+            UUID uuid = UUID.randomUUID();
+            System.out.println("Generated " + uuid);
+            this.getAPI().registerProfile(new Profile(uuid, Profile.generateRandomUsername(), new ArrayList<>()))
+                    .thenAccept((saved) -> {
+                        this.getPreferences().edit().putString("profileUUID", uuid.toString()).apply();
+                        this.setLocalProfile(uuid);
+                    }).exceptionally(err -> {
+                        err.printStackTrace();
+                        Toast.makeText(getBaseContext(), "Unable to connect to server.", Toast.LENGTH_SHORT).show();
+                        return null;
+                    });
+        }
 
         playOnline = findViewById(R.id.play_online);
         playOnline.setOnClickListener(new View.OnClickListener() {
@@ -150,12 +166,27 @@ public class MainMenu extends AppCompatActivity {
         ThemeUtil.onActivityCreateTheme(this);
     }
 
+    private void setLocalProfile(UUID uuid) {
+        Log.d("MainMenu", "Setting local profile");
+
+        this.getAPI().retrieveProfile(uuid).thenAccept(profile -> {
+            this.localProfile = profile;
+            Log.d("[Debug]", "Local profile set to " + this.getLocalProfile());
+        }).exceptionally(err -> {
+            Log.e("MainMenu", "Sending err toast");
+            Toast.makeText(getBaseContext(), "Unable to connect to server.", Toast.LENGTH_SHORT).show();
+            Log.e("MainMenu", "Bad error", err);
+            return null;
+        });
+    }
 
     public TriviaChanceAPI getAPI() {
         return this.api;
     }
-
     public Profile getLocalProfile() {
         return localProfile;
+    }
+    public SharedPreferences getPreferences() {
+        return preferences;
     }
 }
