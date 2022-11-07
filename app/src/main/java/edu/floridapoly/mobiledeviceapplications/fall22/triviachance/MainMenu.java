@@ -1,32 +1,34 @@
 package edu.floridapoly.mobiledeviceapplications.fall22.triviachance;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.motion.widget.MotionLayout;
+
 import android.content.Intent;
-import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.animation.Animation;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import androidx.appcompat.app.AppCompatActivity;
-
-import java.util.ArrayList;
 import java.util.UUID;
 
 import edu.floridapoly.mobiledeviceapplications.fall22.triviachance.api.TriviaChanceAPI;
-import edu.floridapoly.mobiledeviceapps.fall22.api.gameplay.Player;
-import edu.floridapoly.mobiledeviceapps.fall22.api.gameplay.TriviaGame;
-import edu.floridapoly.mobiledeviceapps.fall22.api.profile.Profile;
+import edu.floridapoly.mobiledeviceapplications.fall22.triviachance.gameplay.Player;
+import edu.floridapoly.mobiledeviceapplications.fall22.triviachance.gameplay.TriviaGame;
+import edu.floridapoly.mobiledeviceapplications.fall22.triviachance.profile.Profile;
 
 public class MainMenu extends AppCompatActivity {
 
-    private SharedPreferences preferences;
     private TriviaChanceAPI api;
     private Profile localProfile;
 
+    MotionLayout layout;
     Button playOnline;
     Button playSolo;
     Button hostGame;
@@ -36,6 +38,8 @@ public class MainMenu extends AppCompatActivity {
     ImageButton inventory;
     ImageButton editIcon;
     ImageView playerIcon;
+
+    int SELECT_PICTURE = 200;
 
     /*
     ActivityResultLauncher<Intent> activityResultLauncher = registerForActivityResult(
@@ -55,38 +59,31 @@ public class MainMenu extends AppCompatActivity {
         ThemeUtil.onActivityCreateTheme(this);
         setContentView(R.layout.activity_main_menu);
 
-        //Get the private shared preferences for TriviaChance
-        this.preferences = this.getSharedPreferences("triviachance", MODE_PRIVATE);
-
         //Create the API.
         this.api = new TriviaChanceAPI();
 
-        Log.d("MainMenu", "Start setting local profile");
-        if(this.getPreferences().contains("profileUUID")) {
-            System.out.println("Found profileUUID in preferences.");
-            this.setLocalProfile(UUID.fromString(this.getPreferences().getString("profileUUID", null)));
-        } else {
-            System.out.println("Generating");
-            UUID uuid = UUID.randomUUID();
-            System.out.println("Generated " + uuid);
-            this.getAPI().registerProfile(new Profile(uuid, Profile.generateRandomUsername(), new ArrayList<>()))
-                    .thenAccept((saved) -> {
-                        this.getPreferences().edit().putString("profileUUID", uuid.toString()).apply();
-                        this.setLocalProfile(uuid);
-                    }).exceptionally(err -> {
-                        err.printStackTrace();
-                        Toast.makeText(getBaseContext(), "Unable to connect to server.", Toast.LENGTH_SHORT).show();
-                        return null;
-                    });
-        }
+        //TODO Make this use a Persistent UUID instead of a random one.
+        this.getAPI().retrieveProfile(UUID.randomUUID()).thenAccept(profile -> {
+            this.localProfile = profile;
+            System.out.println("Local profile set to " + this.getLocalProfile());
+        }).exceptionally(err -> {
+            Toast.makeText(getBaseContext(), "Unable to connect to server.", Toast.LENGTH_SHORT).show();
+            return null;
+        });
 
+        joinGame = findViewById(R.id.joinGame);
+        layout = findViewById(R.id.motionLayout);
         playOnline = findViewById(R.id.play_online);
         playOnline.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                layout.transitionToEnd();
 
-                Intent intent = new Intent(MainMenu.this, QuestionActivity.class);
-                startActivity(intent);
+                if (joinGame.getText().toString().length() != 0){
+                    Intent intent = new Intent(MainMenu.this, QuestionActivity.class);
+                    joinGame.setText("");
+                    startActivity(intent);
+                }
             }
         });
         back = findViewById(R.id.backButton);
@@ -104,8 +101,6 @@ public class MainMenu extends AppCompatActivity {
 
             }
         });
-        joinGame = findViewById(R.id.joinGame);
-        joinGame.setHintTextColor(getResources().getColor(R.color.dark_blue));
 
 
         playSolo = findViewById(R.id.play_solo);
@@ -113,7 +108,7 @@ public class MainMenu extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 //Create the game
-                TriviaGame game = new TriviaGame(UUID.randomUUID().toString());
+                TriviaGame game = new TriviaGame(MainMenu.this.getAPI(), UUID.randomUUID());
                 game.addPlayer(new Player(MainMenu.this.getLocalProfile()));
 
                 Intent intent = new Intent(MainMenu.this, QuestionActivity.class);
@@ -147,13 +142,41 @@ public class MainMenu extends AppCompatActivity {
         editIcon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(getBaseContext(), "Opening Gallery", Toast.LENGTH_SHORT).show();
-                // started Idea to open gallery
-                //Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                //startActivityForResult();
+
+                //Toast.makeText(getBaseContext(), "Opening Gallery", Toast.LENGTH_SHORT).show();
+
+                Intent intent = new Intent();
+                intent.setType("image/*");
+                intent.setAction(Intent.ACTION_GET_CONTENT);
+                startActivityForResult(Intent.createChooser(intent, "Select Picture"), SELECT_PICTURE);
             }
         });
+    }
 
+    // only works per instance, still resets when app is killed
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == RESULT_OK) {
+            if (requestCode == SELECT_PICTURE) {
+                Uri selectedImageUri = data.getData();
+                if (null != selectedImageUri) {
+                    playerIcon.setImageURI(selectedImageUri);
+                }
+            }
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        //overrides phone back button to undo animation instead of killing app
+        //without this, if user presses back while their in the play online screen they killed the app instead of showing main menu
+        // will still kill app if user is in main menu
+        if (layout.getProgress() != 0.0f) {
+            layout.transitionToStart();
+        }
+        else {
+            super.onBackPressed();
+        }
     }
 
     @Override
@@ -166,27 +189,12 @@ public class MainMenu extends AppCompatActivity {
         ThemeUtil.onActivityCreateTheme(this);
     }
 
-    private void setLocalProfile(UUID uuid) {
-        Log.d("MainMenu", "Setting local profile");
-
-        this.getAPI().retrieveProfile(uuid).thenAccept(profile -> {
-            this.localProfile = profile;
-            Log.d("[Debug]", "Local profile set to " + this.getLocalProfile());
-        }).exceptionally(err -> {
-            Log.e("MainMenu", "Sending err toast");
-            Toast.makeText(getBaseContext(), "Unable to connect to server.", Toast.LENGTH_SHORT).show();
-            Log.e("MainMenu", "Bad error", err);
-            return null;
-        });
-    }
 
     public TriviaChanceAPI getAPI() {
         return this.api;
     }
+
     public Profile getLocalProfile() {
         return localProfile;
-    }
-    public SharedPreferences getPreferences() {
-        return preferences;
     }
 }
