@@ -25,7 +25,7 @@ public class HostGameHandler extends TriviaChanceHandler {
         String profileUUID = params.get("profileUUID");
         TriviaGame game = new TriviaGame(UUID.randomUUID().toString(), TriviaGame.getRandomCode());
 
-        this.getServer().getGameHandler().addPlayer(game, new Player(this.getServer().getProfileContainer().retrieve(Profile.class, profileUUID)));
+        this.getServer().getGameHandler().addPlayer(game, new Player(this.getServer().getProfileContainer().retrieve(Profile.class, "profiles." + profileUUID)));
         this.sendResponse(exchange, new Gson().toJsonTree(game).getAsJsonObject());
     }
 }

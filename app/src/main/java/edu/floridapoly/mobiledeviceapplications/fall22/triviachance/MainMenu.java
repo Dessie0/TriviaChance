@@ -1,7 +1,7 @@
 package edu.floridapoly.mobiledeviceapplications.fall22.triviachance;
 
+import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -15,18 +15,14 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.motion.widget.MotionLayout;
 
-import java.util.ArrayList;
-import java.util.UUID;
-
+import edu.floridapoly.mobiledeviceapplications.fall22.triviachance.api.InstancePackager;
 import edu.floridapoly.mobiledeviceapplications.fall22.triviachance.api.TriviaChanceAPI;
 import edu.floridapoly.mobiledeviceapps.fall22.api.profile.Profile;
 
 
 public class MainMenu extends AppCompatActivity {
 
-    private SharedPreferences preferences;
-    private TriviaChanceAPI api;
-    private Profile localProfile;
+    private static InstancePackager instancePackager;
 
     MotionLayout layout;
     Button playOnline;
@@ -59,24 +55,20 @@ public class MainMenu extends AppCompatActivity {
         ThemeUtil.onActivityCreateTheme(this);
         setContentView(R.layout.activity_main_menu);
 
-        //Get the private shared preferences for TriviaChance
-        this.preferences = this.getSharedPreferences("triviachance", MODE_PRIVATE);
-        
-        //Create the API.
-        this.api = new TriviaChanceAPI();
-        if(this.getPreferences().contains("profileUUID")) {
-            this.setLocalProfile(UUID.fromString(this.getPreferences().getString("profileUUID", null)));
+        //Create the static instance packager.
+        if(instancePackager == null) {
+            TriviaChanceAPI api = new TriviaChanceAPI();
+            api.ping().thenAccept(pinged -> {
+                if(pinged) {
+                    instancePackager = new InstancePackager(api, this.getBaseContext().getSharedPreferences("triviachance", Context.MODE_PRIVATE));
+                }
+            }).exceptionally(err -> {
+                err.printStackTrace();
+                this.showNoInternetToast();
+                return null;
+            });
         } else {
-            UUID uuid = UUID.randomUUID();
-            this.getAPI().registerProfile(new Profile(uuid, Profile.generateRandomUsername(), new ArrayList<>()))
-                    .thenAccept((saved) -> {
-                        this.getPreferences().edit().putString("profileUUID", uuid.toString()).apply();
-                        this.setLocalProfile(uuid);
-                    }).exceptionally(err -> {
-                        err.printStackTrace();
-                        Toast.makeText(getBaseContext(), "Unable to connect to server.", Toast.LENGTH_SHORT).show();
-                        return null;
-                    });
+            instancePackager.setPreferences(this.getBaseContext().getSharedPreferences("triviachance", Context.MODE_PRIVATE));
         }
 
         joinGame = findViewById(R.id.joinGame);
@@ -116,13 +108,14 @@ public class MainMenu extends AppCompatActivity {
             public void onClick(View view) {
                 //Create the game
                 if(MainMenu.this.getLocalProfile() == null) {
-                    Toast.makeText(MainMenu.this, "Unable to start game, please check internet connection.", Toast.LENGTH_LONG).show();
                     return;
                 }
 
                 MainMenu.this.getAPI().createGame(MainMenu.this.getLocalProfile()).thenAccept(game -> {
                     System.out.println(game.getCode());
                 });
+
+                MainMenu.this.getAPI().updateUsername(MainMenu.this.getLocalProfile(), "Dessie").thenAccept(System.out::println);
 
                 Intent intent = new Intent(MainMenu.this, QuestionActivity.class);
                 startActivity(intent);
@@ -202,26 +195,25 @@ public class MainMenu extends AppCompatActivity {
         ThemeUtil.onActivityCreateTheme(this);
     }
 
-    private void setLocalProfile(UUID uuid) {
-        this.getAPI().retrieveProfile(uuid).thenAccept(profile -> {
-            this.localProfile = profile;
-            Log.d("MainMenu", "Local profile set to " + this.getLocalProfile());
-        }).exceptionally(err -> {
-            Toast.makeText(getBaseContext(), "Unable to connect to server.", Toast.LENGTH_SHORT).show();
-            return null;
-        });
-    }
-
-
     public TriviaChanceAPI getAPI() {
-        return this.api;
-    }
+        if(instancePackager == null) {
+            this.showNoInternetToast();
+            return null;
+        }
 
+        return instancePackager.getAPI();
+    }
     public Profile getLocalProfile() {
-        return localProfile;
+        if(instancePackager == null) {
+            this.showNoInternetToast();
+            return null;
+        }
+
+        return instancePackager.getLocalProfile();
     }
 
-    public SharedPreferences getPreferences() {
-        return preferences;
+    private void showNoInternetToast() {
+        Toast.makeText(this.getBaseContext(), "Unable to connect to server. Please check your internet connection.", Toast.LENGTH_LONG).show();
     }
+
 }

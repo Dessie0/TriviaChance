@@ -32,6 +32,11 @@ public class TriviaChanceAPI {
         this.service = this.connection.create(TriviaChanceService.class);
     }
 
+    public CompletableFuture<Boolean> ping() {
+        Call<Boolean> call = this.getService().ping();
+        return this.enqueue(call, new FutureCallback<>());
+    }
+
     public CompletableFuture<Profile> retrieveProfile(UUID uuid) {
         Call<Profile> call = this.getService().retrieveProfile(uuid.toString());
         return this.enqueue(call, new FutureCallback<>());
@@ -39,6 +44,21 @@ public class TriviaChanceAPI {
 
     public CompletableFuture<Boolean> registerProfile(Profile profile) {
         Call<Boolean> call = this.getService().registerProfile(profile.getUUID().toString(), profile.getUsername());
+        return this.enqueue(call, new FutureCallback<>());
+    }
+
+    public CompletableFuture<Profile> updateUsername(Profile profile, String username) {
+        Call<Profile> call = this.getService().updateUsername(profile.getUUID().toString(), username);
+        return this.enqueue(call, new FutureCallback<>());
+    }
+
+    public CompletableFuture<Profile> updateIcon(Profile profile, String iconURL) {
+        Call<Profile> call = this.getService().updateIcon(profile.getUUID().toString(), iconURL);
+        return this.enqueue(call, new FutureCallback<>());
+    }
+
+    public CompletableFuture<Profile> updateItem(Profile profile, int itemId, int quantity) {
+        Call<Profile> call = this.getService().updateItem(profile.getUUID().toString(), itemId, quantity);
         return this.enqueue(call, new FutureCallback<>());
     }
 
