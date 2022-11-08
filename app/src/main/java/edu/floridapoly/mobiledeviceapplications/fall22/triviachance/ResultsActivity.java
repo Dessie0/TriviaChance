@@ -21,7 +21,7 @@ public class ResultsActivity extends AppCompatActivity {
     ProgressBar progressBar;
     Button redeemButton;
 
-    static int currentProgress = 80;
+    static int currentProgress = 0;
     public static int unlocksAvaliable = 0;
 
     @SuppressLint("ResourceAsColor")
