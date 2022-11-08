@@ -10,8 +10,11 @@ import java.util.UUID;
 
 import edu.floridapoly.mobiledeviceapps.fall22.api.gameplay.item;
 import edu.floridapoly.mobiledeviceapps.fall22.api.profile.Profile;
-import edu.floridapoly.mobiledeviceapps.fall22.server.handlers.ProfileRegisterHandler;
-import edu.floridapoly.mobiledeviceapps.fall22.server.handlers.ProfileRetrieveHandler;
+import edu.floridapoly.mobiledeviceapps.fall22.server.game.GameHandler;
+import edu.floridapoly.mobiledeviceapps.fall22.server.handlers.game.HostGameHandler;
+import edu.floridapoly.mobiledeviceapps.fall22.server.handlers.game.JoinGameHandler;
+import edu.floridapoly.mobiledeviceapps.fall22.server.handlers.profile.ProfileRegisterHandler;
+import edu.floridapoly.mobiledeviceapps.fall22.server.handlers.profile.ProfileRetrieveHandler;
 import me.dessie.dessielib.storageapi.CoreStorageAPI;
 import me.dessie.dessielib.storageapi.container.ArrayContainer;
 import me.dessie.dessielib.storageapi.decomposition.StorageDecomposer;
@@ -21,10 +24,12 @@ public class TriviaChanceServer {
 
     private final CoreStorageAPI storageAPI;
     private final JSONContainer profileContainer;
+    private final GameHandler gameHandler;
 
     private TriviaChanceServer() {
         this.storageAPI = CoreStorageAPI.register();
         this.profileContainer = new JSONContainer(this.getStorageAPI(), new File("data/", "profiles.json"));
+        this.gameHandler = new GameHandler();
 
         this.createServer();
         this.generateDecompose();
@@ -32,9 +37,11 @@ public class TriviaChanceServer {
 
     private void createServer() {
         try {
-            HttpServer server = HttpServer.create(new InetSocketAddress(8080), 0);
+            HttpServer server = HttpServer.create(new InetSocketAddress(8082), 0);
             server.createContext("/profile", new ProfileRetrieveHandler(this));
             server.createContext("/profile/register", new ProfileRegisterHandler(this));
+            server.createContext("/game/host", new HostGameHandler(this));
+            server.createContext("/game/join", new JoinGameHandler(this));
 
             System.out.println("Server started on port " + server.getAddress().getPort());
             server.start();
@@ -99,5 +106,8 @@ public class TriviaChanceServer {
     }
     public CoreStorageAPI getStorageAPI() {
         return storageAPI;
+    }
+    public GameHandler getGameHandler() {
+        return gameHandler;
     }
 }
