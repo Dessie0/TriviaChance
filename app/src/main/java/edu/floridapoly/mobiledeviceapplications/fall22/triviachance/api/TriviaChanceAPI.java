@@ -9,6 +9,7 @@ import edu.floridapoly.mobiledeviceapplications.fall22.triviachance.api.callback
 import edu.floridapoly.mobiledeviceapps.fall22.api.gameplay.Player;
 import edu.floridapoly.mobiledeviceapps.fall22.api.gameplay.TriviaGame;
 import edu.floridapoly.mobiledeviceapps.fall22.api.gameplay.questions.Question;
+import edu.floridapoly.mobiledeviceapps.fall22.api.gameplay.questions.TextQuestion;
 import edu.floridapoly.mobiledeviceapps.fall22.api.profile.Profile;
 import retrofit2.Call;
 import retrofit2.Retrofit;
@@ -83,7 +84,15 @@ public class TriviaChanceAPI {
     }
 
     public CompletableFuture<Question<?>> retrieveQuestion(TriviaGame game) {
-        Call<Question<?>> call = this.getService().retrieveQuestion(game.getUUID().toString());
+
+        //TODO Add more questions besides just text questions
+        CompletableFuture<Question<?>> future = new CompletableFuture<>();
+        this.retrieveTextQuestion(game).thenAccept(future::complete);
+        return future;
+    }
+
+    private CompletableFuture<TextQuestion> retrieveTextQuestion(TriviaGame game) {
+        Call<TextQuestion> call = this.getService().retrieveTextQuestion(game.getUUID().toString());
         return this.enqueue(call, new FutureCallback<>());
     }
 

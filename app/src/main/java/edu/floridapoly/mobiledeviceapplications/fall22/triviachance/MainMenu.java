@@ -112,11 +112,10 @@ public class MainMenu extends AppCompatActivity {
                 }
 
                 MainMenu.this.getAPI().createGame(MainMenu.this.getLocalProfile()).thenAccept(game -> {
-                    System.out.println(game.getCode());
+                    Intent intent = new Intent(MainMenu.this, QuestionActivity.class);
+                    intent.putExtra("triviagame", game);
+                    startActivity(intent);
                 });
-                
-                Intent intent = new Intent(MainMenu.this, QuestionActivity.class);
-                startActivity(intent);
             }
         });
 
@@ -214,4 +213,7 @@ public class MainMenu extends AppCompatActivity {
         Toast.makeText(this.getBaseContext(), "Unable to connect to server. Please check your internet connection.", Toast.LENGTH_LONG).show();
     }
 
+    public static InstancePackager getInstancePackager() {
+        return instancePackager;
+    }
 }
