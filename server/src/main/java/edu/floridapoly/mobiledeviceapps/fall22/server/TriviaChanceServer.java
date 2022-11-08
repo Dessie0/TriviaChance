@@ -15,6 +15,7 @@ import edu.floridapoly.mobiledeviceapps.fall22.server.handlers.PingHandler;
 import edu.floridapoly.mobiledeviceapps.fall22.server.handlers.game.HostGameHandler;
 import edu.floridapoly.mobiledeviceapps.fall22.server.handlers.game.JoinGameHandler;
 import edu.floridapoly.mobiledeviceapps.fall22.server.handlers.game.LeaveGameHandler;
+import edu.floridapoly.mobiledeviceapps.fall22.server.handlers.game.QuestionRetrieveHandler;
 import edu.floridapoly.mobiledeviceapps.fall22.server.handlers.profile.ProfileRegisterHandler;
 import edu.floridapoly.mobiledeviceapps.fall22.server.handlers.profile.ProfileRetrieveHandler;
 import edu.floridapoly.mobiledeviceapps.fall22.server.handlers.profile.ProfileUpdateIconHandler;
@@ -52,6 +53,7 @@ public class TriviaChanceServer {
             server.createContext("/game/host", new HostGameHandler(this));
             server.createContext("/game/join", new JoinGameHandler(this));
             server.createContext("/game/leave", new LeaveGameHandler(this));
+            server.createContext("/game/question", new QuestionRetrieveHandler(this));
 
             System.out.println("Server started on port " + server.getAddress().getPort());
             server.start();

@@ -1,47 +1,41 @@
 package edu.floridapoly.mobiledeviceapps.fall22.server.game;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+import java.util.UUID;
 
-import edu.floridapoly.mobiledeviceapps.fall22.api.gameplay.Player;
 import edu.floridapoly.mobiledeviceapps.fall22.api.gameplay.TriviaGame;
 
 public class GameHandler {
 
-    private final Map<TriviaGame, List<Player>> activeGames = new HashMap<>();
-    private final QuestionRandomizer questionRandomizer;
+    private final List<ActiveGame> activeGames;
 
     public GameHandler() {
-        this.questionRandomizer = new QuestionRandomizer();
+        this.activeGames = new ArrayList<>();
     }
 
-    public void addPlayer(TriviaGame game, Player player) {
-        //Add the player into the game, and create the game if it does not exist.
-        this.getActiveGames().putIfAbsent(game, new ArrayList<>());
-        this.getActiveGames().get(game).add(player);
+    public ActiveGame startGame(TriviaGame game) {
+        ActiveGame activeGame = new ActiveGame(game);
+        this.getActiveGames().add(new ActiveGame(game));
+
+        return activeGame;
     }
 
-    public void removePlayer(TriviaGame game, String uuid) {
-        if(!this.getActiveGames().containsKey(game)) return;
-
-        //Remove the player from the game.
-        this.getActiveGames().get(game).removeIf(player -> player.getProfile().getUUID().toString().equalsIgnoreCase(uuid));
-
-        //Remove if no players are in the game.
-        this.getActiveGames().values().removeIf(List::isEmpty);
+    public void stopGame(ActiveGame game) {
+        this.getActiveGames().remove(game);
     }
 
-    public TriviaGame findGame(String code) {
-        return this.getActiveGames().keySet().stream().filter(players -> players.getCode().equalsIgnoreCase(code))
+    public ActiveGame findGame(String code) {
+        return this.getActiveGames().stream().filter(game -> game.getGame().getCode().equalsIgnoreCase(code))
                 .findFirst().orElse(null);
     }
 
-    public Map<TriviaGame, List<Player>> getActiveGames() {
-        return activeGames;
+    public ActiveGame findGame(UUID gameUUID) {
+        return this.getActiveGames().stream().filter(game -> game.getGame().getUUID().equals(gameUUID))
+                .findFirst().orElse(null);
     }
-    public QuestionRandomizer getQuestionRandomizer() {
-        return questionRandomizer;
+
+    public List<ActiveGame> getActiveGames() {
+        return activeGames;
     }
 }

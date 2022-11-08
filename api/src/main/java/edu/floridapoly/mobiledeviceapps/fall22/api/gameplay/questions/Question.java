@@ -2,37 +2,28 @@ package edu.floridapoly.mobiledeviceapps.fall22.api.gameplay.questions;
 
 import java.util.List;
 
-import edu.floridapoly.mobiledeviceapps.fall22.api.gameplay.questions.options.QuestionOption;
+public abstract class Question<T> {
 
-public class Question<T extends QuestionOption> {
-    private final int id;
     private final String question;
+    private final T correctAnswer;
+    private final List<T> incorrectAnswers;
 
-    private final Class<T> answerType;
-    private final List<T> options;
-    private final int correctOption;
-
-    public Question(int id, String question, Class<T> answerType, List<T> options, int correctOption) {
-        this.id = id;
+    public Question(String question, T correctAnswer, List<T> incorrectAnswers) {
         this.question = question;
-        this.answerType = answerType;
-        this.options = options;
-        this.correctOption = correctOption;
+        this.correctAnswer = correctAnswer;
+        this.incorrectAnswers = incorrectAnswers;
     }
 
-    public int getId() {
-        return id;
-    }
+    public abstract boolean attempt(T answer);
+
     public String getQuestion() {
         return question;
     }
-    public Class<T> getAnswerType() {
-        return answerType;
+    public T getCorrectAnswer() {
+        return correctAnswer;
     }
-    public List<T> getOptions() {
-        return options;
+    public List<T> getIncorrectAnswers() {
+        return incorrectAnswers;
     }
-    public int getCorrectOption() {
-        return correctOption;
-    }
+
 }

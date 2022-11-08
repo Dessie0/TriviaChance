@@ -11,6 +11,7 @@ import edu.floridapoly.mobiledeviceapps.fall22.api.gameplay.Player;
 import edu.floridapoly.mobiledeviceapps.fall22.api.gameplay.TriviaGame;
 import edu.floridapoly.mobiledeviceapps.fall22.api.profile.Profile;
 import edu.floridapoly.mobiledeviceapps.fall22.server.TriviaChanceServer;
+import edu.floridapoly.mobiledeviceapps.fall22.server.game.ActiveGame;
 import edu.floridapoly.mobiledeviceapps.fall22.server.handlers.TriviaChanceHandler;
 
 public class HostGameHandler extends TriviaChanceHandler {
@@ -25,7 +26,9 @@ public class HostGameHandler extends TriviaChanceHandler {
         String profileUUID = params.get("profileUUID");
         TriviaGame game = new TriviaGame(UUID.randomUUID().toString(), TriviaGame.getRandomCode());
 
-        this.getServer().getGameHandler().addPlayer(game, new Player(this.getServer().getProfileContainer().retrieve(Profile.class, "profiles." + profileUUID)));
+        ActiveGame activeGame = this.getServer().getGameHandler().startGame(game);
+        activeGame.addPlayer(new Player(this.getServer().getProfileContainer().retrieve(Profile.class, "profiles." + profileUUID)));
+
         this.sendResponse(exchange, new Gson().toJsonTree(game).getAsJsonObject());
     }
 }
