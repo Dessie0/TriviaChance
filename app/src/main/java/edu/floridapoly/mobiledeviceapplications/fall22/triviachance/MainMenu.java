@@ -114,9 +114,7 @@ public class MainMenu extends AppCompatActivity {
                 MainMenu.this.getAPI().createGame(MainMenu.this.getLocalProfile()).thenAccept(game -> {
                     System.out.println(game.getCode());
                 });
-
-                MainMenu.this.getAPI().updateUsername(MainMenu.this.getLocalProfile(), "Dessie").thenAccept(System.out::println);
-
+                
                 Intent intent = new Intent(MainMenu.this, QuestionActivity.class);
                 startActivity(intent);
             }
