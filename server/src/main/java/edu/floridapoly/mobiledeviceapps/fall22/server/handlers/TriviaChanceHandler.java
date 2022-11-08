@@ -21,9 +21,10 @@ public abstract class TriviaChanceHandler implements HttpHandler {
         this.server = server;
     }
 
-    public Map<String, String> getParams(String request) {
-        if(request == null) return new HashMap<>();
+    public Map<String, String> getParams(HttpExchange exchange) {
+        String request = exchange.getRequestURI().getQuery();
 
+        if(request == null) return new HashMap<>();
         String[] requests = request.split("&");
         return Arrays.stream(requests).collect(Collectors.toMap(
                 (value) -> value.split("=")[0], (value) -> value.split("=")[1]));
