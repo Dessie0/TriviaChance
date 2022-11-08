@@ -61,8 +61,7 @@ public class MainMenu extends AppCompatActivity {
 
         //Get the private shared preferences for TriviaChance
         this.preferences = this.getSharedPreferences("triviachance", MODE_PRIVATE);
-
-
+        
         //Create the API.
         this.api = new TriviaChanceAPI();
         if(this.getPreferences().contains("profileUUID")) {
