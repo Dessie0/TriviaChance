@@ -31,7 +31,7 @@ public class JoinGameHandler extends TriviaChanceHandler {
             return;
         }
 
-        this.getServer().getGameHandler().addPlayer(game, new Player(this.getServer().getProfileContainer().retrieve(Profile.class, uuid)));
+        this.getServer().getGameHandler().addPlayer(game, new Player(this.getServer().getProfileContainer().retrieve(Profile.class, "profiles." + uuid)));
         this.sendResponse(exchange, new Gson().toJsonTree(game).getAsJsonObject());
     }
 }

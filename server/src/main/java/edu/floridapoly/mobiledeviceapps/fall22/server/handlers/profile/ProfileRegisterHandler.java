@@ -22,7 +22,7 @@ public class ProfileRegisterHandler extends TriviaChanceHandler {
         String profileUUID = params.get("profileUUID");
         String username = params.get("username");
 
-        Profile profile = new Profile(UUID.fromString(profileUUID), username, new ArrayList<>());
+        Profile profile = new Profile(UUID.fromString(profileUUID), username, null, new ArrayList<>());
 
         this.getServer().getProfileContainer().store("profiles." + profileUUID, profile)
                 .thenRun(() -> {
