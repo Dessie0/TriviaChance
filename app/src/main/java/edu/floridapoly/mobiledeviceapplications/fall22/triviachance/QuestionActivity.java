@@ -9,36 +9,30 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonArrayRequest;
-import com.android.volley.toolbox.Volley;
+import java.util.Random;
+import java.util.concurrent.CompletableFuture;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+import edu.floridapoly.mobiledeviceapps.fall22.api.gameplay.TriviaGame;
+import edu.floridapoly.mobiledeviceapps.fall22.api.gameplay.questions.Question;
+import edu.floridapoly.mobiledeviceapps.fall22.api.gameplay.questions.TextQuestion;
 
 public class QuestionActivity extends AppCompatActivity {
 
+
     ProgressBar questionProgress;
+
+    private TriviaGame game;
+    private Question<?> currentQuestion;
+
     Button answer1;
     Button answer2;
     Button answer3;
     Button answer4;
     Button[] answerButtons;
     TextView questionText;
-    String[] questions;
-    String[][] answers;
 
     int currentQuestionIndex = 0;
     int numberCorrect;
@@ -47,24 +41,24 @@ public class QuestionActivity extends AppCompatActivity {
     TypedValue typedValue;
     int colorPrimary, colorSecondary;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         ThemeUtil.onActivityCreateTheme(this);
         setContentView(R.layout.activity_question);
 
+
         questionProgress = findViewById(R.id.questionProgressBar);
         questionProgress.setProgress(currentQuestionIndex);
 
+
+        this.game = (TriviaGame) this.getIntent().getSerializableExtra("triviagame");
         questionText = findViewById(R.id.questionTextView);
         answer1 = findViewById(R.id.answer1);
         answer2 = findViewById(R.id.answer2);
         answer3 = findViewById(R.id.answer3);
         answer4 = findViewById(R.id.answer4);
 
-        questions = new String[10];
-        answers = new String[10][4];
         answerButtons = new Button[]{answer1, answer2, answer3, answer4};
 
         typedValue = new TypedValue();
@@ -73,85 +67,83 @@ public class QuestionActivity extends AppCompatActivity {
         getTheme().resolveAttribute(com.google.android.material.R.attr.colorSecondary, typedValue, true);
         colorSecondary = typedValue.resourceId;
 
-        //random trivia question API
-        // can always change if we don't like the questions
-        // gets 10 "easy" level questions as JSON array
-        String url = "https://the-trivia-api.com/api/questions?limit=10&difficulty=easy";
-        RequestQueue requestQueue = Volley.newRequestQueue(this);
-        JsonArrayRequest questionRequest = new JsonArrayRequest(Request.Method.GET,
-                url, null, new Response.Listener<JSONArray>() {
-            @Override
-            public void onResponse(JSONArray response) {
-                // setts the questions and answers array to the values gathered
-                for (int i = 0; i < response.length(); i++) {
-                    try {
-                        JSONObject currentQuestion = response.getJSONObject(i);
-                        questions[i] = currentQuestion.getString("question");
-                        answers[i][0] = currentQuestion.getString("correctAnswer");
-                        for (int j = 1; j < 4; j++) {
-                            answers[i][j] = currentQuestion.getJSONArray("incorrectAnswers").getString(j-1);
-                        }
-                        initQuestion(currentQuestionIndex);
-                    }
-                    catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                //code for an error
-                Toast.makeText(getBaseContext(), "Failed to gather question data", Toast.LENGTH_SHORT).show();
-            }
-        });
-        requestQueue.add(questionRequest);
+        this.getNextQuestion().thenAccept(this::initQuestion);
     }
 
-    public void initQuestion(int index) {
+    public void initQuestion(Question<?> question) {
         //randomly shuffles indexes so buttons have random chance of being correct answer
-        Integer[] randomIndexes = {0, 1, 2, 3};
-        List<Integer> list = Arrays.asList(randomIndexes);
-        Collections.shuffle(list);
-        list.toArray(randomIndexes);
+        this.currentQuestion = question;
+        questionText.setText(question.getQuestion());
 
-        for (int i = 0; i < 4; i++) {
-            answerButtons[i].setBackgroundColor(getResources().getColor(colorPrimary));
-            //answerButtons[i].setBackgroundColor(getResources().getColor(R.color.dark_blue));
-            answerButtons[i].setTextColor(getResources().getColor(R.color.pewter));
-            answerButtons[i].setText(answers[index][randomIndexes[i]]);
+        if(question instanceof TextQuestion) {
+            TextQuestion textQuestion = (TextQuestion) question;
+
+            int answerIndex = new Random().nextInt(4);
+            int incorrectIndex = 0;
+
+            for (int i = 0; i < 4; i++) {
+                answerButtons[i].setBackgroundColor(getResources().getColor(colorPrimary));
+                //answerButtons[i].setBackgroundColor(getResources().getColor(R.color.dark_blue));
+                answerButtons[i].setTextColor(getResources().getColor(R.color.pewter));
+
+                String text = i == answerIndex
+                        ? textQuestion.getCorrectAnswer()
+                        : textQuestion.getIncorrectAnswers().get(incorrectIndex++);
+                answerButtons[i].setText(text);
+            }
         }
-        questionText.setText(questions[index]);
     }
 
     public void onClickAnswer(View view) {
-        // 0 index in answers[index] is always set as the correct answer
-        if (((Button) view).getText() == answers[currentQuestionIndex][0]) {
-            view.setBackgroundColor(getResources().getColor(colorSecondary));
-            ((Button) view).setTextColor(getResources().getColor(colorPrimary));
-            numberCorrect++;
-        }
-        else {
-            view.setBackgroundColor(getResources().getColor(R.color.red));
-            numberWrong++;
-        }
-
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                if (currentQuestionIndex < 9) {
-                    initQuestion(++currentQuestionIndex);
-                    questionProgress.setSecondaryProgress(currentQuestionIndex * 10);
-                    ObjectAnimator.ofInt(questionProgress, "progress", currentQuestionIndex * 10).setDuration(700).start();
-                }
-                else {
-                    Intent intent = new Intent(QuestionActivity.this, ResultsActivity.class);
-                    intent.putExtra("CORRECT", numberCorrect);
-                    intent.putExtra("INCORRECT", numberWrong);
-                    startActivity(intent);
-                }
+        Button clickedButton = (Button) view;
+        if(this.getCurrentQuestion() instanceof TextQuestion) {
+            TextQuestion textQuestion = (TextQuestion) this.getCurrentQuestion();
+            if(textQuestion.attempt(clickedButton.getText().toString())) {
+                this.markCorrect(clickedButton);
+            } else {
+                this.markIncorrect(clickedButton);
             }
-        }, 300);
+        }
 
+        
+        /*
+        TODO This could be improved, as right now we're just trusting that the server will
+            return the question within the 500ms allotted, which is not guaranteed.
+         */
+        CompletableFuture<Question<?>> nextQuestion = this.getNextQuestion();
+        new Handler().postDelayed(() -> {
+            if (currentQuestionIndex++ < 9) {
+                questionProgress.setSecondaryProgress(currentQuestionIndex * 10);
+                ObjectAnimator.ofInt(questionProgress, "progress", currentQuestionIndex * 10).setDuration(700).start();
+                initQuestion(nextQuestion.join());
+            } else {
+                Intent intent = new Intent(QuestionActivity.this, ResultsActivity.class);
+                intent.putExtra("CORRECT", numberCorrect);
+                intent.putExtra("INCORRECT", numberWrong);
+                startActivity(intent);
+            }
+        }, 500);
+    }
+
+    private void markCorrect(Button button) {
+        button.setBackgroundColor(getResources().getColor(colorSecondary));
+        button.setTextColor(getResources().getColor(colorPrimary));
+        numberCorrect++;
+    }
+
+    private void markIncorrect(Button button) {
+        button.setBackgroundColor(getResources().getColor(R.color.red));
+        numberWrong++;
+    }
+
+    private CompletableFuture<Question<?>> getNextQuestion() {
+        return MainMenu.getInstancePackager().getAPI().retrieveQuestion(this.getGame());
+    }
+
+    public TriviaGame getGame() {
+        return game;
+    }
+    public Question<?> getCurrentQuestion() {
+        return currentQuestion;
     }
 }

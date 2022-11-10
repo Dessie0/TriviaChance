@@ -41,6 +41,20 @@ public abstract class TriviaChanceHandler implements HttpHandler {
         os.close();
     }
 
+    public void sendProfileResponse(HttpExchange exchange, String profileUUID) {
+        JsonObject object = this.getServer().getProfileContainer().getObject().get("profiles")
+                .getAsJsonObject().get(profileUUID).getAsJsonObject();
+        try {
+            if(object != null) {
+                this.sendResponse(exchange, object);
+            } else {
+                this.sendNotFoundError(exchange, "No profile found by uuid " + profileUUID);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     public void sendNotFoundError(HttpExchange exchange, String message) throws IOException {
         exchange.sendResponseHeaders(404, message.getBytes().length);
         OutputStream os = exchange.getResponseBody();

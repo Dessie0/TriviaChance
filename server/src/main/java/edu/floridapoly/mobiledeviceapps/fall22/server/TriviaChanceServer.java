@@ -11,10 +11,16 @@ import java.util.UUID;
 import edu.floridapoly.mobiledeviceapps.fall22.api.gameplay.item;
 import edu.floridapoly.mobiledeviceapps.fall22.api.profile.Profile;
 import edu.floridapoly.mobiledeviceapps.fall22.server.game.GameHandler;
+import edu.floridapoly.mobiledeviceapps.fall22.server.handlers.PingHandler;
 import edu.floridapoly.mobiledeviceapps.fall22.server.handlers.game.HostGameHandler;
 import edu.floridapoly.mobiledeviceapps.fall22.server.handlers.game.JoinGameHandler;
+import edu.floridapoly.mobiledeviceapps.fall22.server.handlers.game.LeaveGameHandler;
+import edu.floridapoly.mobiledeviceapps.fall22.server.handlers.game.QuestionRetrieveHandler;
 import edu.floridapoly.mobiledeviceapps.fall22.server.handlers.profile.ProfileRegisterHandler;
 import edu.floridapoly.mobiledeviceapps.fall22.server.handlers.profile.ProfileRetrieveHandler;
+import edu.floridapoly.mobiledeviceapps.fall22.server.handlers.profile.ProfileUpdateIconHandler;
+import edu.floridapoly.mobiledeviceapps.fall22.server.handlers.profile.ProfileUpdateItemHandler;
+import edu.floridapoly.mobiledeviceapps.fall22.server.handlers.profile.ProfileUpdateUsernameHandler;
 import me.dessie.dessielib.storageapi.CoreStorageAPI;
 import me.dessie.dessielib.storageapi.container.ArrayContainer;
 import me.dessie.dessielib.storageapi.decomposition.StorageDecomposer;
@@ -38,10 +44,16 @@ public class TriviaChanceServer {
     private void createServer() {
         try {
             HttpServer server = HttpServer.create(new InetSocketAddress(8082), 0);
+            server.createContext("/ping", new PingHandler(this));
             server.createContext("/profile", new ProfileRetrieveHandler(this));
             server.createContext("/profile/register", new ProfileRegisterHandler(this));
+            server.createContext("/profile/update/username", new ProfileUpdateUsernameHandler(this));
+            server.createContext("/profile/update/icon", new ProfileUpdateIconHandler(this));
+            server.createContext("/profile/update/item", new ProfileUpdateItemHandler(this));
             server.createContext("/game/host", new HostGameHandler(this));
             server.createContext("/game/join", new JoinGameHandler(this));
+            server.createContext("/game/leave", new LeaveGameHandler(this));
+            server.createContext("/game/question", new QuestionRetrieveHandler(this));
 
             System.out.println("Server started on port " + server.getAddress().getPort());
             server.start();
@@ -54,14 +66,16 @@ public class TriviaChanceServer {
         this.getStorageAPI().addStorageEnum(item.rarity.class);
 
         this.getStorageAPI().addStorageDecomposer(new StorageDecomposer<>(Profile.class, (profile, decomposedObject) -> {
-            decomposedObject.addDecomposedKey("uuid", profile.getUUID());
+            decomposedObject.addDecomposedKey("uuid", profile.getUUID().toString());
             decomposedObject.addDecomposedKey("username", profile.getUsername());
             decomposedObject.addDecomposedKey("inventory", profile.getInventory());
+            decomposedObject.addDecomposedKey("iconURL", profile.getIconURL());
 
             return decomposedObject;
         }, (container, recomposer) -> {
             recomposer.addRecomposeKey("uuid", String.class, container::retrieveAsync);
             recomposer.addRecomposeKey("username", String.class, container::retrieveAsync);
+            recomposer.addRecomposeKey("iconURL", String.class, container::retrieveAsync);
             recomposer.addRecomposeKey("inventory", List.class, (path) -> {
                 if(container instanceof ArrayContainer arrayContainer) {
                     return arrayContainer.retrieveListAsync(item.class, path);
@@ -72,9 +86,10 @@ public class TriviaChanceServer {
             return recomposer.onComplete((completed) -> {
                 String uuid = completed.getCompletedObject("uuid");
                 String username = completed.getCompletedObject("username");
+                String iconURL = completed.getCompletedObject("iconURL");
                 List<item> inventory = completed.getCompletedObject("inventory");
 
-                return new Profile(UUID.fromString(uuid), username, inventory);
+                return new Profile(UUID.fromString(uuid), username, iconURL, inventory);
             });
         }));
 
