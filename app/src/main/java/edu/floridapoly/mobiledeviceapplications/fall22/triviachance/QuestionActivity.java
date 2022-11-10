@@ -1,11 +1,13 @@
 package edu.floridapoly.mobiledeviceapplications.fall22.triviachance;
 
+import android.animation.ObjectAnimator;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.TypedValue;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -28,6 +30,7 @@ import java.util.List;
 
 public class QuestionActivity extends AppCompatActivity {
 
+    ProgressBar questionProgress;
     Button answer1;
     Button answer2;
     Button answer3;
@@ -50,6 +53,9 @@ public class QuestionActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         ThemeUtil.onActivityCreateTheme(this);
         setContentView(R.layout.activity_question);
+
+        questionProgress = findViewById(R.id.questionProgressBar);
+        questionProgress.setProgress(currentQuestionIndex);
 
         questionText = findViewById(R.id.questionTextView);
         answer1 = findViewById(R.id.answer1);
@@ -135,6 +141,8 @@ public class QuestionActivity extends AppCompatActivity {
             public void run() {
                 if (currentQuestionIndex < 9) {
                     initQuestion(++currentQuestionIndex);
+                    questionProgress.setSecondaryProgress(currentQuestionIndex * 10);
+                    ObjectAnimator.ofInt(questionProgress, "progress", currentQuestionIndex * 10).setDuration(700).start();
                 }
                 else {
                     Intent intent = new Intent(QuestionActivity.this, ResultsActivity.class);
@@ -143,7 +151,7 @@ public class QuestionActivity extends AppCompatActivity {
                     startActivity(intent);
                 }
             }
-        }, 500);
+        }, 300);
 
     }
 }
