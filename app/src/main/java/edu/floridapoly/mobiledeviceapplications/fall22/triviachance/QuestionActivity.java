@@ -1,11 +1,13 @@
 package edu.floridapoly.mobiledeviceapplications.fall22.triviachance;
 
+import android.animation.ObjectAnimator;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.TypedValue;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -18,6 +20,9 @@ import edu.floridapoly.mobiledeviceapps.fall22.api.gameplay.questions.Question;
 import edu.floridapoly.mobiledeviceapps.fall22.api.gameplay.questions.TextQuestion;
 
 public class QuestionActivity extends AppCompatActivity {
+
+
+    ProgressBar questionProgress;
 
     private TriviaGame game;
     private Question<?> currentQuestion;
@@ -41,6 +46,11 @@ public class QuestionActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         ThemeUtil.onActivityCreateTheme(this);
         setContentView(R.layout.activity_question);
+
+
+        questionProgress = findViewById(R.id.questionProgressBar);
+        questionProgress.setProgress(currentQuestionIndex);
+
 
         this.game = (TriviaGame) this.getIntent().getSerializableExtra("triviagame");
         questionText = findViewById(R.id.questionTextView);
@@ -95,6 +105,7 @@ public class QuestionActivity extends AppCompatActivity {
             }
         }
 
+        
         /*
         TODO This could be improved, as right now we're just trusting that the server will
             return the question within the 500ms allotted, which is not guaranteed.
@@ -102,6 +113,8 @@ public class QuestionActivity extends AppCompatActivity {
         CompletableFuture<Question<?>> nextQuestion = this.getNextQuestion();
         new Handler().postDelayed(() -> {
             if (currentQuestionIndex++ < 9) {
+                questionProgress.setSecondaryProgress(currentQuestionIndex * 10);
+                ObjectAnimator.ofInt(questionProgress, "progress", currentQuestionIndex * 10).setDuration(700).start();
                 initQuestion(nextQuestion.join());
             } else {
                 Intent intent = new Intent(QuestionActivity.this, ResultsActivity.class);

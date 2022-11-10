@@ -35,18 +35,18 @@
 
     <style name="Theme.TriviaChance.Green">
         <!-- Primary brand color. -->
-        <item name="colorPrimary">@color/forest_green</item>
-        <item name="colorPrimaryVariant">@color/emerald_green</item>
-        <item name="colorOnPrimary">@color/peach</item>
+        <item name="colorPrimary">@color/seafoam_green</item>
+        <item name="colorPrimaryVariant">@color/green_charcoal</item>
+        <item name="colorOnPrimary">@color/green_charcoal</item>
         <!-- Secondary brand color. -->
-        <item name="colorSecondary">@color/peach</item>
-        <item name="colorSecondaryVariant">@color/peach</item>
-        <item name="colorOnSecondary">@color/forest_green</item>
+        <item name="colorSecondary">@color/sand_dollar</item>
+        <item name="colorSecondaryVariant">@color/sand_dollar</item>
+        <item name="colorOnSecondary">@color/green_charcoal</item>
         <!-- Status bar color. -->
         <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimary</item>
         <!-- Customize your theme here. -->
         <item name="android:windowBackground">@color/ivory</item>
-        <item name="android:textColor">@color/charcoal</item>
+        <item name="android:textColor">@color/green_charcoal</item>
 
     </style>
 
@@ -64,6 +64,57 @@
         <!-- Customize your theme here. -->
         <item name="android:windowBackground">@color/rose_quartz</item>
         <item name="android:textColor">@color/dark_blue_merlot</item>
+
+    </style>
+
+    <style name="Theme.TriviaChance.Bamboo">
+        <!-- Primary brand color. -->
+        <item name="colorPrimary">@color/turquoise</item>
+        <item name="colorPrimaryVariant">@color/bamboo_blue_grey</item>
+        <item name="colorOnPrimary">@color/bamboo_cream</item>
+        <!-- Secondary brand color. -->
+        <item name="colorSecondary">@color/tangerine</item>
+        <item name="colorSecondaryVariant">@color/tangerine</item>
+        <item name="colorOnSecondary">@color/bamboo_blue_grey</item>
+        <!-- Status bar color. -->
+        <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimary</item>
+        <!-- Customize your theme here. -->
+        <item name="android:windowBackground">@color/bamboo_cream</item>
+        <item name="android:textColor">@color/charcoal</item>
+
+    </style>
+
+    <style name="Theme.TriviaChance.Sugar">
+        <!-- Primary brand color. -->
+        <item name="colorPrimary">@color/sugar_rose_red</item>
+        <item name="colorPrimaryVariant">@color/beige</item>
+        <item name="colorOnPrimary">@color/green_charcoal</item>
+        <!-- Secondary brand color. -->
+        <item name="colorSecondary">@color/mint</item>
+        <item name="colorSecondaryVariant">@color/mint</item>
+        <item name="colorOnSecondary">@color/beige</item>
+        <!-- Status bar color. -->
+        <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimary</item>
+        <!-- Customize your theme here. -->
+        <item name="android:windowBackground">@color/sugar_seafoam_green</item>
+        <item name="android:textColor">@color/green_charcoal</item>
+
+    </style>
+
+    <style name="Theme.TriviaChance.Purple">
+        <!-- Primary brand color. -->
+        <item name="colorPrimary">@color/violoet</item>
+        <item name="colorPrimaryVariant">@color/violoet</item>
+        <item name="colorOnPrimary">@color/purple_haze</item>
+        <!-- Secondary brand color. -->
+        <item name="colorSecondary">@color/purple</item>
+        <item name="colorSecondaryVariant">@color/purple</item>
+        <item name="colorOnSecondary">@color/purple_haze</item>
+        <!-- Status bar color. -->
+        <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimary</item>
+        <!-- Customize your theme here. -->
+        <item name="android:windowBackground">@color/purple_charcoal</item>
+        <item name="android:textColor">@color/purple_haze</item>
 
     </style>
 </resources>
