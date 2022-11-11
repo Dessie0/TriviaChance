@@ -60,6 +60,15 @@ public class MainMenu extends AppCompatActivity {
         setContentView(R.layout.activity_main_menu);
 
         playerIcon = findViewById(R.id.playerIcon);
+        joinGame = findViewById(R.id.joinGame);
+        layout = findViewById(R.id.motionLayout);
+        playOnline = findViewById(R.id.play_online);
+        back = findViewById(R.id.backButton);
+        hostGame = findViewById(R.id.hostButton);
+        playSolo = findViewById(R.id.play_solo);
+        settings = findViewById(R.id.settings);
+        inventory = findViewById(R.id.inventory);
+        editIcon = findViewById(R.id.editIconButton);
 
         //Create the static instance packager.
         if(instancePackager == null) {
@@ -78,39 +87,6 @@ public class MainMenu extends AppCompatActivity {
             this.onReady();
         }
 
-        joinGame = findViewById(R.id.joinGame);
-        layout = findViewById(R.id.motionLayout);
-        playOnline = findViewById(R.id.play_online);
-        playOnline.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                layout.transitionToEnd();
-
-                if (joinGame.getText().toString().length() != 0){
-                    Intent intent = new Intent(MainMenu.this, QuestionActivity.class);
-                    joinGame.setText("");
-                    startActivity(intent);
-                }
-            }
-        });
-
-        back = findViewById(R.id.backButton);
-        back.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-            }
-        });
-
-        hostGame = findViewById(R.id.hostButton);
-        hostGame.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-            }
-        });
-
-        playSolo = findViewById(R.id.play_solo);
         playSolo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -127,17 +103,68 @@ public class MainMenu extends AppCompatActivity {
             }
         });
 
-        settings = findViewById(R.id.settings);
+        playOnline.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                layout.transitionToEnd();
+
+                if (joinGame.getText().toString().length() != 0) {
+                    if(MainMenu.this.getLocalProfile() == null) {
+                        return;
+                    }
+
+                    System.out.println("Attempting to join " + joinGame.getText().toString());
+                    MainMenu.this.getAPI().joinGame(MainMenu.this.getLocalProfile(), joinGame.getText().toString()).thenAccept(game -> {
+                        System.out.println("Joined game " + game.getUUID());
+                    });
+
+                    /*
+                    TODO Move them to the "Host Game" UI for the joined code
+                    Intent intent = new Intent(MainMenu.this, QuestionActivity.class);
+                    joinGame.setText("");
+                    startActivity(intent);
+                     */
+                }
+            }
+        });
+
+        hostGame.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //Create the game
+                if(MainMenu.this.getLocalProfile() == null) {
+                    return;
+                }
+
+                MainMenu.this.getAPI().createGame(MainMenu.this.getLocalProfile()).thenAccept(game -> {
+                    /*
+                    TODO Move this to a "Start Game" button on the "Host Game" UI.
+                    Intent intent = new Intent(MainMenu.this, QuestionActivity.class);
+                    intent.putExtra("triviagame", game);
+                    startActivity(intent);
+                     */
+
+                    System.out.println("Created game " + game.getUUID());
+                    System.out.println(game.getCode());
+                });
+            }
+        });
+
+        back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
+
         settings.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(MainMenu.this, SettingsActivity.class);
-                //startActivity(intent);
                 startActivity(intent);
             }
         });
 
-        inventory = findViewById(R.id.inventory);
         inventory.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -148,7 +175,6 @@ public class MainMenu extends AppCompatActivity {
             }
         });
 
-        editIcon = findViewById(R.id.editIconButton);
         editIcon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

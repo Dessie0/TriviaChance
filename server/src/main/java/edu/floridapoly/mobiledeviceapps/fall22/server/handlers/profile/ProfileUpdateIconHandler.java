@@ -25,7 +25,12 @@ public class ProfileUpdateIconHandler extends TriviaChanceHandler {
         profile.setIconURL(iconURL);
 
         this.getServer().getProfileContainer().store("profiles." + profileUUID, profile).thenRun(() -> {
-            this.sendProfileResponse(exchange, profileUUID);
+            if(profile.getIconURL() == null) {
+                this.getServer().getProfileContainer().delete("profiles." + profileUUID + ".iconURL")
+                        .thenRun(() -> this.sendProfileResponse(exchange, profileUUID));
+            } else {
+                this.sendProfileResponse(exchange, profileUUID);
+            }
         });
     }
 }

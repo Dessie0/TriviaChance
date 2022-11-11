@@ -25,8 +25,8 @@ public class TriviaChanceAPI {
 
     //Timeout to retrieve requests, in Milliseconds.
     private static final int TIMEOUT = 10000;
-    private static final int MAX_ICON_HEIGHT = 256;
-    private static final int MAX_ICON_WIDTH = 256;
+    private static final int MAX_ICON_HEIGHT = 512;
+    private static final int MAX_ICON_WIDTH = 512;
 
     private static final String LOCAL_IP = "51.79.52.211";
 
