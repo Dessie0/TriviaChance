@@ -1,5 +1,10 @@
 package edu.floridapoly.mobiledeviceapplications.fall22.triviachance.api;
 
+import android.graphics.Bitmap;
+
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.util.Base64;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
@@ -11,6 +16,7 @@ import edu.floridapoly.mobiledeviceapps.fall22.api.gameplay.TriviaGame;
 import edu.floridapoly.mobiledeviceapps.fall22.api.gameplay.questions.Question;
 import edu.floridapoly.mobiledeviceapps.fall22.api.gameplay.questions.TextQuestion;
 import edu.floridapoly.mobiledeviceapps.fall22.api.profile.Profile;
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -19,6 +25,9 @@ public class TriviaChanceAPI {
 
     //Timeout to retrieve requests, in Milliseconds.
     private static final int TIMEOUT = 10000;
+    private static final int MAX_ICON_HEIGHT = 256;
+    private static final int MAX_ICON_WIDTH = 256;
+
     private static final String LOCAL_IP = "51.79.52.211";
 
     private final Retrofit connection;
@@ -88,6 +97,29 @@ public class TriviaChanceAPI {
         //TODO Add more questions besides just text questions
         CompletableFuture<Question<?>> future = new CompletableFuture<>();
         this.retrieveTextQuestion(game).thenAccept(future::complete);
+        return future;
+    }
+
+    public CompletableFuture<String> uploadImage(Bitmap bitmap) {
+        if(bitmap.getHeight() > MAX_ICON_HEIGHT || bitmap.getWidth() > MAX_ICON_WIDTH) {
+            CompletableFuture<String> future = new CompletableFuture<>();
+            future.completeExceptionally(new IllegalStateException("Image too large, max size is 256x256."));
+            return future;
+        }
+
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, out);
+        byte[] bytes = out.toByteArray();
+
+        Call<ResponseBody> call = this.getService().uploadImage(Base64.getEncoder().encodeToString(bytes));
+        CompletableFuture<String> future = new CompletableFuture<>();
+        this.enqueue(call, new FutureCallback<>()).thenAccept((responseBody) -> {
+            try {
+                future.complete(responseBody.string());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        });
         return future;
     }
 

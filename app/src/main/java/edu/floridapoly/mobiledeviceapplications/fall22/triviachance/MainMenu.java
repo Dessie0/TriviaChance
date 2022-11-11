@@ -2,8 +2,10 @@ package edu.floridapoly.mobiledeviceapplications.fall22.triviachance;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -15,10 +17,12 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.motion.widget.MotionLayout;
 
+import java.io.IOException;
+
 import edu.floridapoly.mobiledeviceapplications.fall22.triviachance.api.InstancePackager;
 import edu.floridapoly.mobiledeviceapplications.fall22.triviachance.api.TriviaChanceAPI;
+import edu.floridapoly.mobiledeviceapplications.fall22.triviachance.icon.ProfileIconHelper;
 import edu.floridapoly.mobiledeviceapps.fall22.api.profile.Profile;
-
 
 public class MainMenu extends AppCompatActivity {
 
@@ -55,12 +59,14 @@ public class MainMenu extends AppCompatActivity {
         ThemeUtil.onActivityCreateTheme(this);
         setContentView(R.layout.activity_main_menu);
 
+        playerIcon = findViewById(R.id.playerIcon);
+
         //Create the static instance packager.
         if(instancePackager == null) {
             TriviaChanceAPI api = new TriviaChanceAPI();
             api.ping().thenAccept(pinged -> {
                 if(pinged) {
-                    instancePackager = new InstancePackager(api, this.getBaseContext().getSharedPreferences("triviachance", Context.MODE_PRIVATE));
+                    instancePackager = new InstancePackager(this, api, this.getBaseContext().getSharedPreferences("triviachance", Context.MODE_PRIVATE));
                 }
             }).exceptionally(err -> {
                 err.printStackTrace();
@@ -69,6 +75,7 @@ public class MainMenu extends AppCompatActivity {
             });
         } else {
             instancePackager.setPreferences(this.getBaseContext().getSharedPreferences("triviachance", Context.MODE_PRIVATE));
+            this.onReady();
         }
 
         joinGame = findViewById(R.id.joinGame);
@@ -86,6 +93,7 @@ public class MainMenu extends AppCompatActivity {
                 }
             }
         });
+
         back = findViewById(R.id.backButton);
         back.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -140,14 +148,10 @@ public class MainMenu extends AppCompatActivity {
             }
         });
 
-        playerIcon = findViewById(R.id.playerIcon);
         editIcon = findViewById(R.id.editIconButton);
         editIcon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
-                //Toast.makeText(getBaseContext(), "Opening Gallery", Toast.LENGTH_SHORT).show();
-
                 Intent intent = new Intent();
                 intent.setType("image/*");
                 intent.setAction(Intent.ACTION_GET_CONTENT);
@@ -156,16 +160,41 @@ public class MainMenu extends AppCompatActivity {
         });
     }
 
-    // only works per instance, still resets when app is killed
+    /**
+     * Called when the local profile has been retrieved from the server.
+     */
+    public void onReady() {
+        ProfileIconHelper.reloadProfileIcon(this.getLocalProfile(), playerIcon);
+    }
+
+    //Upload the chosen profile picture and use it
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == RESULT_OK) {
-            if (requestCode == SELECT_PICTURE) {
-                Uri selectedImageUri = data.getData();
-                if (null != selectedImageUri) {
-                    playerIcon.setImageURI(selectedImageUri);
-                }
-            }
+        if(resultCode != RESULT_OK || requestCode != SELECT_PICTURE) return;
+
+        Uri selectedImageUri = data.getData();
+        if (selectedImageUri == null) {
+            Toast.makeText(this.getBaseContext(), "Unable to retrieve image.", Toast.LENGTH_LONG).show();
+            return;
+        }
+
+        try {
+            Bitmap bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), selectedImageUri);
+            this.getAPI().uploadImage(bitmap).thenAccept(url -> {
+
+                //Update the server, client, and local profile of the new icon.
+                this.getLocalProfile().setIconURL(url);
+                this.getAPI().updateIcon(this.getLocalProfile(), url);
+                getInstancePackager().setProfileIcon(bitmap);
+
+                ProfileIconHelper.reloadProfileIcon(this.getLocalProfile(), playerIcon);
+            }).exceptionally((err) -> {
+                err.printStackTrace();
+                Toast.makeText(this.getBaseContext(), err.getMessage(), Toast.LENGTH_LONG).show();
+                return null;
+            });
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
