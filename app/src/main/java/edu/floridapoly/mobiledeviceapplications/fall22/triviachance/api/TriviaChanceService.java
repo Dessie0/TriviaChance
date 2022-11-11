@@ -6,6 +6,7 @@ import edu.floridapoly.mobiledeviceapps.fall22.api.gameplay.Player;
 import edu.floridapoly.mobiledeviceapps.fall22.api.gameplay.TriviaGame;
 import edu.floridapoly.mobiledeviceapps.fall22.api.gameplay.questions.TextQuestion;
 import edu.floridapoly.mobiledeviceapps.fall22.api.profile.Profile;
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
@@ -34,6 +35,9 @@ public interface TriviaChanceService {
     Call<Profile> updateItem(@Query("profileUUID") String profileUUID,
                              @Query("itemId") int itemId,
                              @Query("quantity") int quantity);
+
+    @POST("image/upload")
+    Call<ResponseBody> uploadImage(@Query("base64") String base64);
 
     @GET("game/host")
     Call<TriviaGame> createGame(@Query("profileUUID") String profileUUID);
