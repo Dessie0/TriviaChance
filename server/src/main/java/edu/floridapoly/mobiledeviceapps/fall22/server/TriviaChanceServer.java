@@ -16,6 +16,8 @@ import edu.floridapoly.mobiledeviceapps.fall22.server.handlers.game.HostGameHand
 import edu.floridapoly.mobiledeviceapps.fall22.server.handlers.game.JoinGameHandler;
 import edu.floridapoly.mobiledeviceapps.fall22.server.handlers.game.LeaveGameHandler;
 import edu.floridapoly.mobiledeviceapps.fall22.server.handlers.game.QuestionRetrieveHandler;
+import edu.floridapoly.mobiledeviceapps.fall22.server.handlers.image.ImageDownloadHandler;
+import edu.floridapoly.mobiledeviceapps.fall22.server.handlers.image.ImageUploadHandler;
 import edu.floridapoly.mobiledeviceapps.fall22.server.handlers.profile.ProfileRegisterHandler;
 import edu.floridapoly.mobiledeviceapps.fall22.server.handlers.profile.ProfileRetrieveHandler;
 import edu.floridapoly.mobiledeviceapps.fall22.server.handlers.profile.ProfileUpdateIconHandler;
@@ -50,6 +52,8 @@ public class TriviaChanceServer {
             server.createContext("/profile/update/username", new ProfileUpdateUsernameHandler(this));
             server.createContext("/profile/update/icon", new ProfileUpdateIconHandler(this));
             server.createContext("/profile/update/item", new ProfileUpdateItemHandler(this));
+            server.createContext("/image/upload", new ImageUploadHandler(this));
+            server.createContext("/image/download", new ImageDownloadHandler(this));
             server.createContext("/game/host", new HostGameHandler(this));
             server.createContext("/game/join", new JoinGameHandler(this));
             server.createContext("/game/leave", new LeaveGameHandler(this));

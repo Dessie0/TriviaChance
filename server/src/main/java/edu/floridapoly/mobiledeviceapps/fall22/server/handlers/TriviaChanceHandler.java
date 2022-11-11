@@ -15,6 +15,7 @@ import edu.floridapoly.mobiledeviceapps.fall22.server.TriviaChanceServer;
 
 public abstract class TriviaChanceHandler implements HttpHandler {
 
+    protected static final String ICON_FOLDER = "data/icons/";
     private final TriviaChanceServer server;
 
     public TriviaChanceHandler(TriviaChanceServer server) {
