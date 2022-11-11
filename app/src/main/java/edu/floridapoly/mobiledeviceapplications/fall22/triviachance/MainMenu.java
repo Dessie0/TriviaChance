@@ -6,6 +6,8 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -33,6 +35,7 @@ public class MainMenu extends AppCompatActivity {
     Button playSolo;
     Button hostGame;
     EditText joinGame;
+    EditText username;
     ImageButton back;
     ImageButton settings;
     ImageButton inventory;
@@ -41,17 +44,6 @@ public class MainMenu extends AppCompatActivity {
 
     int SELECT_PICTURE = 200;
 
-    /*
-    ActivityResultLauncher<Intent> activityResultLauncher = registerForActivityResult(
-            new ActivityResultContracts.StartActivityForResult(),
-            new ActivityResultCallback<ActivityResult>() {
-                @Override
-                public void onActivityResult(ActivityResult result) {
-
-                }
-            }
-    );
-    */
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,15 +52,6 @@ public class MainMenu extends AppCompatActivity {
         setContentView(R.layout.activity_main_menu);
 
         playerIcon = findViewById(R.id.playerIcon);
-        joinGame = findViewById(R.id.joinGame);
-        layout = findViewById(R.id.motionLayout);
-        playOnline = findViewById(R.id.play_online);
-        back = findViewById(R.id.backButton);
-        hostGame = findViewById(R.id.hostButton);
-        playSolo = findViewById(R.id.play_solo);
-        settings = findViewById(R.id.settings);
-        inventory = findViewById(R.id.inventory);
-        editIcon = findViewById(R.id.editIconButton);
 
         //Create the static instance packager.
         if(instancePackager == null) {
@@ -87,6 +70,64 @@ public class MainMenu extends AppCompatActivity {
             this.onReady();
         }
 
+        joinGame = findViewById(R.id.joinGame);
+        layout = findViewById(R.id.motionLayout);
+        playOnline = findViewById(R.id.play_online);
+        playOnline.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                layout.transitionToEnd();
+
+                if (joinGame.getText().toString().length() != 0){
+                    Intent intent = new Intent(MainMenu.this, QuestionActivity.class);
+                    joinGame.setText("");
+                    startActivity(intent);
+                }
+            }
+        });
+
+        back = findViewById(R.id.hostBackButton);
+        back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
+
+        hostGame = findViewById(R.id.hostButton);
+        hostGame.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(MainMenu.this, HostActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        username = findViewById(R.id.username);
+        if (MainMenu.this.getLocalProfile() != null) {
+            username.setText(MainMenu.this.getLocalProfile().getUsername().toString());
+        }
+        //need to work on if this is correct
+        username.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                if (MainMenu.this.getLocalProfile() != null)
+                    MainMenu.this.getLocalProfile().setUsername(editable.toString());
+            }
+        });
+
+
+        playSolo = findViewById(R.id.play_solo);
         playSolo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -103,68 +144,17 @@ public class MainMenu extends AppCompatActivity {
             }
         });
 
-        playOnline.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                layout.transitionToEnd();
-
-                if (joinGame.getText().toString().length() != 0) {
-                    if(MainMenu.this.getLocalProfile() == null) {
-                        return;
-                    }
-
-                    System.out.println("Attempting to join " + joinGame.getText().toString());
-                    MainMenu.this.getAPI().joinGame(MainMenu.this.getLocalProfile(), joinGame.getText().toString()).thenAccept(game -> {
-                        System.out.println("Joined game " + game.getUUID());
-                    });
-
-                    /*
-                    TODO Move them to the "Host Game" UI for the joined code
-                    Intent intent = new Intent(MainMenu.this, QuestionActivity.class);
-                    joinGame.setText("");
-                    startActivity(intent);
-                     */
-                }
-            }
-        });
-
-        hostGame.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                //Create the game
-                if(MainMenu.this.getLocalProfile() == null) {
-                    return;
-                }
-
-                MainMenu.this.getAPI().createGame(MainMenu.this.getLocalProfile()).thenAccept(game -> {
-                    /*
-                    TODO Move this to a "Start Game" button on the "Host Game" UI.
-                    Intent intent = new Intent(MainMenu.this, QuestionActivity.class);
-                    intent.putExtra("triviagame", game);
-                    startActivity(intent);
-                     */
-
-                    System.out.println("Created game " + game.getUUID());
-                    System.out.println(game.getCode());
-                });
-            }
-        });
-
-        back.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-            }
-        });
-
+        settings = findViewById(R.id.settings);
         settings.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(MainMenu.this, SettingsActivity.class);
+                //startActivity(intent);
                 startActivity(intent);
             }
         });
 
+        inventory = findViewById(R.id.inventory);
         inventory.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -175,6 +165,7 @@ public class MainMenu extends AppCompatActivity {
             }
         });
 
+        editIcon = findViewById(R.id.editIconButton);
         editIcon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -237,15 +228,6 @@ public class MainMenu extends AppCompatActivity {
         }
     }
 
-    @Override
-    public void onResume() {
-        // need to change main menu with rest of the activities
-        // issue is that main menu was already created with old theme so the menu needs to be reset before coming back from settings
-        //super.onRestart();
-        Log.d("Testing", "OnResume() called");
-        super.onResume();
-        ThemeUtil.onActivityCreateTheme(this);
-    }
 
     public TriviaChanceAPI getAPI() {
         if(instancePackager == null) {
