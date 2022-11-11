@@ -7,6 +7,10 @@
     <string name="inventory">Backpack</string>
     <string name="host">Host Game</string>
     <string name="join">Game ID</string>
+    <string name="username">Enter Your Username</string>
+
+    <string name="start">Start Game</string>
+    <string name="game_id">Your Unique Game ID is:</string>
 
     <string name="sound">Sound</string>
     <string name="music">Music</string>

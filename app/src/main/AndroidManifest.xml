@@ -18,33 +18,36 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
         <activity
-            android:name=".ResultsActivity"
-            android:screenOrientation="portrait"
-            android:exported="false"
-            android:parentActivityName=".MainMenu"/>
-        <activity
-            android:name=".RedeemActivity"
-            android:screenOrientation="portrait"
+            android:name=".HostActivity"
             android:exported="false" />
         <activity
-            android:name=".SettingsActivity"
-            android:screenOrientation="portrait"
+            android:name=".ResultsActivity"
             android:exported="false"
-            android:parentActivityName=".MainMenu" />
+            android:parentActivityName=".MainMenu"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".RedeemActivity"
+            android:exported="false"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".SettingsActivity"
+            android:exported="false"
+            android:parentActivityName=".MainMenu"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".QuestionActivity"
-            android:screenOrientation="portrait"
             android:exported="false"
-            android:parentActivityName=".MainMenu" />
+            android:parentActivityName=".MainMenu"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".InventoryActivity"
-            android:screenOrientation="portrait"
             android:exported="false"
-            android:parentActivityName=".MainMenu" />
+            android:parentActivityName=".MainMenu"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".MainMenu"
-            android:screenOrientation="portrait"
-            android:exported="true">
+            android:exported="true"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

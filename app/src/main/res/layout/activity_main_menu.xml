@@ -57,9 +57,9 @@
         android:scaleType="fitCenter"
         android:src="@drawable/ic_inventory"
         android:text="@string/inventory"
-        app:tint="?attr/colorPrimaryVariant"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:tint="?attr/colorPrimaryVariant" />
 
     <Button
         android:id="@+id/hostButton"
@@ -89,17 +89,33 @@
         app:layout_constraintEnd_toEndOf="parent"
         tools:visibility="invisible" />
 
+
+    <EditText
+        android:id="@+id/username"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="340dp"
+        android:alpha="0"
+        android:ems="10"
+        android:hint="@string/username"
+        android:inputType="textPersonName"
+        android:textColor="@color/dark_blue"
+        android:textColorHint="@color/dark_blue"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        tools:visibility="invisible" />
+
     <ImageButton
-        android:id="@+id/backButton"
+        android:id="@+id/hostBackButton"
         android:layout_width="80dp"
         android:layout_height="71dp"
         android:alpha="0"
         android:backgroundTint="#00FFFFFF"
         android:scaleType="fitCenter"
-        app:tint="?attr/colorPrimaryVariant"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:srcCompat="@drawable/ic_back"
+        app:tint="?attr/colorPrimaryVariant"
         tools:visibility="invisible" />
 
     <androidx.cardview.widget.CardView

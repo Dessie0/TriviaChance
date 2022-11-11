@@ -6,6 +6,8 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -33,6 +35,7 @@ public class MainMenu extends AppCompatActivity {
     Button playSolo;
     Button hostGame;
     EditText joinGame;
+    EditText username;
     ImageButton back;
     ImageButton settings;
     ImageButton inventory;
@@ -41,17 +44,6 @@ public class MainMenu extends AppCompatActivity {
 
     int SELECT_PICTURE = 200;
 
-    /*
-    ActivityResultLauncher<Intent> activityResultLauncher = registerForActivityResult(
-            new ActivityResultContracts.StartActivityForResult(),
-            new ActivityResultCallback<ActivityResult>() {
-                @Override
-                public void onActivityResult(ActivityResult result) {
-
-                }
-            }
-    );
-    */
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -94,7 +86,7 @@ public class MainMenu extends AppCompatActivity {
             }
         });
 
-        back = findViewById(R.id.backButton);
+        back = findViewById(R.id.hostBackButton);
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -106,9 +98,34 @@ public class MainMenu extends AppCompatActivity {
         hostGame.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                Intent intent = new Intent(MainMenu.this, HostActivity.class);
+                startActivity(intent);
             }
         });
+
+        username = findViewById(R.id.username);
+        if (MainMenu.this.getLocalProfile() != null) {
+            username.setText(MainMenu.this.getLocalProfile().getUsername().toString());
+        }
+        //need to work on if this is correct
+        username.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                if (MainMenu.this.getLocalProfile() != null)
+                    MainMenu.this.getLocalProfile().setUsername(editable.toString());
+            }
+        });
+
 
         playSolo = findViewById(R.id.play_solo);
         playSolo.setOnClickListener(new View.OnClickListener() {
@@ -211,15 +228,6 @@ public class MainMenu extends AppCompatActivity {
         }
     }
 
-    @Override
-    public void onResume() {
-        // need to change main menu with rest of the activities
-        // issue is that main menu was already created with old theme so the menu needs to be reset before coming back from settings
-        //super.onRestart();
-        Log.d("Testing", "OnResume() called");
-        super.onResume();
-        ThemeUtil.onActivityCreateTheme(this);
-    }
 
     public TriviaChanceAPI getAPI() {
         if(instancePackager == null) {
