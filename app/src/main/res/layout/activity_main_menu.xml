@@ -90,21 +90,6 @@
         tools:visibility="invisible" />
 
 
-    <EditText
-        android:id="@+id/username"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="340dp"
-        android:alpha="0"
-        android:ems="10"
-        android:hint="@string/username"
-        android:inputType="textPersonName"
-        android:textColor="@color/dark_blue"
-        android:textColorHint="@color/dark_blue"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        tools:visibility="invisible" />
-
     <ImageButton
         android:id="@+id/hostBackButton"
         android:layout_width="80dp"
@@ -140,20 +125,6 @@
             app:srcCompat="@color/material_dynamic_neutral30"
             tools:srcCompat="@tools:sample/avatars" />
 
-        <ImageButton
-            android:id="@+id/editIconButton"
-            android:layout_width="64dp"
-            android:layout_height="62dp"
-            android:layout_marginStart="152dp"
-            android:layout_marginTop="156dp"
-            android:backgroundTint="#00FFFFFF"
-            android:outlineAmbientShadowColor="#00FFFFFF"
-            android:outlineSpotShadowColor="#00FFFFFF"
-            android:scaleType="fitCenter"
-            android:translationZ="10dp"
-            app:layout_constraintStart_toStartOf="@+id/playerIcon"
-            app:layout_constraintTop_toTopOf="@+id/playerIcon"
-            app:srcCompat="@android:drawable/ic_menu_edit" />
     </androidx.cardview.widget.CardView>
 
 </androidx.constraintlayout.motion.widget.MotionLayout>

@@ -2,13 +2,9 @@ package edu.floridapoly.mobiledeviceapplications.fall22.triviachance;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.net.Uri;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -18,8 +14,6 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.motion.widget.MotionLayout;
-
-import java.io.IOException;
 
 import edu.floridapoly.mobiledeviceapplications.fall22.triviachance.api.InstancePackager;
 import edu.floridapoly.mobiledeviceapplications.fall22.triviachance.api.TriviaChanceAPI;
@@ -35,14 +29,11 @@ public class MainMenu extends AppCompatActivity {
     Button playSolo;
     Button hostGame;
     EditText joinGame;
-    EditText username;
     ImageButton back;
     ImageButton settings;
     ImageButton inventory;
-    ImageButton editIcon;
     ImageView playerIcon;
 
-    int SELECT_PICTURE = 200;
 
 
     @Override
@@ -62,7 +53,7 @@ public class MainMenu extends AppCompatActivity {
                 }
             }).exceptionally(err -> {
                 err.printStackTrace();
-                this.showNoInternetToast();
+                showNoInternetToast(this);
                 return null;
             });
         } else {
@@ -87,12 +78,7 @@ public class MainMenu extends AppCompatActivity {
         });
 
         back = findViewById(R.id.hostBackButton);
-        back.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
 
-            }
-        });
 
         hostGame = findViewById(R.id.hostButton);
         hostGame.setOnClickListener(new View.OnClickListener() {
@@ -103,40 +89,17 @@ public class MainMenu extends AppCompatActivity {
             }
         });
 
-        username = findViewById(R.id.username);
-        if (MainMenu.this.getLocalProfile() != null) {
-            username.setText(MainMenu.this.getLocalProfile().getUsername().toString());
-        }
-        //need to work on if this is correct
-        username.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable editable) {
-                if (MainMenu.this.getLocalProfile() != null)
-                    MainMenu.this.getLocalProfile().setUsername(editable.toString());
-            }
-        });
-
 
         playSolo = findViewById(R.id.play_solo);
         playSolo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 //Create the game
-                if(MainMenu.this.getLocalProfile() == null) {
+                if(getLocalProfile(MainMenu.this) == null) {
                     return;
                 }
 
-                MainMenu.this.getAPI().createGame(MainMenu.this.getLocalProfile()).thenAccept(game -> {
+                getAPI(MainMenu.this).createGame(getLocalProfile(MainMenu.this)).thenAccept(game -> {
                     Intent intent = new Intent(MainMenu.this, QuestionActivity.class);
                     intent.putExtra("triviagame", game);
                     startActivity(intent);
@@ -149,7 +112,6 @@ public class MainMenu extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(MainMenu.this, SettingsActivity.class);
-                //startActivity(intent);
                 startActivity(intent);
             }
         });
@@ -159,20 +121,7 @@ public class MainMenu extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(MainMenu.this, InventoryActivity.class);
-                // taken out temporarily
-               // activityResultLauncher.launch(intent);
                 startActivity(intent);
-            }
-        });
-
-        editIcon = findViewById(R.id.editIconButton);
-        editIcon.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent();
-                intent.setType("image/*");
-                intent.setAction(Intent.ACTION_GET_CONTENT);
-                startActivityForResult(Intent.createChooser(intent, "Select Picture"), SELECT_PICTURE);
             }
         });
     }
@@ -181,39 +130,10 @@ public class MainMenu extends AppCompatActivity {
      * Called when the local profile has been retrieved from the server.
      */
     public void onReady() {
-        ProfileIconHelper.reloadProfileIcon(this.getLocalProfile(), playerIcon);
+        ProfileIconHelper.reloadProfileIcon(getLocalProfile(this), playerIcon);
     }
 
-    //Upload the chosen profile picture and use it
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if(resultCode != RESULT_OK || requestCode != SELECT_PICTURE) return;
 
-        Uri selectedImageUri = data.getData();
-        if (selectedImageUri == null) {
-            Toast.makeText(this.getBaseContext(), "Unable to retrieve image.", Toast.LENGTH_LONG).show();
-            return;
-        }
-
-        try {
-            Bitmap bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), selectedImageUri);
-            this.getAPI().uploadImage(bitmap).thenAccept(url -> {
-
-                //Update the server, client, and local profile of the new icon.
-                this.getLocalProfile().setIconURL(url);
-                this.getAPI().updateIcon(this.getLocalProfile(), url);
-                getInstancePackager().setProfileIcon(bitmap);
-
-                ProfileIconHelper.reloadProfileIcon(this.getLocalProfile(), playerIcon);
-            }).exceptionally((err) -> {
-                err.printStackTrace();
-                Toast.makeText(this.getBaseContext(), err.getMessage(), Toast.LENGTH_LONG).show();
-                return null;
-            });
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
 
     @Override
     public void onBackPressed() {
@@ -228,26 +148,25 @@ public class MainMenu extends AppCompatActivity {
         }
     }
 
-
-    public TriviaChanceAPI getAPI() {
+    public static TriviaChanceAPI getAPI(Context context) {
         if(instancePackager == null) {
-            this.showNoInternetToast();
+            showNoInternetToast(context);
             return null;
         }
 
         return instancePackager.getAPI();
     }
-    public Profile getLocalProfile() {
+    public static Profile getLocalProfile(Context context) {
         if(instancePackager == null) {
-            this.showNoInternetToast();
+            showNoInternetToast(context);
             return null;
         }
 
         return instancePackager.getLocalProfile();
     }
 
-    private void showNoInternetToast() {
-        Toast.makeText(this.getBaseContext(), "Unable to connect to server. Please check your internet connection.", Toast.LENGTH_LONG).show();
+    private static void showNoInternetToast(Context context) {
+        Toast.makeText(context, "Unable to connect to server. Please check your internet connection.", Toast.LENGTH_LONG).show();
     }
 
     public static InstancePackager getInstancePackager() {
