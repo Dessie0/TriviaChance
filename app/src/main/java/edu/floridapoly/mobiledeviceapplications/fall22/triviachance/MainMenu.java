@@ -10,6 +10,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -33,6 +34,7 @@ public class MainMenu extends AppCompatActivity {
     ImageButton settings;
     ImageButton inventory;
     ImageView playerIcon;
+    TextView usernameText;
 
 
 
@@ -43,6 +45,7 @@ public class MainMenu extends AppCompatActivity {
         setContentView(R.layout.activity_main_menu);
 
         playerIcon = findViewById(R.id.playerIcon);
+        usernameText = findViewById(R.id.usernameTextView);
 
         //Create the static instance packager.
         if(instancePackager == null) {
@@ -60,6 +63,8 @@ public class MainMenu extends AppCompatActivity {
             instancePackager.setPreferences(this.getBaseContext().getSharedPreferences("triviachance", Context.MODE_PRIVATE));
             this.onReady();
         }
+
+
 
         joinGame = findViewById(R.id.joinGame);
         layout = findViewById(R.id.motionLayout);
@@ -131,6 +136,7 @@ public class MainMenu extends AppCompatActivity {
      */
     public void onReady() {
         ProfileIconHelper.reloadProfileIcon(getLocalProfile(this), playerIcon);
+        usernameText.setText(getLocalProfile(this).getUsername());
     }
 
 
