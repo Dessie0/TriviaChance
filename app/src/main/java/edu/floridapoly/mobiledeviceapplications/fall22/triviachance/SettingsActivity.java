@@ -105,7 +105,6 @@ public class SettingsActivity extends AppCompatActivity {
         if (MainMenu.getLocalProfile(this) != null) {
             username.setText(MainMenu.getLocalProfile(this).getUsername().toString());
         }
-        //need to work on if this is correct
         username.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
