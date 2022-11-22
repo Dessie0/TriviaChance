@@ -1,7 +1,5 @@
 package edu.floridapoly.mobiledeviceapplications.fall22.triviachance;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
@@ -19,11 +17,11 @@ import android.widget.Spinner;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
+import androidx.appcompat.app.AppCompatActivity;
+
 import java.io.IOException;
 
-import edu.floridapoly.mobiledeviceapplications.fall22.triviachance.api.TriviaChanceAPI;
 import edu.floridapoly.mobiledeviceapplications.fall22.triviachance.icon.ProfileIconHelper;
-import edu.floridapoly.mobiledeviceapps.fall22.api.profile.Profile;
 
 public class SettingsActivity extends AppCompatActivity {
 
@@ -37,7 +35,6 @@ public class SettingsActivity extends AppCompatActivity {
     EditText username;
 
     int SELECT_PICTURE = 200;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -102,8 +99,8 @@ public class SettingsActivity extends AppCompatActivity {
         });
 
         username = findViewById(R.id.username);
-        if (MainMenu.getLocalProfile(this) != null) {
-            username.setText(MainMenu.getLocalProfile(this).getUsername().toString());
+        if (MainMenu.getLocalProfile() != null) {
+            username.setText(MainMenu.getLocalProfile().getUsername().toString());
         }
         username.addTextChangedListener(new TextWatcher() {
             @Override
@@ -118,9 +115,9 @@ public class SettingsActivity extends AppCompatActivity {
 
             @Override
             public void afterTextChanged(Editable editable) {
-                if (MainMenu.getLocalProfile(SettingsActivity.this) != null)
-                    MainMenu.getLocalProfile(SettingsActivity.this).setUsername(editable.toString());
-                    MainMenu.getAPI(SettingsActivity.this).updateUsername(MainMenu.getLocalProfile(SettingsActivity.this), editable.toString());
+                if (MainMenu.getLocalProfile() != null)
+                    MainMenu.getLocalProfile().setUsername(editable.toString());
+                    MainMenu.getAPI().updateUsername(MainMenu.getLocalProfile(), editable.toString());
             }
         });
 
@@ -139,11 +136,11 @@ public class SettingsActivity extends AppCompatActivity {
 
         try {
             Bitmap bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), selectedImageUri);
-            MainMenu.getAPI(this).uploadImage(bitmap).thenAccept(url -> {
+            MainMenu.getAPI().uploadImage(bitmap).thenAccept(url -> {
 
                 //Update the server, client, and local profile of the new icon.
-                MainMenu.getLocalProfile(this).setIconURL(url);
-                MainMenu.getAPI(this).updateIcon(MainMenu.getLocalProfile(this), url);
+                MainMenu.getLocalProfile().setIconURL(url);
+                MainMenu.getAPI().updateIcon(MainMenu.getLocalProfile(), url);
                 MainMenu.getInstancePackager().setProfileIcon(bitmap);
                 onReady();
             }).exceptionally((err) -> {
@@ -157,7 +154,7 @@ public class SettingsActivity extends AppCompatActivity {
     }
 
     public void onReady() {
-        ProfileIconHelper.reloadProfileIcon(MainMenu.getLocalProfile(this), settingsPlayerIcon);
+        ProfileIconHelper.reloadProfileIcon(MainMenu.getLocalProfile(), settingsPlayerIcon);
     }
 
 
