@@ -16,7 +16,14 @@ import edu.floridapoly.mobiledeviceapps.fall22.api.gameplay.TriviaGame;
 import edu.floridapoly.mobiledeviceapps.fall22.api.gameplay.questions.Question;
 import edu.floridapoly.mobiledeviceapps.fall22.api.gameplay.questions.TextQuestion;
 import edu.floridapoly.mobiledeviceapps.fall22.api.profile.Profile;
+import edu.floridapoly.mobiledeviceapps.fall22.api.socket.MessageType;
+import edu.floridapoly.mobiledeviceapps.fall22.api.socket.SocketMessageGenerator;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 import okhttp3.ResponseBody;
+import okhttp3.WebSocket;
+import okhttp3.WebSocketListener;
 import retrofit2.Call;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -25,21 +32,60 @@ public class TriviaChanceAPI {
 
     //Timeout to retrieve requests, in Milliseconds.
     private static final int TIMEOUT = 10000;
-    private static final int MAX_ICON_HEIGHT = 256;
-    private static final int MAX_ICON_WIDTH = 256;
+    private static final int MAX_ICON_HEIGHT = 512;
+    private static final int MAX_ICON_WIDTH = 512;
 
-    private static final String LOCAL_IP = "51.79.52.211";
+    //private static final String SERVER_IP = "192.168.1.87";
+    private static final String SERVER_IP = "51.79.52.211";
 
-    private final Retrofit connection;
     private final TriviaChanceService service;
+    private final WebSocket socket;
 
     public TriviaChanceAPI() {
-        this.connection = new Retrofit.Builder()
-                .baseUrl("http://" + LOCAL_IP + ":8082/")
+        Retrofit connection = new Retrofit.Builder()
+                .baseUrl("http://" + SERVER_IP + ":8082/")
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
-        this.service = this.connection.create(TriviaChanceService.class);
+        OkHttpClient client = new OkHttpClient();
+        Request request = new Request.Builder()
+                .url("ws://" + SERVER_IP + ":8083/")
+                .build();
+
+        this.socket = client.newWebSocket(request, new WebSocketListener() {
+            @Override
+            public void onClosed(WebSocket webSocket, int code, String reason) {
+                super.onClosed(webSocket, code, reason);
+                System.out.println("Closed because: " + reason);
+            }
+
+            @Override
+            public void onClosing(WebSocket webSocket, int code, String reason) {
+                super.onClosing(webSocket, code, reason);
+                System.out.println("Closing because: " + reason);
+            }
+
+            @Override
+            public void onOpen(WebSocket webSocket, Response response) {
+                System.out.println("Opened.");
+                super.onOpen(webSocket, response);
+            }
+
+            @Override
+            public void onMessage(WebSocket webSocket, String text) {
+                super.onMessage(webSocket, text);
+
+                System.out.println("Received message: " + text);
+            }
+
+            @Override
+            public void onFailure(WebSocket webSocket, Throwable t, Response response) {
+                t.printStackTrace();
+                super.onFailure(webSocket, t, response);
+            }
+        });
+
+        this.service = connection.create(TriviaChanceService.class);
     }
 
     public CompletableFuture<Boolean> ping() {
@@ -78,17 +124,44 @@ public class TriviaChanceAPI {
     }
 
     public CompletableFuture<TriviaGame> createGame(Profile host) {
-        Call<TriviaGame> call = this.getService().createGame(host.getUUID().toString());
-        return this.enqueue(call, new FutureCallback<>());
+        Call<TriviaGame> call = this.getService().createGame();
+        //TODO Connect to server socket.
+
+        System.out.println(this.getSocket());
+
+        System.out.println("Hosting game...");
+        return this.enqueue(call, new FutureCallback<>()).whenComplete((game, err) -> {
+            System.out.println(game);
+            if(game == null) return;
+
+            //TODO Connect to server socket.
+            SocketMessageGenerator generator = new SocketMessageGenerator(MessageType.JOIN_GAME);
+            generator.setParam("profileUUID", host.getUUID().toString());
+            generator.setParam("gameUUID", game.getUUID().toString());
+
+            System.out.println("Sending " + generator.generate());
+            this.getSocket().send(generator.generate());
+        });
     }
 
     public CompletableFuture<TriviaGame> joinGame(Profile member, String code) {
-        Call<TriviaGame> call = this.getService().joinGame(member.getUUID().toString(), code);
-        return this.enqueue(call, new FutureCallback<>());
+        Call<TriviaGame> call = this.getService().joinGame(code);
+        return this.enqueue(call, new FutureCallback<>()).whenComplete((game, err) -> {
+            if(game == null) return;
+
+            //TODO Connect to server socket.
+            SocketMessageGenerator generator = new SocketMessageGenerator(MessageType.JOIN_GAME);
+            generator.setParam("profileUUID", member.getUUID().toString());
+            generator.setParam("gameUUID", game.getUUID().toString());
+
+            this.getSocket().send(generator.generate());
+        });
     }
 
     public CompletableFuture<Boolean> leaveGame(Profile member, TriviaGame game) {
         Call<Boolean> call = this.getService().leaveGame(member.getUUID().toString(), game.getUUID().toString());
+        //TODO Disconnect from server socket.
+
         return this.enqueue(call, new FutureCallback<>());
     }
 
@@ -135,6 +208,9 @@ public class TriviaChanceAPI {
         return callback.getFuture();
     }
 
+    public WebSocket getSocket() {
+        return socket;
+    }
     public TriviaChanceService getService() {
         return service;
     }

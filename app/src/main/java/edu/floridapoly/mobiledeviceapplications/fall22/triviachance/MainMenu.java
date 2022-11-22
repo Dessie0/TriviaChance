@@ -3,8 +3,6 @@ package edu.floridapoly.mobiledeviceapplications.fall22.triviachance;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -33,10 +31,11 @@ public class MainMenu extends AppCompatActivity {
     ImageButton back;
     ImageButton settings;
     ImageButton inventory;
+    ImageButton editIcon;
     ImageView playerIcon;
     TextView usernameText;
 
-
+    int SELECT_PICTURE = 200;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,6 +44,14 @@ public class MainMenu extends AppCompatActivity {
         setContentView(R.layout.activity_main_menu);
 
         playerIcon = findViewById(R.id.playerIcon);
+        joinGame = findViewById(R.id.joinGame);
+        layout = findViewById(R.id.motionLayout);
+        playOnline = findViewById(R.id.play_online);
+        back = findViewById(R.id.hostBackButton);
+        hostGame = findViewById(R.id.hostButton);
+        playSolo = findViewById(R.id.play_solo);
+        settings = findViewById(R.id.settings);
+        inventory = findViewById(R.id.inventory);
         usernameText = findViewById(R.id.usernameTextView);
 
         //Create the static instance packager.
@@ -64,47 +71,89 @@ public class MainMenu extends AppCompatActivity {
             this.onReady();
         }
 
+        playSolo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //Create the game
+                if(getLocalProfile() == null) {
+                    return;
+                }
 
+                getAPI().createGame(getLocalProfile()).thenAccept(game -> {
+                    Intent intent = new Intent(MainMenu.this, QuestionActivity.class);
+                    intent.putExtra("triviagame", game);
+                    startActivity(intent);
+                });
+            }
+        });
 
-        joinGame = findViewById(R.id.joinGame);
-        layout = findViewById(R.id.motionLayout);
-        playOnline = findViewById(R.id.play_online);
         playOnline.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 layout.transitionToEnd();
 
-                if (joinGame.getText().toString().length() != 0){
-                    Intent intent = new Intent(MainMenu.this, QuestionActivity.class);
+                if (joinGame.getText().toString().length() != 0) {
+                    if(getLocalProfile() == null) return;
+
+                    System.out.println("Attempting to join " + joinGame.getText().toString());
+                    getAPI().joinGame(getLocalProfile(), joinGame.getText().toString()).thenAccept(game -> {
+                        if(game == null) {
+                            Toast.makeText(MainMenu.this.getBaseContext(), "Unable to find a game with that code!", Toast.LENGTH_LONG).show();
+                            return;
+                        }
+
+                        Intent intent = new Intent(MainMenu.this, HostActivity.class);
+                        intent.putExtra("triviagame", game);
+                        startActivity(intent);
+
+                        System.out.println("Joined game " + game.getUUID());
+                    });
+
                     joinGame.setText("");
-                    startActivity(intent);
                 }
             }
         });
 
         back = findViewById(R.id.hostBackButton);
+        back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
 
+            }
+        });
 
         hostGame = findViewById(R.id.hostButton);
         hostGame.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(MainMenu.this, HostActivity.class);
-                startActivity(intent);
+
+                //Create the game
+                if(getLocalProfile() == null) {
+                    return;
+                }
+
+                System.out.println("Hosting game for " + getLocalProfile().getUsername());
+                getAPI().createGame(getLocalProfile()).thenAccept(game -> {
+                    Intent intent = new Intent(MainMenu.this, HostActivity.class);
+                    intent.putExtra("triviagame", game);
+                    startActivity(intent);
+
+                    System.out.println("Created game " + game.getUUID());
+                    System.out.println(game.getCode());
+                });
             }
         });
-
 
         playSolo = findViewById(R.id.play_solo);
         playSolo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 //Create the game
-                if(getLocalProfile(MainMenu.this) == null) {
+                if(getLocalProfile() == null) {
                     return;
                 }
 
-                getAPI(MainMenu.this).createGame(getLocalProfile(MainMenu.this)).thenAccept(game -> {
+                getAPI().createGame(getLocalProfile()).thenAccept(game -> {
                     Intent intent = new Intent(MainMenu.this, QuestionActivity.class);
                     intent.putExtra("triviagame", game);
                     startActivity(intent);
@@ -117,15 +166,17 @@ public class MainMenu extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(MainMenu.this, SettingsActivity.class);
+                //startActivity(intent);
                 startActivity(intent);
             }
         });
 
-        inventory = findViewById(R.id.inventory);
         inventory.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(MainMenu.this, InventoryActivity.class);
+                // taken out temporarily
+               // activityResultLauncher.launch(intent);
                 startActivity(intent);
             }
         });
@@ -135,11 +186,10 @@ public class MainMenu extends AppCompatActivity {
      * Called when the local profile has been retrieved from the server.
      */
     public void onReady() {
-        ProfileIconHelper.reloadProfileIcon(getLocalProfile(this), playerIcon);
-        usernameText.setText(getLocalProfile(this).getUsername());
+        if(getLocalProfile() != null) {
+            ProfileIconHelper.reloadProfileIcon(getLocalProfile(), playerIcon);
+        }
     }
-
-
 
     @Override
     public void onBackPressed() {
@@ -154,23 +204,15 @@ public class MainMenu extends AppCompatActivity {
         }
     }
 
-    public static TriviaChanceAPI getAPI(Context context) {
-        if(instancePackager == null) {
-            showNoInternetToast(context);
-            return null;
-        }
-
+    public static TriviaChanceAPI getAPI() {
         return instancePackager.getAPI();
     }
-    public static Profile getLocalProfile(Context context) {
-        if(instancePackager == null) {
-            showNoInternetToast(context);
-            return null;
-        }
 
+    public static Profile getLocalProfile() {
         return instancePackager.getLocalProfile();
     }
 
+    //TODO Show message when failing to get Profile or generate API
     private static void showNoInternetToast(Context context) {
         Toast.makeText(context, "Unable to connect to server. Please check your internet connection.", Toast.LENGTH_LONG).show();
     }

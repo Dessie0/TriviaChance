@@ -18,6 +18,8 @@ public class LoadProfileIconAsync extends AsyncTask<Object, Void, IconWrapper> {
         ImageView view = (ImageView) objects[1];
 
         try {
+            if(profile.getIconURL() == null) return new IconWrapper(null, view);
+
             Bitmap bitmap = Picasso.get().load(profile.getIconURL()).get();
             return new IconWrapper(bitmap, view);
         } catch (IOException e) {
@@ -30,11 +32,14 @@ public class LoadProfileIconAsync extends AsyncTask<Object, Void, IconWrapper> {
     protected void onPostExecute(IconWrapper wrapper) {
         if(wrapper == null) {
             //Image was deleted from the server, so reset their Icon URL to be null.
-            Profile profile = MainMenu.getInstancePackager().getLocalProfile();            MainMenu.getInstancePackager().getAPI().updateIcon(profile, null);
+            Profile profile = MainMenu.getInstancePackager().getLocalProfile();
             MainMenu.getInstancePackager().getAPI().updateIcon(profile, null);
             profile.setIconURL(null);
             return;
         }
+
+        //Dont need to set the profile icon if there's no uploaded Bitmap
+        if(wrapper.getBitmap() == null) return;
 
         MainMenu.getInstancePackager().setProfileIcon(wrapper.getBitmap());
         wrapper.getView().setImageBitmap(wrapper.getBitmap());

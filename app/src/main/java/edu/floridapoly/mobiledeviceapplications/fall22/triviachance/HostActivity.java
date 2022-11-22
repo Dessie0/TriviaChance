@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.UUID;
 
 import edu.floridapoly.mobiledeviceapps.fall22.api.gameplay.Player;
+import edu.floridapoly.mobiledeviceapps.fall22.api.gameplay.TriviaGame;
 import edu.floridapoly.mobiledeviceapps.fall22.api.profile.Profile;
 import edu.floridapoly.mobiledeviceapps.fall22.api.utils.StringGenerator;
 
@@ -36,15 +37,17 @@ public class HostActivity extends AppCompatActivity {
         ThemeUtil.onActivityCreateTheme(this);
         setContentView(R.layout.activity_host);
 
+        TriviaGame game = (TriviaGame) this.getIntent().getSerializableExtra("triviagame");
 
         gameId = findViewById(R.id.gameID);
-        gameId.setText(new StringGenerator(10).generate());
+        gameId.setText(game.getCode());
 
         startGameButton = findViewById(R.id.startGame);
         startGameButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(HostActivity.this, QuestionActivity.class);
+                intent.putExtra("triviagame", game);
                 startActivity(intent);
             }
         });
