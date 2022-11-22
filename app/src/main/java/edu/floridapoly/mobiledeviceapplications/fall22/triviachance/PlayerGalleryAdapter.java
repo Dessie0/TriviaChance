@@ -1,17 +1,25 @@
 package edu.floridapoly.mobiledeviceapplications.fall22.triviachance;
 
 import android.content.Context;
+import android.media.audiofx.HapticGenerator;
+import android.net.Uri;
+import android.os.VibrationEffect;
+import android.os.Vibrator;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.net.URL;
 import java.util.Collections;
 import java.util.List;
 
+import edu.floridapoly.mobiledeviceapplications.fall22.triviachance.icon.ProfileIconHelper;
 import edu.floridapoly.mobiledeviceapps.fall22.api.gameplay.Player;
+import retrofit2.http.Url;
 
 
 public class PlayerGalleryAdapter extends RecyclerView.Adapter<PlayerViewHolder> {
@@ -39,10 +47,21 @@ public class PlayerGalleryAdapter extends RecyclerView.Adapter<PlayerViewHolder>
     public void onBindViewHolder(final PlayerViewHolder viewHolder, final int position) {
         //final index = viewHolder.getAdapterPosition();
         viewHolder.user_name.setText(list.get(position).getProfile().getUsername());
-        viewHolder.view.setOnClickListener(new View.OnClickListener() {
+        if (list.get(position).getProfile().getIconURL() != null) {
+            viewHolder.profile_image.setImageURI(Uri.parse(list.get(position).getProfile().getIconURL()));
+            ProfileIconHelper.reloadProfileIcon(list.get(position).getProfile(), viewHolder.profile_image);
+        }
+        viewHolder.view.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
-            public void onClick(View view) {
-                Toast.makeText(view.getContext(), "Tada", Toast.LENGTH_SHORT).show();
+            public boolean onLongClick(View view) {
+
+                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q) {
+                    final Vibrator vibrator = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
+                    vibrator.vibrate(VibrationEffect.createPredefined(VibrationEffect.EFFECT_CLICK));
+                }
+                // Make pop-up for kicking user
+                Toast.makeText(view.getContext(), list.get(viewHolder.getAdapterPosition()).getProfile().getUsername() , Toast.LENGTH_SHORT).show();
+                return false;
             }
         });
     }

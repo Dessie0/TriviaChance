@@ -14,6 +14,7 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
@@ -29,7 +30,7 @@ public class HostActivity extends AppCompatActivity {
     Button startGameButton;
     ImageButton backButton;
     RecyclerView playerList;
-    List<Player> list = Collections.emptyList();
+    ArrayList<Player> list = new ArrayList<Player>(Collections.emptyList());
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,6 +39,11 @@ public class HostActivity extends AppCompatActivity {
         setContentView(R.layout.activity_host);
 
         TriviaGame game = (TriviaGame) this.getIntent().getSerializableExtra("triviagame");
+
+        // for testing purposes only
+        for (int i = 0; i < 8; i++) {
+            list.add(new Player(new Profile(UUID.randomUUID(), Profile.generateRandomUsername(), MainMenu.getLocalProfile().getIconURL(), new ArrayList<>())));
+        }
 
         gameId = findViewById(R.id.gameID);
         gameId.setText(game.getCode());
