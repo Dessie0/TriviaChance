@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -29,6 +30,13 @@ public class InventoryActivity extends AppCompatActivity {
 
     }
 
+    ImageButton mainThemeButton;
+    ImageButton goldThemeButton;
+    ImageButton greenThemeButton;
+    ImageButton redThemeButton;
+    ImageButton bambooThemeButton;
+    ImageButton sugarThemeButton;
+    ImageButton purpleThemeButton;
 
     Button redeemPrizesButton;
 
@@ -39,11 +47,50 @@ public class InventoryActivity extends AppCompatActivity {
         setContentView(R.layout.activity_inventory);
 
         redeemPrizesButton = findViewById(R.id.redeemPrizesButton);
+        mainThemeButton = findViewById(R.id.mainThemeButton);
+        goldThemeButton = findViewById(R.id.goldThemeButton);
+        greenThemeButton = findViewById(R.id.greenThemeButton);
+        redThemeButton = findViewById(R.id.redThemeButton);
+        bambooThemeButton = findViewById(R.id.bambooThemeButton);
+        sugarThemeButton = findViewById(R.id.sugarThemeButton);
+        purpleThemeButton = findViewById(R.id.purpleThemeButton);
 
         redeemPrizesButton.setOnClickListener((View v) -> {
             Intent intent = new Intent(InventoryActivity.this, RedeemActivity.class);
             startActivity(intent);
         });
 
+    }
+
+    public void changeTheme(View view) {
+        switch (view.getId()) {
+            case R.id.mainThemeButton:
+                ThemeUtil.changeToTheme(InventoryActivity.this, R.style.Theme_TriviaChance);
+                break;
+            case R.id.goldThemeButton:
+                ThemeUtil.changeToTheme(InventoryActivity.this, R.style.Theme_TriviaChance_Gold);
+                break;
+            case R.id.greenThemeButton:
+                ThemeUtil.changeToTheme(InventoryActivity.this, R.style.Theme_TriviaChance_Green);
+                break;
+            case R.id.redThemeButton:
+                ThemeUtil.changeToTheme(InventoryActivity.this, R.style.Theme_TriviaChance_Red);
+                break;
+            case R.id.bambooThemeButton:
+                ThemeUtil.changeToTheme(InventoryActivity.this, R.style.Theme_TriviaChance_Bamboo);
+                break;
+            case R.id.sugarThemeButton:
+                ThemeUtil.changeToTheme(InventoryActivity.this, R.style.Theme_TriviaChance_Sugar);
+                break;
+            case R.id.purpleThemeButton:
+                ThemeUtil.changeToTheme(InventoryActivity.this, R.style.Theme_TriviaChance_Purple);
+                break;
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        Intent intent = new Intent(InventoryActivity.this, MainMenu.class);
+        startActivity(intent);
     }
 }

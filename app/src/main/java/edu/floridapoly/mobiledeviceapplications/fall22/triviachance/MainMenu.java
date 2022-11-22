@@ -71,6 +71,7 @@ public class MainMenu extends AppCompatActivity {
             this.onReady();
         }
 
+
         playSolo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -188,6 +189,7 @@ public class MainMenu extends AppCompatActivity {
     public void onReady() {
         if(getLocalProfile() != null) {
             ProfileIconHelper.reloadProfileIcon(getLocalProfile(), playerIcon);
+            usernameText.setText(getLocalProfile().getUsername());
         }
     }
 
