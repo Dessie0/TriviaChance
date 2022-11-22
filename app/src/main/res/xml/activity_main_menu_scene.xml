@@ -23,22 +23,6 @@
             android:layout_marginBottom="325dp"
             android:alpha="0"
             android:id="@+id/joinGame" />
-        <Constraint
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="248dp"
-            motion:layout_constraintBottom_toBottomOf="parent"
-            motion:layout_constraintEnd_toEndOf="parent"
-            android:layout_width="wrap_content"
-            android:id="@+id/username" />
-        <Constraint
-            android:id="@+id/username"
-            motion:layout_constraintEnd_toEndOf="parent"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            motion:layout_constraintBottom_toBottomOf="parent"
-            android:visibility="invisible"
-            android:layout_marginBottom="248dp"
-            android:alpha="0" />
     </ConstraintSet>
 
     <ConstraintSet android:id="@+id/end">
@@ -135,18 +119,18 @@
             android:layout_marginBottom="50dp"
             motion:layout_constraintBottom_toTopOf="@+id/play_solo"
             motion:layout_constraintStart_toStartOf="parent"
-            android:visibility="gone" />
+            android:visibility="invisible"
+            motion:layout_constraintTop_toTopOf="parent" />
         <Constraint
-            android:layout_marginEnd="104dp"
-            android:layout_height="48dp"
-            android:layout_marginRight="104dp"
-            android:layout_marginBottom="244dp"
-            motion:layout_constraintBottom_toBottomOf="parent"
-            motion:layout_constraintEnd_toEndOf="parent"
-            android:layout_width="286dp"
-            android:id="@+id/username"
-            motion:layout_constraintStart_toStartOf="@+id/joinGame"
-            motion:layout_constraintHorizontal_bias="0.0" />
+            android:id="@+id/usernameTextView"
+            android:layout_width="334dp"
+            android:layout_height="49dp"
+            motion:layout_constraintTop_toBottomOf="@+id/cardView"
+            android:layout_marginTop="8dp"
+            android:visibility="invisible"
+            motion:layout_constraintStart_toStartOf="parent"
+            motion:layout_constraintHorizontal_bias="0.493"
+            motion:layout_constraintEnd_toEndOf="parent" />
     </ConstraintSet>
     <Transition
         motion:constraintSetStart="@+id/start"

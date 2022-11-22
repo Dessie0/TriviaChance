@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -34,14 +35,15 @@ public class MainMenu extends AppCompatActivity {
     Button playSolo;
     Button hostGame;
     EditText joinGame;
-    EditText username;
     ImageButton back;
     ImageButton settings;
     ImageButton inventory;
     ImageButton editIcon;
     ImageView playerIcon;
+    TextView usernameText;
 
     int SELECT_PICTURE = 200;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,11 +57,11 @@ public class MainMenu extends AppCompatActivity {
         playOnline = findViewById(R.id.play_online);
         back = findViewById(R.id.hostBackButton);
         hostGame = findViewById(R.id.hostButton);
-        username = findViewById(R.id.username);
         playSolo = findViewById(R.id.play_solo);
         settings = findViewById(R.id.settings);
         inventory = findViewById(R.id.inventory);
         editIcon = findViewById(R.id.editIconButton);
+        usernameText = findViewById(R.id.usernameTextView);
 
         //Create the static instance packager.
         if(instancePackager == null) {
@@ -70,7 +72,7 @@ public class MainMenu extends AppCompatActivity {
                 }
             }).exceptionally(err -> {
                 err.printStackTrace();
-                this.showNoInternetToast();
+                showNoInternetToast(this);
                 return null;
             });
         } else {
@@ -123,6 +125,15 @@ public class MainMenu extends AppCompatActivity {
             }
         });
 
+        back = findViewById(R.id.hostBackButton);
+        back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
+
+        hostGame = findViewById(R.id.hostButton);
         hostGame.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -144,36 +155,30 @@ public class MainMenu extends AppCompatActivity {
             }
         });
 
-        back.setOnClickListener(new View.OnClickListener() {
+
+        playSolo = findViewById(R.id.play_solo);
+        playSolo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                //Create the game
+                if(getLocalProfile(MainMenu.this) == null) {
+                    return;
+                }
 
+                getAPI(MainMenu.this).createGame(getLocalProfile(MainMenu.this)).thenAccept(game -> {
+                    Intent intent = new Intent(MainMenu.this, QuestionActivity.class);
+                    intent.putExtra("triviagame", game);
+                    startActivity(intent);
+                });
             }
         });
 
-        //need to work on if this is correct
-        username.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable editable) {
-                if (MainMenu.this.getLocalProfile() != null)
-                    MainMenu.this.getLocalProfile().setUsername(editable.toString());
-            }
-        });
-
+        settings = findViewById(R.id.settings);
         settings.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(MainMenu.this, SettingsActivity.class);
+                //startActivity(intent);
                 startActivity(intent);
             }
         });
@@ -203,8 +208,7 @@ public class MainMenu extends AppCompatActivity {
      * Called when the local profile has been retrieved from the server.
      */
     public void onReady() {
-        ProfileIconHelper.reloadProfileIcon(this.getLocalProfile(), playerIcon);
-        username.setText(this.getLocalProfile().getUsername());
+        ProfileIconHelper.reloadProfileIcon(getLocalProfile(this), playerIcon);
     }
 
     //Upload the chosen profile picture and use it
