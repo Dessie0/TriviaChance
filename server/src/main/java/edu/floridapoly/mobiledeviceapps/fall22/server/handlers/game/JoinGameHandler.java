@@ -6,8 +6,6 @@ import com.sun.net.httpserver.HttpExchange;
 import java.io.IOException;
 import java.util.Map;
 
-import edu.floridapoly.mobiledeviceapps.fall22.api.gameplay.Player;
-import edu.floridapoly.mobiledeviceapps.fall22.api.profile.Profile;
 import edu.floridapoly.mobiledeviceapps.fall22.server.TriviaChanceServer;
 import edu.floridapoly.mobiledeviceapps.fall22.server.game.ActiveGame;
 import edu.floridapoly.mobiledeviceapps.fall22.server.handlers.TriviaChanceHandler;
@@ -31,7 +29,6 @@ public class JoinGameHandler extends TriviaChanceHandler {
             return;
         }
 
-        game.addPlayer(new Player(this.getServer().getProfileContainer().retrieve(Profile.class, "profiles." + uuid)));
-        this.sendResponse(exchange, new Gson().toJsonTree(game).getAsJsonObject());
+        this.sendResponse(exchange, new Gson().toJsonTree(game.getGame()).getAsJsonObject());
     }
 }
