@@ -67,7 +67,7 @@ public class TriviaChanceServer {
     }
 
     private void generateDecompose() {
-        this.getStorageAPI().addStorageEnum(item.rarity.class);
+        //this.getStorageAPI().addStorageEnum(item.rarity.class);
 
         this.getStorageAPI().addStorageDecomposer(new StorageDecomposer<>(Profile.class, (profile, decomposedObject) -> {
             decomposedObject.addDecomposedKey("uuid", profile.getUUID().toString());
@@ -98,8 +98,8 @@ public class TriviaChanceServer {
         }));
 
         this.getStorageAPI().addStorageDecomposer(new StorageDecomposer<>(item.class, (item, decomposedObject) -> {
-            decomposedObject.addDecomposedKey("id", item.itemID);
-            decomposedObject.addDecomposedKey("quantity", item.quantity);
+            decomposedObject.addDecomposedKey("id", item.getItemID());
+            decomposedObject.addDecomposedKey("quantity", item.getQuantity());
 
             return decomposedObject;
         }, (container, recomposer) -> {

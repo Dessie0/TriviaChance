@@ -13,6 +13,7 @@ import java.util.concurrent.TimeUnit;
 import edu.floridapoly.mobiledeviceapplications.fall22.triviachance.api.callbacks.FutureCallback;
 import edu.floridapoly.mobiledeviceapps.fall22.api.gameplay.Player;
 import edu.floridapoly.mobiledeviceapps.fall22.api.gameplay.TriviaGame;
+import edu.floridapoly.mobiledeviceapps.fall22.api.gameplay.item;
 import edu.floridapoly.mobiledeviceapps.fall22.api.gameplay.questions.Question;
 import edu.floridapoly.mobiledeviceapps.fall22.api.gameplay.questions.TextQuestion;
 import edu.floridapoly.mobiledeviceapps.fall22.api.profile.Profile;
@@ -71,6 +72,11 @@ public class TriviaChanceAPI {
         Call<Profile> call = this.getService().updateItem(profile.getUUID().toString(), itemId, quantity);
         return this.enqueue(call, new FutureCallback<>());
     }
+
+    /*public CompletableFuture<Profile> addToInventory(Profile profile, item Item){
+        Call<Profile> call = this.getService().addToInventory(profile.getUUID(), Item);
+        return this.enqueue(call, new FutureCallback<>());
+    }*/
 
     public CompletableFuture<List<Player>> retrieveGameLeaderboard(TriviaGame game) {
         Call<List<Player>> call = this.getService().retrieveGameLeaderboard(game.getUUID().toString());

@@ -10,6 +10,7 @@ import java.util.concurrent.CompletableFuture;
 import edu.floridapoly.mobiledeviceapplications.fall22.triviachance.MainMenu;
 import edu.floridapoly.mobiledeviceapps.fall22.api.profile.Profile;
 
+
 public class InstancePackager {
     private final TriviaChanceAPI api;
     private SharedPreferences preferences;

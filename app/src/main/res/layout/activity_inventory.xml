@@ -20,7 +20,7 @@
             android:gravity="center">
 
             <ImageButton
-                android:id="@+id/imageButton"
+                android:id="@+id/itemBox1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="10dp"
@@ -28,7 +28,7 @@
                 app:srcCompat="@android:drawable/ic_lock_lock" />
 
             <ImageButton
-                android:id="@+id/imageButton2"
+                android:id="@+id/itemBox2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="10dp"
@@ -36,7 +36,7 @@
                 app:srcCompat="@android:drawable/ic_lock_lock" />
 
             <ImageButton
-                android:id="@+id/imageButton3"
+                android:id="@+id/itemBox3"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="10dp"
@@ -44,7 +44,7 @@
                 app:srcCompat="@android:drawable/ic_lock_lock" />
 
             <ImageButton
-                android:id="@+id/imageButton4"
+                android:id="@+id/itemBox4"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="10dp"
@@ -60,7 +60,7 @@
             android:gravity="center">
 
             <ImageButton
-                android:id="@+id/imageButton5"
+                android:id="@+id/itemBox5"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="10dp"
@@ -68,7 +68,7 @@
                 app:srcCompat="@android:drawable/ic_lock_lock" />
 
             <ImageButton
-                android:id="@+id/imageButton6"
+                android:id="@+id/itemBox6"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="10dp"
@@ -76,7 +76,7 @@
                 app:srcCompat="@android:drawable/ic_lock_lock" />
 
             <ImageButton
-                android:id="@+id/imageButton7"
+                android:id="@+id/itemBox7"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="10dp"
@@ -84,46 +84,7 @@
                 app:srcCompat="@android:drawable/ic_lock_lock" />
 
             <ImageButton
-                android:id="@+id/imageButton8"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="10dp"
-                android:contentDescription="@string/locked_item"
-                app:srcCompat="@android:drawable/ic_lock_lock" />
-        </TableRow>
-
-        <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginTop="20dp"
-            android:gravity="center">
-
-            <ImageButton
-                android:id="@+id/imageButton9"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="10dp"
-                android:contentDescription="@string/locked_item"
-                app:srcCompat="@android:drawable/ic_lock_lock" />
-
-            <ImageButton
-                android:id="@+id/imageButton10"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="10dp"
-                android:contentDescription="@string/locked_item"
-                app:srcCompat="@android:drawable/ic_lock_lock" />
-
-            <ImageButton
-                android:id="@+id/imageButton11"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="10dp"
-                android:contentDescription="@string/locked_item"
-                app:srcCompat="@android:drawable/ic_lock_lock" />
-
-            <ImageButton
-                android:id="@+id/imageButton12"
+                android:id="@+id/itemBox8"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="10dp"
@@ -138,7 +99,7 @@
             android:gravity="center">
 
             <ImageButton
-                android:id="@+id/imageButton13"
+                android:id="@+id/itemBox9"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="10dp"
@@ -146,7 +107,7 @@
                 app:srcCompat="@android:drawable/ic_lock_lock" />
 
             <ImageButton
-                android:id="@+id/imageButton14"
+                android:id="@+id/itemBox10"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="10dp"
@@ -154,7 +115,7 @@
                 app:srcCompat="@android:drawable/ic_lock_lock" />
 
             <ImageButton
-                android:id="@+id/imageButton15"
+                android:id="@+id/itemBox11"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="10dp"
@@ -162,7 +123,46 @@
                 app:srcCompat="@android:drawable/ic_lock_lock" />
 
             <ImageButton
-                android:id="@+id/imageButton16"
+                android:id="@+id/itemBox12"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="10dp"
+                android:contentDescription="@string/locked_item"
+                app:srcCompat="@android:drawable/ic_lock_lock" />
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="20dp"
+            android:gravity="center">
+
+            <ImageButton
+                android:id="@+id/itemBox13"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="10dp"
+                android:contentDescription="@string/locked_item"
+                app:srcCompat="@android:drawable/ic_lock_lock" />
+
+            <ImageButton
+                android:id="@+id/itemBox14"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="10dp"
+                android:contentDescription="@string/locked_item"
+                app:srcCompat="@android:drawable/ic_lock_lock" />
+
+            <ImageButton
+                android:id="@+id/itemBox15"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="10dp"
+                android:contentDescription="@string/locked_item"
+                app:srcCompat="@android:drawable/ic_lock_lock" />
+
+            <ImageButton
+                android:id="@+id/itemBox16"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="10dp"
