@@ -37,7 +37,7 @@ public class TriviaChanceServer {
     private TriviaChanceServer() {
         this.storageAPI = CoreStorageAPI.register();
         this.profileContainer = new JSONContainer(this.getStorageAPI(), new File("data/", "profiles.json"));
-        this.gameHandler = new GameHandler();
+        this.gameHandler = new GameHandler(this);
 
         this.createServer();
         this.generateDecompose();
@@ -60,6 +60,7 @@ public class TriviaChanceServer {
             server.createContext("/game/question", new QuestionRetrieveHandler(this));
 
             System.out.println("Server started on port " + server.getAddress().getPort());
+
             server.start();
         } catch (IOException e) {
             e.printStackTrace();

@@ -17,6 +17,40 @@
         app:layout_constraintStart_toStartOf="@+id/musicTextView"
         app:layout_constraintTop_toBottomOf="@+id/musicTextView" />
 
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cardView"
+        android:layout_width="140dp"
+        android:layout_height="140dp"
+        android:layout_marginTop="100dp"
+        app:cardCornerRadius="30dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:id="@+id/playerIcon"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="fitCenter"
+            app:srcCompat="@color/material_dynamic_neutral30"
+            tools:srcCompat="@tools:sample/avatars" />
+
+        <ImageButton
+            android:id="@+id/editIconButton"
+            android:layout_width="55dp"
+            android:layout_height="51dp"
+            android:backgroundTint="#00FFFFFF"
+            android:outlineAmbientShadowColor="#00FFFFFF"
+            android:outlineSpotShadowColor="#00FFFFFF"
+            android:scaleType="fitCenter"
+            android:translationX="90dp"
+            android:translationY="95dp"
+            app:srcCompat="@android:drawable/ic_menu_edit" />
+
+    </androidx.cardview.widget.CardView>
+
     <ToggleButton
         android:id="@+id/notificationToggle"
         android:layout_width="wrap_content"
@@ -77,20 +111,24 @@
         android:layout_width="139dp"
         android:layout_height="46dp"
         android:layout_marginStart="60dp"
-        android:layout_marginTop="256dp"
+        android:layout_marginTop="68dp"
         android:text="@string/sound"
         android:textAlignment="viewStart"
         android:textSize="30sp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/username" />
 
-    <Spinner
-        android:id="@+id/spinner"
-        android:layout_width="409dp"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="128dp"
-        android:theme="@style/Theme.TriviaChance"
-        app:layout_constraintBottom_toBottomOf="parent"
-        tools:layout_editor_absoluteX="1dp" />
+    <EditText
+        android:id="@+id/username"
+        android:layout_width="250dp"
+        android:layout_height="52dp"
+        android:layout_marginTop="28dp"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:text="Name"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/cardView" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

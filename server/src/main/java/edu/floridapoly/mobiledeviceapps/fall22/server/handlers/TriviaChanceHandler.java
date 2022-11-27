@@ -45,6 +45,7 @@ public abstract class TriviaChanceHandler implements HttpHandler {
     public void sendProfileResponse(HttpExchange exchange, String profileUUID) {
         JsonObject object = this.getServer().getProfileContainer().getObject().get("profiles")
                 .getAsJsonObject().get(profileUUID).getAsJsonObject();
+
         try {
             if(object != null) {
                 this.sendResponse(exchange, object);

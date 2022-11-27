@@ -40,11 +40,10 @@ public interface TriviaChanceService {
     Call<ResponseBody> uploadImage(@Query("base64") String base64);
 
     @GET("game/host")
-    Call<TriviaGame> createGame(@Query("profileUUID") String profileUUID);
+    Call<TriviaGame> createGame();
 
     @GET("game/join")
-    Call<TriviaGame> joinGame(@Query("profileUUID") String profileUUID,
-                              @Query("code") String code);
+    Call<TriviaGame> joinGame(@Query("code") String code);
 
     @GET("game/leave")
     Call<Boolean> leaveGame(@Query("profileUUID") String profileUuid,
