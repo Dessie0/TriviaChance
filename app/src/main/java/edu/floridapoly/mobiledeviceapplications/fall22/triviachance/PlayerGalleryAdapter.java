@@ -1,30 +1,25 @@
 package edu.floridapoly.mobiledeviceapplications.fall22.triviachance;
 
 import android.content.Context;
-import android.media.audiofx.HapticGenerator;
 import android.net.Uri;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.recyclerview.widget.RecyclerView;
 
-import java.net.URL;
-import java.util.Collections;
 import java.util.List;
 
 import edu.floridapoly.mobiledeviceapplications.fall22.triviachance.icon.ProfileIconHelper;
 import edu.floridapoly.mobiledeviceapps.fall22.api.gameplay.Player;
-import retrofit2.http.Url;
 
 
 public class PlayerGalleryAdapter extends RecyclerView.Adapter<PlayerViewHolder> {
 
-    List<Player> list = Collections.emptyList();
+    List<Player> list;
     Context context;
 
     public PlayerGalleryAdapter(List<Player> list, Context context) {
@@ -33,8 +28,7 @@ public class PlayerGalleryAdapter extends RecyclerView.Adapter<PlayerViewHolder>
     }
 
     @Override
-    public PlayerViewHolder
-    onCreateViewHolder(ViewGroup parent, int viewType) {
+    public PlayerViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         Context context = parent.getContext();
         LayoutInflater inflater = LayoutInflater.from(context);
 
@@ -51,6 +45,7 @@ public class PlayerGalleryAdapter extends RecyclerView.Adapter<PlayerViewHolder>
             viewHolder.profile_image.setImageURI(Uri.parse(list.get(position).getProfile().getIconURL()));
             ProfileIconHelper.reloadProfileIcon(list.get(position).getProfile(), viewHolder.profile_image);
         }
+
         viewHolder.view.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View view) {

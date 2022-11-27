@@ -47,12 +47,11 @@ public class QuestionActivity extends AppCompatActivity {
         ThemeUtil.onActivityCreateTheme(this);
         setContentView(R.layout.activity_question);
 
-
         questionProgress = findViewById(R.id.questionProgressBar);
         questionProgress.setProgress(currentQuestionIndex);
 
+        this.game = MainMenu.getAPI().getCurrentGame();
 
-        this.game = (TriviaGame) this.getIntent().getSerializableExtra("triviagame");
         questionText = findViewById(R.id.questionTextView);
         answer1 = findViewById(R.id.answer1);
         answer2 = findViewById(R.id.answer2);

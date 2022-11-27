@@ -114,7 +114,6 @@ public class TriviaChanceServer {
                return new item(id, quantity);
             });
         }));
-
     }
 
     public static void main(String[] args) {

@@ -4,6 +4,9 @@ import android.graphics.Bitmap;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
 import java.util.UUID;
@@ -11,6 +14,9 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 
 import edu.floridapoly.mobiledeviceapplications.fall22.triviachance.api.callbacks.FutureCallback;
+import edu.floridapoly.mobiledeviceapplications.fall22.triviachance.api.events.GameEvent;
+import edu.floridapoly.mobiledeviceapplications.fall22.triviachance.api.events.util.EventHandler;
+import edu.floridapoly.mobiledeviceapplications.fall22.triviachance.api.events.util.TriviaChanceListener;
 import edu.floridapoly.mobiledeviceapps.fall22.api.gameplay.Player;
 import edu.floridapoly.mobiledeviceapps.fall22.api.gameplay.TriviaGame;
 import edu.floridapoly.mobiledeviceapps.fall22.api.gameplay.questions.Question;
@@ -20,10 +26,8 @@ import edu.floridapoly.mobiledeviceapps.fall22.api.socket.MessageType;
 import edu.floridapoly.mobiledeviceapps.fall22.api.socket.SocketMessageGenerator;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
-import okhttp3.Response;
 import okhttp3.ResponseBody;
 import okhttp3.WebSocket;
-import okhttp3.WebSocketListener;
 import retrofit2.Call;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -35,11 +39,16 @@ public class TriviaChanceAPI {
     private static final int MAX_ICON_HEIGHT = 512;
     private static final int MAX_ICON_WIDTH = 512;
 
-    //private static final String SERVER_IP = "192.168.1.87";
+    //private static final String SERVER_IP = "192.168.1.172";
     private static final String SERVER_IP = "51.79.52.211";
 
     private final TriviaChanceService service;
     private final WebSocket socket;
+
+    private final List<TriviaChanceListener> listeners = new ArrayList<>();
+
+    //Holds if the player is in a game or not, null if they are not playing a game.
+    private TriviaGame currentGame;
 
     public TriviaChanceAPI() {
         Retrofit connection = new Retrofit.Builder()
@@ -52,39 +61,7 @@ public class TriviaChanceAPI {
                 .url("ws://" + SERVER_IP + ":8083/")
                 .build();
 
-        this.socket = client.newWebSocket(request, new WebSocketListener() {
-            @Override
-            public void onClosed(WebSocket webSocket, int code, String reason) {
-                super.onClosed(webSocket, code, reason);
-                System.out.println("Closed because: " + reason);
-            }
-
-            @Override
-            public void onClosing(WebSocket webSocket, int code, String reason) {
-                super.onClosing(webSocket, code, reason);
-                System.out.println("Closing because: " + reason);
-            }
-
-            @Override
-            public void onOpen(WebSocket webSocket, Response response) {
-                System.out.println("Opened.");
-                super.onOpen(webSocket, response);
-            }
-
-            @Override
-            public void onMessage(WebSocket webSocket, String text) {
-                super.onMessage(webSocket, text);
-
-                System.out.println("Received message: " + text);
-            }
-
-            @Override
-            public void onFailure(WebSocket webSocket, Throwable t, Response response) {
-                t.printStackTrace();
-                super.onFailure(webSocket, t, response);
-            }
-        });
-
+        this.socket = client.newWebSocket(request, new TriviaWebSocket(this));
         this.service = connection.create(TriviaChanceService.class);
     }
 
@@ -125,21 +102,13 @@ public class TriviaChanceAPI {
 
     public CompletableFuture<TriviaGame> createGame(Profile host) {
         Call<TriviaGame> call = this.getService().createGame();
-        //TODO Connect to server socket.
-
-        System.out.println(this.getSocket());
-
-        System.out.println("Hosting game...");
         return this.enqueue(call, new FutureCallback<>()).whenComplete((game, err) -> {
-            System.out.println(game);
             if(game == null) return;
 
-            //TODO Connect to server socket.
             SocketMessageGenerator generator = new SocketMessageGenerator(MessageType.JOIN_GAME);
             generator.setParam("profileUUID", host.getUUID().toString());
             generator.setParam("gameUUID", game.getUUID().toString());
 
-            System.out.println("Sending " + generator.generate());
             this.getSocket().send(generator.generate());
         });
     }
@@ -149,7 +118,6 @@ public class TriviaChanceAPI {
         return this.enqueue(call, new FutureCallback<>()).whenComplete((game, err) -> {
             if(game == null) return;
 
-            //TODO Connect to server socket.
             SocketMessageGenerator generator = new SocketMessageGenerator(MessageType.JOIN_GAME);
             generator.setParam("profileUUID", member.getUUID().toString());
             generator.setParam("gameUUID", game.getUUID().toString());
@@ -208,10 +176,42 @@ public class TriviaChanceAPI {
         return callback.getFuture();
     }
 
+    public void setCurrentGame(TriviaGame currentGame) {
+        this.currentGame = currentGame;
+    }
+
+    public TriviaGame getCurrentGame() {
+        return currentGame;
+    }
     public WebSocket getSocket() {
         return socket;
     }
     public TriviaChanceService getService() {
         return service;
+    }
+
+    void fireEvent(GameEvent event) {
+        for(TriviaChanceListener listener : this.listeners) {
+            Class<?> clazz = listener.getClass();
+            for(Method method : clazz.getDeclaredMethods()) {
+                if(!method.isAnnotationPresent(EventHandler.class)) continue;
+                if(method.getParameterCount() != 1) continue;
+                if(method.getParameterTypes()[0] != event.getClass()) continue;
+
+                try {
+                    method.invoke(listener, event);
+                } catch (IllegalAccessException | InvocationTargetException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+    }
+
+    public void registerListener(TriviaChanceListener listener) {
+        this.listeners.add(listener);
+    }
+    public void unregisterListener(TriviaChanceListener listener) {
+        this.listeners.remove(listener);
     }
 }
