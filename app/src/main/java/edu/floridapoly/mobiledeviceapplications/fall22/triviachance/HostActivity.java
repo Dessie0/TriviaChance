@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 
 import edu.floridapoly.mobiledeviceapplications.fall22.triviachance.api.events.PlayerJoinGameEvent;
+import edu.floridapoly.mobiledeviceapplications.fall22.triviachance.api.events.PlayerLeaveGameEvent;
 import edu.floridapoly.mobiledeviceapplications.fall22.triviachance.api.events.util.EventHandler;
 import edu.floridapoly.mobiledeviceapplications.fall22.triviachance.api.events.util.TriviaChanceListener;
 import edu.floridapoly.mobiledeviceapps.fall22.api.gameplay.Player;
@@ -76,6 +77,12 @@ public class HostActivity extends AppCompatActivity implements TriviaChanceListe
     @EventHandler
     public void onPlayerJoin(PlayerJoinGameEvent event) {
         list.add(new Player(event.getProfile()));
+        this.adapter.notifyDataSetChanged();
+    }
+
+    @EventHandler
+    public void onPlayerLeave(PlayerLeaveGameEvent event) {
+        list.removeIf(player -> player.getProfile().getUUID().toString().equals(event.getProfile().getUUID().toString()));
         this.adapter.notifyDataSetChanged();
     }
 }

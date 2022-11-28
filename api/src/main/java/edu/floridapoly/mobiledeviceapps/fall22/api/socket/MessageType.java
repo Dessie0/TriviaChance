@@ -6,7 +6,8 @@ public enum MessageType {
     START_GAME(Bound.CLIENTBOUND),
 
     LEAVE_GAME(Bound.SERVERBOUND),
-    JOIN_GAME(Bound.SERVERBOUND);
+    JOIN_GAME(Bound.SERVERBOUND),
+    HOST_START_GAME(Bound.SERVERBOUND);
 
     private final Bound bound;
     MessageType(Bound bound) {
