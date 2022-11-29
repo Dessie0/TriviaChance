@@ -2,6 +2,7 @@ package edu.floridapoly.mobiledeviceapplications.fall22.triviachance;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -37,6 +38,7 @@ public class MainMenu extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         ThemeUtil.onActivityCreateTheme(this);
         setContentView(R.layout.activity_main_menu);
 
@@ -100,6 +102,7 @@ public class MainMenu extends AppCompatActivity {
                         }
 
                         Intent intent = new Intent(MainMenu.this, HostActivity.class);
+                        intent.putExtra("ISHOST", false);
                         startActivity(intent);
 
                         getAPI().setCurrentGame(game);
@@ -120,6 +123,7 @@ public class MainMenu extends AppCompatActivity {
         hostGame.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
                 //Create the game
                 if(getLocalProfile() == null) {
                     return;
@@ -127,6 +131,7 @@ public class MainMenu extends AppCompatActivity {
 
                 getAPI().createGame(getLocalProfile()).thenAccept(game -> {
                     Intent intent = new Intent(MainMenu.this, HostActivity.class);
+                    intent.putExtra("ISHOST", true);
                     startActivity(intent);
 
                     getAPI().setCurrentGame(game);

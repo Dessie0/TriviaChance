@@ -33,6 +33,12 @@ public class ThemeUtil {
             case R.style.Theme_TriviaChance_Purple:
                 activity.setTheme(R.style.Theme_TriviaChance_Purple);
                 break;
+            case R.style.Theme_TriviaChance_Orange:
+                activity.setTheme(R.style.Theme_TriviaChance_Orange);
+                break;
+            case R.style.Theme_TriviaChance_Forest:
+                activity.setTheme(R.style.Theme_TriviaChance_Forest);
+                break;
             default:
                 activity.setTheme(R.style.Theme_TriviaChance);
                 break;

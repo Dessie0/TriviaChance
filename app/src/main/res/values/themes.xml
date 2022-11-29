@@ -117,4 +117,38 @@
         <item name="android:textColor">@color/purple_haze</item>
 
     </style>
+
+    <style name="Theme.TriviaChance.Orange">
+        <!-- Primary brand color. -->
+        <item name="colorPrimary">@color/orange</item>
+        <item name="colorPrimaryVariant">@color/red_orange</item>
+        <item name="colorOnPrimary">@color/pewter</item>
+        <!-- Secondary brand color. -->
+        <item name="colorSecondary">@color/taupe</item>
+        <item name="colorSecondaryVariant">@color/taupe</item>
+        <item name="colorOnSecondary">@color/red_orange</item>
+        <!-- Status bar color. -->
+        <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimary</item>
+        <!-- Customize your theme here. -->
+        <item name="android:windowBackground">@color/pewter</item>
+        <item name="android:textColor">@color/red_orange</item>
+
+    </style>
+
+    <style name="Theme.TriviaChance.Forest">
+        <!-- Primary brand color. -->
+        <item name="colorPrimary">@color/forest_green</item>
+        <item name="colorPrimaryVariant">@color/forest_green</item>
+        <item name="colorOnPrimary">@color/green_cream</item>
+        <!-- Secondary brand color. -->
+        <item name="colorSecondary">@color/light_forest_green</item>
+        <item name="colorSecondaryVariant">@color/light_forest_green</item>
+        <item name="colorOnSecondary">@color/green_cream</item>
+        <!-- Status bar color. -->
+        <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimary</item>
+        <!-- Customize your theme here. -->
+        <item name="android:windowBackground">@color/green_cream</item>
+        <item name="android:textColor">@color/olive_green</item>
+
+    </style>
 </resources>
