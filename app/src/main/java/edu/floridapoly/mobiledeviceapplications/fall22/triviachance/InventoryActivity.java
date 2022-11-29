@@ -31,6 +31,7 @@ public class InventoryActivity extends AppCompatActivity {
     ImageButton sugarThemeButton;
     ImageButton purpleThemeButton;
     ImageButton orangeThemeButton;
+    ImageButton forestThemeButton;
     ImageButton homeButton;
     Button redeemPrizesButton;
     Profile profile = MainMenu.getInstancePackager().getLocalProfile();
@@ -103,6 +104,10 @@ public class InventoryActivity extends AppCompatActivity {
         orangeThemeButton.setEnabled(false);
         imageButtonArrayList.add(orangeThemeButton);
 
+        forestThemeButton = findViewById(R.id.forestThemeButton);
+        forestThemeButton.setEnabled(false);
+        imageButtonArrayList.add(forestThemeButton);
+
 
         //Sorts the inventory by itemId
         profile.getInventory().sort((i1, i2) -> i1.getItemID().compareTo(i2.getItemID()));
@@ -163,6 +168,14 @@ public class InventoryActivity extends AppCompatActivity {
             case R.id.purpleThemeButton:
                 ThemeUtil.changeToTheme(InventoryActivity.this, R.style.Theme_TriviaChance_Purple);
                 Toast.makeText(this,"Swapping to Purple Theme", LENGTH_SHORT).show();
+                break;
+            case  R.id.orangeThemeButton:
+                ThemeUtil.changeToTheme(InventoryActivity.this, R.style.Theme_TriviaChance_Orange);
+                Toast.makeText(this,"Swapping to Orange Theme", LENGTH_SHORT).show();
+                break;
+            case R.id.forestThemeButton:
+                ThemeUtil.changeToTheme(InventoryActivity.this, R.style.Theme_TriviaChance_Forest);
+                Toast.makeText(this,"Swapping to Forest Theme", LENGTH_SHORT).show();
                 break;
         }
     }
