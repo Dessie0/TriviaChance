@@ -9,6 +9,7 @@ public class ThemeUtil {
 
     public static void changeToTheme(Activity activity, int theme) {
         cTheme = theme;
+        MainMenu.getInstancePackager().getPreferences().edit().putInt("ctheme", cTheme).apply();
         activity.finish();
         activity.startActivity(new Intent(activity, activity.getClass()));
     }

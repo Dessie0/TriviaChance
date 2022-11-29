@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -38,8 +39,8 @@ public class MainMenu extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         ThemeUtil.onActivityCreateTheme(this);
+
         setContentView(R.layout.activity_main_menu);
 
         playerIcon = findViewById(R.id.playerIcon);
@@ -143,7 +144,6 @@ public class MainMenu extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(MainMenu.this, SettingsActivity.class);
-                //startActivity(intent);
                 startActivity(intent);
             }
         });
@@ -152,8 +152,6 @@ public class MainMenu extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(MainMenu.this, InventoryActivity.class);
-                // taken out temporarily
-                // activityResultLauncher.launch(intent);
                 startActivity(intent);
             }
         });
@@ -166,6 +164,9 @@ public class MainMenu extends AppCompatActivity {
         if(getLocalProfile() != null) {
             ProfileIconHelper.reloadProfileIcon(getLocalProfile(), playerIcon);
             usernameText.setText(getLocalProfile().getUsername());
+            int profileTheme = instancePackager.getPreferences().getInt("ctheme", 0);
+            if (ThemeUtil.getCurrentTheme() != profileTheme)
+                ThemeUtil.changeToTheme(this, profileTheme);
         }
     }
 
