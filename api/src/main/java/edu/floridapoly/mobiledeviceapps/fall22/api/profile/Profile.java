@@ -34,6 +34,7 @@ public class Profile {
     public List<item> getInventory() {
         return inventory;
     }
+
     public Integer getNumberOfUnlocks() {
         return numberOfUnlocks;
     }
@@ -47,6 +48,7 @@ public class Profile {
     public void setIconURL(String iconURL) {
         this.iconURL = iconURL;
     }
+    public void incrementUnlocks(){ this.numberOfUnlocks++; }
 
     public static String generateRandomUsername() {
         return "user_" + new StringGenerator(10).generate();
