@@ -54,8 +54,8 @@
         android:id="@+id/homeButton"
         android:layout_width="80dp"
         android:layout_height="71dp"
-        android:layout_marginStart="40dp"
-        android:layout_marginBottom="40dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginBottom="32dp"
         android:backgroundTint="#00FFFFFF"
         android:scaleType="fitCenter"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -74,9 +74,10 @@
         android:scaleType="fitCenter"
         android:src="@drawable/ic_inventory"
         android:text="@string/inventory"
-        app:tint="?attr/colorPrimaryVariant"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:tint="?attr/colorPrimaryVariant"
+        tools:ignore="SpeakableTextPresentCheck" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

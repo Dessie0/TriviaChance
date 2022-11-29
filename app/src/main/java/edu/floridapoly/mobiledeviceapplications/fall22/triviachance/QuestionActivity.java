@@ -20,6 +20,8 @@ import edu.floridapoly.mobiledeviceapps.fall22.api.gameplay.questions.Question;
 import edu.floridapoly.mobiledeviceapps.fall22.api.gameplay.questions.TextQuestion;
 
 public class QuestionActivity extends AppCompatActivity {
+
+
     ProgressBar questionProgress;
 
     private TriviaGame game;
@@ -45,11 +47,12 @@ public class QuestionActivity extends AppCompatActivity {
         ThemeUtil.onActivityCreateTheme(this);
         setContentView(R.layout.activity_question);
 
+
         questionProgress = findViewById(R.id.questionProgressBar);
         questionProgress.setProgress(currentQuestionIndex);
 
-        this.game = MainMenu.getAPI().getCurrentGame();
 
+        this.game = (TriviaGame) this.getIntent().getSerializableExtra("triviagame");
         questionText = findViewById(R.id.questionTextView);
         answer1 = findViewById(R.id.answer1);
         answer2 = findViewById(R.id.answer2);
@@ -134,7 +137,7 @@ public class QuestionActivity extends AppCompatActivity {
     }
 
     private CompletableFuture<Question<?>> getNextQuestion() {
-        return MainMenu.getInstancePackager().getAPI().retrieveQuestion(this.getGame(), this.currentQuestionIndex);
+        return MainMenu.getInstancePackager().getAPI().retrieveQuestion(this.getGame());
     }
 
     public TriviaGame getGame() {

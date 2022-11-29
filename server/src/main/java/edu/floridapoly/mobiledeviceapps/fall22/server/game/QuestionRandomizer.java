@@ -27,6 +27,7 @@ public class QuestionRandomizer {
 
     private final CompletableFuture<Void> isBankGenerated = new CompletableFuture<>();
     private List<Question<?>> questionBank;
+    private int currentQuestion = 0;
 
     public QuestionRandomizer() {
         this.generateQuestionBank().thenAccept(bank -> {
@@ -35,14 +36,14 @@ public class QuestionRandomizer {
         });
     }
 
-    public CompletableFuture<Question<?>> getQuestion(int index) {
+    public CompletableFuture<Question<?>> nextQuestion() {
         CompletableFuture<Question<?>> future = new CompletableFuture<>();
 
         if(this.getQuestionBank() != null) {
-            return CompletableFuture.completedFuture(this.getQuestionBank().get(index));
+            return CompletableFuture.completedFuture(this.getQuestionBank().get(this.currentQuestion++));
         } else {
             this.isBankGenerated.thenRun(() -> {
-                future.complete(this.getQuestionBank().get(index));
+                future.complete(this.getQuestionBank().get(this.currentQuestion++));
             });
             return future;
         }

@@ -25,7 +25,7 @@
             android:id="@+id/joinGame" />
         <Constraint
             android:layout_height="wrap_content"
-            android:layout_marginBottom="248dp"
+            android:layout_marginBottom="268dp"
             motion:layout_constraintBottom_toBottomOf="parent"
             motion:layout_constraintEnd_toEndOf="parent"
             android:layout_width="wrap_content"
@@ -37,7 +37,7 @@
             android:layout_height="wrap_content"
             motion:layout_constraintBottom_toBottomOf="parent"
             android:visibility="invisible"
-            android:layout_marginBottom="248dp"
+            android:layout_marginBottom="268dp"
             android:alpha="0" />
     </ConstraintSet>
 

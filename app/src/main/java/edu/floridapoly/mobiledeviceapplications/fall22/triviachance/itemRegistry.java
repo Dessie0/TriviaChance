@@ -10,9 +10,8 @@ import android.util.Log;
 
 public class itemRegistry extends SQLiteOpenHelper {
 
-    final String createTable = "CREATE TABLE IF NOT EXISTS items(itemId INTEGER PRIMARY KEY AUTOINCREMENT, itemName TEXT, imageFilePath TEXT, Description TEXT, Rarity TEXT)";
+    final String createTable = "CREATE TABLE IF NOT EXISTS items(itemId INTEGER PRIMARY KEY AUTOINCREMENT, itemName TEXT, description TEXT, rarity TEXT)";
     Context context;
-    SQLiteDatabase itemsRegistry;
 
     public itemRegistry(Context context, int version) {
         super(context, "items.db", null, version);
@@ -22,23 +21,15 @@ public class itemRegistry extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
         sqLiteDatabase.execSQL(createTable);
-        sqLiteDatabase.execSQL("INSERT into items (itemName, description, rarity) VALUES (\"itemOne\", \"This is the first item.\", \"Common\");"); //Repeat this for every item.
-        sqLiteDatabase.execSQL("INSERT into items (itemName, description, rarity) VALUES (\"itemTwo\", \"This is the second item.\", \"Common\");"); //Repeat this for every item.
-        sqLiteDatabase.execSQL("INSERT into items (itemName, description, rarity) VALUES (\"itemThree\", \"This is the third item.\", \"Common\");"); //Repeat this for every item.
-        sqLiteDatabase.execSQL("INSERT into items (itemName, description, rarity) VALUES (\"itemFour\", \"This is the fourth item.\", \"Common\");"); //Repeat this for every item.
-        sqLiteDatabase.execSQL("INSERT into items (itemName, description, rarity) VALUES (\"itemFive\", \"This is the fifth item.\", \"Common\");"); //Repeat this for every item.
-        sqLiteDatabase.execSQL("INSERT into items (itemName, description, rarity) VALUES (\"itemSix\", \"This is the sixth item.\", \"Common\");"); //Repeat this for every item.
-        sqLiteDatabase.execSQL("INSERT into items (itemName, description, rarity) VALUES (\"itemSeven\", \"This is the seventh item.\", \"Common\");"); //Repeat this for every item.
-        sqLiteDatabase.execSQL("INSERT into items (itemName, description, rarity) VALUES (\"itemEight\", \"This is the eigth item.\", \"Common\");"); //Repeat this for every item.
-        sqLiteDatabase.execSQL("INSERT into items (itemName, description, rarity) VALUES (\"itemNine\", \"This is the ninth item.\", \"Common\");"); //Repeat this for every item.
-        sqLiteDatabase.execSQL("INSERT into items (itemName, description, rarity) VALUES (\"itemTen\", \"This is the tenth item.\", \"Common\");"); //Repeat this for every item.
-        sqLiteDatabase.execSQL("INSERT into items (itemName, description, rarity) VALUES (\"itemEleven\", \"This is the eleventh item.\", \"Common\");"); //Repeat this for every item.
-        sqLiteDatabase.execSQL("INSERT into items (itemName, description, rarity) VALUES (\"itemTwelve\", \"This is the twelfth item.\", \"Common\");"); //Repeat this for every item.
-        sqLiteDatabase.execSQL("INSERT into items (itemName, description, rarity) VALUES (\"itemThirteen\", \"This is the thirteenth item.\", \"Rare\");"); //Repeat this for every item.
-        sqLiteDatabase.execSQL("INSERT into items (itemName, description, rarity) VALUES (\"itemFourteen\", \"This is the fourteenth item.\", \"Rare\");"); //Repeat this for every item.
-        sqLiteDatabase.execSQL("INSERT into items (itemName, description, rarity) VALUES (\"itemFifteen\", \"This is the fifteenth item.\", \"Rare\");"); //Repeat this for every item.
-        sqLiteDatabase.execSQL("INSERT into items (itemName, description, rarity) VALUES (\"itemSixteen\", \"This is the sixteenth item.\", \"Rare\");"); //Repeat this for every item.
-        itemsRegistry = this.getReadableDatabase();
+        sqLiteDatabase.execSQL("INSERT into items (itemName, description, rarity) VALUES (\"Light Theme\", \"This is the first item.\", \"Common\");"); //Repeat this for every item.
+        sqLiteDatabase.execSQL("INSERT into items (itemName, description, rarity) VALUES (\"Gold Theme\", \"This is the second item.\", \"Common\");"); //Repeat this for every item.
+        sqLiteDatabase.execSQL("INSERT into items (itemName, description, rarity) VALUES (\"Green Theme\", \"This is the third item.\", \"Common\");"); //Repeat this for every item.
+        sqLiteDatabase.execSQL("INSERT into items (itemName, description, rarity) VALUES (\"Red Theme\", \"This is the fourth item.\", \"Common\");"); //Repeat this for every item.
+        sqLiteDatabase.execSQL("INSERT into items (itemName, description, rarity) VALUES (\"Bamboo Theme\", \"This is the fifth item.\", \"Common\");"); //Repeat this for every item.
+        sqLiteDatabase.execSQL("INSERT into items (itemName, description, rarity) VALUES (\"Sugar Theme\", \"This is the sixth item.\", \"Common\");"); //Repeat this for every item.
+        sqLiteDatabase.execSQL("INSERT into items (itemName, description, rarity) VALUES (\"Purple Theme\", \"This is the seventh item.\", \"Common\");"); //Repeat this for every item.
+        sqLiteDatabase.execSQL("INSERT into items (itemName, description, rarity) VALUES (\"Unknown Theme 8\", \"This is the eigth item.\", \"Common\");"); //Repeat this for every item.
+        sqLiteDatabase.execSQL("INSERT into items (itemName, description, rarity) VALUES (\"Unknown Theme 9\", \"This is the ninth item.\", \"Common\");"); //Repeat this for every item.
     }
 
     @Override
@@ -50,8 +41,8 @@ public class itemRegistry extends SQLiteOpenHelper {
 
     public String getItemName(int rowId){
         String query = "SELECT itemName FROM items WHERE itemId = " + rowId + ";";
-        Cursor cursor = getWritableDatabase().rawQuery(query, null);
-
+        Cursor cursor = this.getReadableDatabase().rawQuery(query, null);
+        System.out.println(cursor.moveToFirst());
         if(cursor!=null) {
             cursor.moveToFirst();
             Log.d("Count",String.valueOf(cursor.getCount()));
@@ -68,7 +59,7 @@ public class itemRegistry extends SQLiteOpenHelper {
 
     public String getItemDescription(int rowId){
         String query = "SELECT description FROM items WHERE itemId = " + rowId + ";";
-        Cursor cursor = getWritableDatabase().rawQuery(query, null);
+        Cursor cursor = getReadableDatabase().rawQuery(query, null);
 
         if(cursor!=null) {
             cursor.moveToFirst();
@@ -96,10 +87,5 @@ public class itemRegistry extends SQLiteOpenHelper {
         String result = cursor.getString(1);
         cursor.close();
         return result;
-    }
-
-    public String getImageFilePath(int rowId) {
-        String imageFilePath = null;
-        return null;
     }
 }

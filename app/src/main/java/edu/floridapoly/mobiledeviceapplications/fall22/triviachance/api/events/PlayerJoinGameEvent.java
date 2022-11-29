@@ -1,17 +1,15 @@
 package edu.floridapoly.mobiledeviceapplications.fall22.triviachance.api.events;
 
+import edu.floridapoly.mobiledeviceapps.fall22.api.gameplay.Player;
 import edu.floridapoly.mobiledeviceapps.fall22.api.gameplay.TriviaGame;
-import edu.floridapoly.mobiledeviceapps.fall22.api.profile.Profile;
 
 public class PlayerJoinGameEvent extends GameEvent {
-    private final Profile profile;
 
-    public PlayerJoinGameEvent(TriviaGame game, Profile profile) {
+    private Player player;
+    private TriviaGame game;
+
+    public PlayerJoinGameEvent(TriviaGame game, Player player) {
         super(game);
-        this.profile = profile;
-    }
-
-    public Profile getProfile() {
-        return profile;
+        this.player = player;
     }
 }

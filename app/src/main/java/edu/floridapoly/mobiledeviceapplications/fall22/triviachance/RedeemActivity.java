@@ -19,10 +19,15 @@ import edu.floridapoly.mobiledeviceapps.fall22.api.profile.Profile;
 
 public class RedeemActivity extends AppCompatActivity {
 
-    //itemRegistry itemRegistry = new itemRegistry(this, 1);
+    itemRegistry items = new itemRegistry(this, 1);
     private final int numOfCommonItems = 12;
     private final int numOfRareItems = 4;
+    int selectedAmount = 0;
+    int colorPrimary, colorSecondary;
+
+
     Integer unlocksAvailable = MainMenu.getInstancePackager().getLocalProfile().getNumberOfUnlocks();
+
     Button unlockButton;
     Button increaseButton;
     Button decreaseButton;
@@ -32,8 +37,7 @@ public class RedeemActivity extends AppCompatActivity {
 
     TypedValue typedValue;
 
-    int selectedAmount = 0;
-    int colorPrimary, colorSecondary;
+
 
 
     @Override
@@ -42,6 +46,8 @@ public class RedeemActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         ThemeUtil.onActivityCreateTheme(this);
         setContentView(R.layout.activity_redeem);
+
+        Profile profile = MainMenu.getInstancePackager().getLocalProfile();
 
         typedValue = new TypedValue();
         getTheme().resolveAttribute(com.google.android.material.R.attr.colorPrimary, typedValue, true);
@@ -55,7 +61,7 @@ public class RedeemActivity extends AppCompatActivity {
 
         homeButton = findViewById(R.id.homeButton);
         homeButton.setOnClickListener(view -> {
-            Intent intent = new Intent(RedeemActivity.this, MainMenu.class);
+            Intent intent = new Intent(RedeemActivity.this, InventoryActivity.class);
             startActivity(intent);
         });
 
@@ -72,50 +78,47 @@ public class RedeemActivity extends AppCompatActivity {
         unlockButton = findViewById(R.id.unlockButton);
         unlockButton.setOnClickListener(view -> {
 
+            //if(Unlocks);
+
             item gachaReward = new item();
-            Profile profile = MainMenu.getInstancePackager().getLocalProfile();
             Random random = new Random();
             boolean rareDrop = random.nextFloat() < 0.3; //Randomly decides whether output is rare based on gachaPercentage
 
+            for(int i = 0; i < selectedAmount; i++) {
 
-            try {
-                int itemId;//Randomly selects one of the four rare items
-                if (rareDrop) {
-                    itemId = random.nextInt(numOfCommonItems - numOfRareItems) + numOfCommonItems;
-                } else {
-                    itemId = random.nextInt(numOfCommonItems - numOfRareItems);
-                }
-                gachaReward.setItemID(itemId);
-
-                for(int i = 0; i < profile.getInventory().size(); i++){ //Increases quantity if duplicate is found
-                    if(gachaReward == profile.getInventory().get(i)){
-                        profile.getInventory().get(i).incrementQuantity();
-                        Toast.makeText(getApplicationContext(), "You received a duplicate. Adding duplicate to inventory!", Toast.LENGTH_SHORT).show();
-                        break;
+                try {
+                    int itemId;
+                    if (rareDrop) { //Sets itemId to a random row in the bounds of common items, or a random row in the bounds of rare items.
+                        itemId = random.nextInt(numOfCommonItems - numOfRareItems) + numOfCommonItems;
+                    } else {
+                        itemId = random.nextInt(numOfCommonItems - numOfRareItems);
                     }
+                    gachaReward.setItemID(itemId);
+
+                    for (int j = 0; j < profile.getInventory().size(); i++) { //Increases quantity if duplicate is found
+
+                        for (item inventoryItem : profile.getInventory()) {
+                            if (gachaReward.getItemID() == inventoryItem.getItemID()) {
+                                profile.getInventory().get(inventoryItem.getItemID()).incrementQuantity();//.incrementQuantity();
+                                break;
+                            }
+                        }
+                        Toast.makeText(getApplicationContext(), "You received: " + items.getItemName(gachaReward.getItemID()) + "!", Toast.LENGTH_SHORT).show();
+                        profile.getInventory().add(gachaReward);
+                    }
+                } catch (NullPointerException nullPointerException) {
+                    System.out.println("'gachaReward' failed to acquire an item from the 'listOfItems' list.");
                 }
-
-                Toast.makeText(getApplicationContext(), "You received: " + "gachaReward.getIt" + "!", Toast.LENGTH_SHORT).show();
-                profile.getInventory().add(gachaReward);
-
-            } catch (NullPointerException nullPointerException) {
-                System.out.println("'gachaReward' failed to acquire an item from the 'listOfItems' list.");
             }
-
-
-            //itemRegistry.getItemName(profile.getInventory().get(1).getItemID());
-
-
-
-        });
+            });
 
         //checkColors();
 
 
         increaseButton.setOnClickListener(view -> {
-            if (selectedAmount < unlocksAvailable) {
-                unlockButton.setText(String.format(Locale.ENGLISH,"Unlock %d", ++selectedAmount));
 
+            if (selectedAmount < profile.getNumberOfUnlocks()) {
+                unlockButton.setText(String.format(Locale.ENGLISH,"Unlock %d", ++selectedAmount));
                 checkColors();
             }
 
@@ -128,6 +131,7 @@ public class RedeemActivity extends AppCompatActivity {
         });
 
         decreaseButton.setOnClickListener(view -> {
+
             if (selectedAmount > 0) {
                 unlockButton.setText(String.format(Locale.ENGLISH,"Unlock %d", --selectedAmount));
                 checkColors();
@@ -139,10 +143,10 @@ public class RedeemActivity extends AppCompatActivity {
     }
 
     public void checkColors() {
-        /*if (ResultsActivity.unlocks == 0) {
+        if (unlocksAvailable == 0) {
             decreaseButton.setBackgroundColor(Color.LTGRAY);
             increaseButton.setBackgroundColor(Color.LTGRAY);
-        }*/
+        }
         if (selectedAmount == 0) {
             decreaseButton.setBackgroundColor(Color.LTGRAY);
             increaseButton.setBackgroundColor(getResources().getColor(colorPrimary));

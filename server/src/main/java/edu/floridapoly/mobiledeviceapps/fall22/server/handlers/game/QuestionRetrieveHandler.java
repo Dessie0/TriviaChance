@@ -20,13 +20,12 @@ public class QuestionRetrieveHandler extends TriviaChanceHandler {
     public void handle(HttpExchange exchange) throws IOException {
         Map<String, String> params = this.getParams(exchange);
 
-        String questionIndex = params.get("questionIndex");
         String gameUuid = params.get("gameUUID");
         String type = params.get("type");
 
         if(type.equalsIgnoreCase("text")) {
             ActiveGame game = this.getServer().getGameHandler().findGame(UUID.fromString(gameUuid));
-            game.getQuestionRandomizer().getQuestion(Integer.parseInt(questionIndex)).thenAccept(question -> {
+            game.getQuestionRandomizer().nextQuestion().thenAccept(question -> {
                 try {
                     this.sendResponse(exchange, new Gson().toJson(question));
                 } catch (IOException e) {
