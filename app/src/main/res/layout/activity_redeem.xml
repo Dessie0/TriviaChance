@@ -11,7 +11,7 @@
         android:layout_width="256dp"
         android:layout_height="102dp"
         android:layout_marginTop="41dp"
-        android:text="Unlock 0"
+        android:text="Unlocks: 0"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/unlocksAvaliableText" />
@@ -43,8 +43,7 @@
         android:id="@+id/unlocksAvaliableText"
         android:layout_width="204dp"
         android:layout_height="41dp"
-        android:layout_marginTop="268dp"
-        android:text="Unlocks Avaliable : 3"
+        android:layout_marginTop="216dp"
         android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.497"

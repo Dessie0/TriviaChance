@@ -1,0 +1,48 @@
+Index: app/src/main/java/edu/floridapoly/mobiledeviceapplications/fall22/triviachance/RedeemActivity.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package edu.floridapoly.mobiledeviceapplications.fall22.triviachance;\r\n\r\nimport androidx.appcompat.app.AppCompatActivity;\r\n\r\nimport android.os.Bundle;\r\n\r\nimport org.jetbrains.annotations.NotNull;\r\n\r\nimport java.util.HashMap;\r\nimport java.util.Random;\r\n\r\npublic class RedeemActivity extends AppCompatActivity {\r\n\r\n    HashMap<Integer, item> listOfItems; //List of all items in the game\r\n    private int numOfCommonItems = 12, numOfRareItems = 4;\r\n\r\n    void redeemItem(float gachaPercentage) { //Decides if item is a rare drop, selects an item from the list\r\n        //of items, and sends it to addToInventory()\r\n        item gachaReward;\r\n        Random random = new Random();\r\n        boolean rareDrop = random.nextFloat() < gachaPercentage; //Randomly decides whether output is rare based on gachaPercentage\r\n\r\n        try {\r\n            if (rareDrop) {\r\n                listOfItems.size();\r\n                gachaReward = listOfItems.get(random.nextInt(listOfItems.size() - numOfCommonItems) + numOfCommonItems); //Randomly selects one of the four rare items\r\n                gachaReward.RarityType = item.rarity.RARE;\r\n            } else {\r\n                gachaReward = listOfItems.get(random.nextInt(listOfItems.size() - numOfRareItems)); //Randomly selects one of the 12 common items.\r\n                gachaReward.RarityType = item.rarity.RARE;\r\n            }\r\n\r\n            InventoryActivity.addToInventory(gachaReward);\r\n        } catch (NullPointerException nullPointerException) {\r\n            System.out.println(\"'gachaReward' failed to acquire an item from the 'listOfItems' list.\");\r\n        }\r\n    }\r\n\r\n\r\n    @Override\r\n    protected void onCreate(Bundle savedInstanceState) {\r\n        super.onCreate(savedInstanceState);\r\n        setContentView(R.layout.activity_redeem);\r\n    }\r\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/java/edu/floridapoly/mobiledeviceapplications/fall22/triviachance/RedeemActivity.java b/app/src/main/java/edu/floridapoly/mobiledeviceapplications/fall22/triviachance/RedeemActivity.java
+--- a/app/src/main/java/edu/floridapoly/mobiledeviceapplications/fall22/triviachance/RedeemActivity.java	(revision c7d18360c288947720e50a3a8192c350bf6db6eb)
++++ b/app/src/main/java/edu/floridapoly/mobiledeviceapplications/fall22/triviachance/RedeemActivity.java	(date 1669520647243)
+@@ -4,7 +4,7 @@
+ 
+ import android.os.Bundle;
+ 
+-import org.jetbrains.annotations.NotNull;
++
+ 
+ import java.util.HashMap;
+ import java.util.Random;
+@@ -12,23 +12,23 @@
+ public class RedeemActivity extends AppCompatActivity {
+ 
+     HashMap<Integer, item> listOfItems; //List of all items in the game
+-    private int numOfCommonItems = 12, numOfRareItems = 4;
+ 
+     void redeemItem(float gachaPercentage) { //Decides if item is a rare drop, selects an item from the list
+         //of items, and sends it to addToInventory()
+-        item gachaReward;
++        item gachaReward = new item();
+         Random random = new Random();
+         boolean rareDrop = random.nextFloat() < gachaPercentage; //Randomly decides whether output is rare based on gachaPercentage
+ 
+         try {
+             if (rareDrop) {
+                 listOfItems.size();
++                int numOfCommonItems = 12;
+                 gachaReward = listOfItems.get(random.nextInt(listOfItems.size() - numOfCommonItems) + numOfCommonItems); //Randomly selects one of the four rare items
+-                gachaReward.RarityType = item.rarity.RARE;
+             } else {
++                int numOfRareItems = 4;
+                 gachaReward = listOfItems.get(random.nextInt(listOfItems.size() - numOfRareItems)); //Randomly selects one of the 12 common items.
+-                gachaReward.RarityType = item.rarity.RARE;
+-            }
++            }
++            gachaReward.RarityType = item.rarity.RARE;
+ 
+             InventoryActivity.addToInventory(gachaReward);
+         } catch (NullPointerException nullPointerException) {

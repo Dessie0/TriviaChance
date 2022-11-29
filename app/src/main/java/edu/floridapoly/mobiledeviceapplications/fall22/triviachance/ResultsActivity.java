@@ -1,19 +1,15 @@
 package edu.floridapoly.mobiledeviceapplications.fall22.triviachance;
 
-import androidx.appcompat.app.AppCompatActivity;
-
-import android.animation.Animator;
 import android.animation.ObjectAnimator;
 import android.annotation.SuppressLint;
 import android.content.Intent;
-import android.content.res.ColorStateList;
 import android.os.Bundle;
-import android.os.Handler;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 public class ResultsActivity extends AppCompatActivity {
 
@@ -22,7 +18,7 @@ public class ResultsActivity extends AppCompatActivity {
     Button redeemButton;
 
     static int currentProgress = 0;
-    public static int unlocksAvaliable = 0;
+    public static int unlocks = MainMenu.getInstancePackager().getLocalProfile().getNumberOfUnlocks();
 
     @SuppressLint("ResourceAsColor")
     @Override
@@ -47,9 +43,8 @@ public class ResultsActivity extends AppCompatActivity {
 
         if (currentProgress >= 100) {
             currentProgress -= 100;
-            unlocksAvaliable++;
-
-           progressBar.setSecondaryProgress(currentProgress);
+            MainMenu.getInstancePackager().getLocalProfile().incrementUnlocks();
+            progressBar.setSecondaryProgress(currentProgress);
 
             ObjectAnimator.ofInt(progressBar, "progress", currentProgress).setDuration(700).start();
         }

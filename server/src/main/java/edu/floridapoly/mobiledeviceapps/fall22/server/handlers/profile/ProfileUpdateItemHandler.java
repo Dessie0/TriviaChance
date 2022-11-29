@@ -25,12 +25,12 @@ public class ProfileUpdateItemHandler extends TriviaChanceHandler {
 
         Profile profile = this.getServer().getProfileContainer().retrieve(Profile.class, "profiles." + profileUUID);
 
-        if(profile.getInventory().stream().noneMatch(item -> item.itemID == itemId)) {
+        if(profile.getInventory().stream().noneMatch(item -> item.getItemID() == itemId)) {
             profile.getInventory().add(new item(itemId, quantity));
         } else {
             profile.getInventory().stream()
-                    .filter(item -> item.itemID == itemId)
-                    .findFirst().ifPresent(item -> item.quantity = quantity);
+                    .filter(item -> item.getItemID() == itemId)
+                    .findFirst().ifPresent(item -> item.setQuantity(quantity));
         }
 
         this.getServer().getProfileContainer().store("profiles." + profileUUID, profile).thenRun(() -> {
