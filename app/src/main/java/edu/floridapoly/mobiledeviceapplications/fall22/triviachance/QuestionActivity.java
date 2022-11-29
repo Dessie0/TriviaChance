@@ -102,14 +102,13 @@ public class QuestionActivity extends AppCompatActivity {
             }
         }
 
-
         /*
         TODO This could be improved, as right now we're just trusting that the server will
             return the question within the 500ms allotted, which is not guaranteed.
          */
         CompletableFuture<Question<?>> nextQuestion = this.getNextQuestion();
         new Handler().postDelayed(() -> {
-            if (currentQuestionIndex++ < 9) {
+            if (currentQuestionIndex < 11) {
                 questionProgress.setSecondaryProgress(currentQuestionIndex * 10);
                 ObjectAnimator.ofInt(questionProgress, "progress", currentQuestionIndex * 10).setDuration(700).start();
                 initQuestion(nextQuestion.join());
@@ -134,7 +133,7 @@ public class QuestionActivity extends AppCompatActivity {
     }
 
     private CompletableFuture<Question<?>> getNextQuestion() {
-        return MainMenu.getInstancePackager().getAPI().retrieveQuestion(this.getGame(), this.currentQuestionIndex);
+        return MainMenu.getInstancePackager().getAPI().retrieveQuestion(this.getGame(), this.currentQuestionIndex++);
     }
 
     public TriviaGame getGame() {
