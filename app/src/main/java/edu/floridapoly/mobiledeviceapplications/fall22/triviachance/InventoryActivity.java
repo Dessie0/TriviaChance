@@ -30,6 +30,7 @@ public class InventoryActivity extends AppCompatActivity {
     ImageButton bambooThemeButton;
     ImageButton sugarThemeButton;
     ImageButton purpleThemeButton;
+    ImageButton orangeThemeButton;
     ImageButton homeButton;
     Button redeemPrizesButton;
     Profile profile = MainMenu.getInstancePackager().getLocalProfile();
@@ -97,6 +98,10 @@ public class InventoryActivity extends AppCompatActivity {
         purpleThemeButton = findViewById(R.id.purpleThemeButton);
         purpleThemeButton.setEnabled(false);
         imageButtonArrayList.add(purpleThemeButton);
+
+        orangeThemeButton = findViewById(R.id.orangeThemeButton);
+        orangeThemeButton.setEnabled(false);
+        imageButtonArrayList.add(orangeThemeButton);
 
 
         //Sorts the inventory by itemId

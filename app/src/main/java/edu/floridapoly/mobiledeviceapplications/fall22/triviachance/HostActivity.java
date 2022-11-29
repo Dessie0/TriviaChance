@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -26,6 +27,8 @@ public class HostActivity extends AppCompatActivity implements TriviaChanceListe
     TextView gameId;
     Button startGameButton;
     ImageButton backButton;
+    ProgressBar waitingBar;
+    TextView waitingText;
     RecyclerView playerList;
     PlayerGalleryAdapter adapter;
     ArrayList<Player> list = new ArrayList<>();
@@ -36,12 +39,29 @@ public class HostActivity extends AppCompatActivity implements TriviaChanceListe
         ThemeUtil.onActivityCreateTheme(this);
         setContentView(R.layout.activity_host);
 
+        Intent intent = getIntent();
+        boolean isHost = intent.getBooleanExtra("ISHOST", false);
+
+
         TriviaGame game = MainMenu.getAPI().getCurrentGame();
 
+        waitingBar = findViewById(R.id.hostWaitingBar);
+        waitingText = findViewById(R.id.waitingText);
+        startGameButton = findViewById(R.id.startGame);
+        backButton = findViewById(R.id.hostBackButton);
+        playerList = findViewById(R.id.playerRecView);
         gameId = findViewById(R.id.gameID);
+
+
         gameId.setText(game.getCode());
 
-        startGameButton = findViewById(R.id.startGame);
+
+        if (!isHost) {
+            startGameButton.setEnabled(false);
+            startGameButton.setVisibility(View.GONE);
+            waitingBar.setVisibility(View.VISIBLE);
+            waitingText.setVisibility(View.VISIBLE);
+        }
         startGameButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -49,7 +69,7 @@ public class HostActivity extends AppCompatActivity implements TriviaChanceListe
             }
         });
 
-        backButton = findViewById(R.id.hostBackButton);
+
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -58,9 +78,8 @@ public class HostActivity extends AppCompatActivity implements TriviaChanceListe
             }
         });
 
-        this.adapter = new PlayerGalleryAdapter(list, getApplication());
 
-        playerList = findViewById(R.id.playerRecView);
+        this.adapter = new PlayerGalleryAdapter(list, getApplication());
         playerList.setAdapter(adapter);
         playerList.setLayoutManager(new LinearLayoutManager(HostActivity.this));
 

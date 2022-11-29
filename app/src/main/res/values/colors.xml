@@ -58,4 +58,16 @@
     <color name="purple_charcoal">#323E42</color>
     <color name="violoet">#7954A1</color>
 
+    <!-- Fresh Picked Oranges -->
+    <color name="orange">#D37506</color>
+    <color name="red_orange">#9F2B00</color>
+    <color name="orange_pewter">#D3D3CB</color>
+    <color name="taupe">#ADA7A7</color>
+
+    <!-- Plucked Forest -->
+    <color name="forest_green">#00493A</color>
+    <color name="light_forest_green">#00A385</color>
+    <color name="olive_green">#354A18</color>
+    <color name="green_cream">#F9EBF3</color>
+
 </resources>
