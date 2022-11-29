@@ -1,11 +1,10 @@
 package edu.floridapoly.mobiledeviceapps.fall22.api.gameplay;
 
-import java.io.Serializable;
 import java.util.UUID;
 
 import edu.floridapoly.mobiledeviceapps.fall22.api.utils.StringGenerator;
 
-public class TriviaGame implements Serializable {
+public class TriviaGame {
 
     private final UUID uuid;
     private final String code;
