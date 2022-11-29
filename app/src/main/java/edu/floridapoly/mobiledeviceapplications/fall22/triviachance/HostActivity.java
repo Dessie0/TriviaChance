@@ -55,6 +55,9 @@ public class HostActivity extends AppCompatActivity implements TriviaChanceListe
             public void onClick(View view) {
                 Intent intent = new Intent(HostActivity.this, MainMenu.class);
                 startActivity(intent);
+
+                MainMenu.getAPI().leaveGame(MainMenu.getLocalProfile(), game);
+                MainMenu.getAPI().unregisterListener(HostActivity.this);
             }
         });
 
@@ -77,13 +80,23 @@ public class HostActivity extends AppCompatActivity implements TriviaChanceListe
     @EventHandler
     public void onPlayerJoin(PlayerJoinGameEvent event) {
         list.add(new Player(event.getProfile()));
-        this.adapter.notifyDataSetChanged();
+        this.adapter.notifyItemInserted(list.size() - 1);
     }
 
     @EventHandler
     public void onPlayerLeave(PlayerLeaveGameEvent event) {
+        int index = -1;
+        for(int i = 0; i < list.size(); i++) {
+            if(list.get(i).getProfile().getUUID().equals(event.getProfile().getUUID())) {
+                index = i;
+                break;
+            }
+        }
+
+        if(index == -1) return;
+
         list.removeIf(player -> player.getProfile().getUUID().toString().equals(event.getProfile().getUUID().toString()));
-        this.adapter.notifyDataSetChanged();
+        this.adapter.notifyItemRemoved(index);
     }
 
     @EventHandler

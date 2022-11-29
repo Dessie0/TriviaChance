@@ -13,7 +13,7 @@ public class ProfileIconHelper {
         //Attempt to use a cached version of the Bitmap image.
         //If the Bitmap is not cached, retrieve it from the server asynchronously and cache it
         //for future quick-load.
-        if(MainMenu.getInstancePackager().getProfileIcon() == null) {
+        if(!profile.getUUID().equals(MainMenu.getLocalProfile().getUUID()) || MainMenu.getInstancePackager().getProfileIcon() == null) {
             new LoadProfileIconAsync().execute(profile, icon);
         } else {
             icon.setImageBitmap(MainMenu.getInstancePackager().getProfileIcon());

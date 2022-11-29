@@ -25,13 +25,7 @@ public class ActiveGame {
     }
 
     public void removePlayer(String uuid) {
-        this.getPlayers().entrySet().removeIf(entry -> {
-            if(entry.getKey().getProfile().getUUID().toString().equalsIgnoreCase(uuid)) {
-                entry.getValue().close();
-                return true;
-            }
-            return false;
-        });
+        this.getPlayers().entrySet().removeIf(entry -> entry.getKey().getProfile().getUUID().toString().equalsIgnoreCase(uuid));
     }
 
     public QuestionRandomizer getQuestionRandomizer() {
