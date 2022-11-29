@@ -15,6 +15,7 @@ import java.util.ArrayList;
 
 import edu.floridapoly.mobiledeviceapplications.fall22.triviachance.api.events.PlayerJoinGameEvent;
 import edu.floridapoly.mobiledeviceapplications.fall22.triviachance.api.events.PlayerLeaveGameEvent;
+import edu.floridapoly.mobiledeviceapplications.fall22.triviachance.api.events.StartGameEvent;
 import edu.floridapoly.mobiledeviceapplications.fall22.triviachance.api.events.util.EventHandler;
 import edu.floridapoly.mobiledeviceapplications.fall22.triviachance.api.events.util.TriviaChanceListener;
 import edu.floridapoly.mobiledeviceapps.fall22.api.gameplay.Player;
@@ -44,8 +45,7 @@ public class HostActivity extends AppCompatActivity implements TriviaChanceListe
         startGameButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(HostActivity.this, QuestionActivity.class);
-                startActivity(intent);
+                MainMenu.getAPI().getSocketInterface().startGame(game);
             }
         });
 
@@ -84,5 +84,11 @@ public class HostActivity extends AppCompatActivity implements TriviaChanceListe
     public void onPlayerLeave(PlayerLeaveGameEvent event) {
         list.removeIf(player -> player.getProfile().getUUID().toString().equals(event.getProfile().getUUID().toString()));
         this.adapter.notifyDataSetChanged();
+    }
+
+    @EventHandler
+    public void onGameStart(StartGameEvent event) {
+        Intent intent = new Intent(HostActivity.this, QuestionActivity.class);
+        startActivity(intent);
     }
 }

@@ -22,12 +22,7 @@ import edu.floridapoly.mobiledeviceapps.fall22.api.gameplay.TriviaGame;
 import edu.floridapoly.mobiledeviceapps.fall22.api.gameplay.questions.Question;
 import edu.floridapoly.mobiledeviceapps.fall22.api.gameplay.questions.TextQuestion;
 import edu.floridapoly.mobiledeviceapps.fall22.api.profile.Profile;
-import edu.floridapoly.mobiledeviceapps.fall22.api.socket.MessageType;
-import edu.floridapoly.mobiledeviceapps.fall22.api.socket.SocketMessageGenerator;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
 import okhttp3.ResponseBody;
-import okhttp3.WebSocket;
 import retrofit2.Call;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -39,11 +34,11 @@ public class TriviaChanceAPI {
     private static final int MAX_ICON_HEIGHT = 512;
     private static final int MAX_ICON_WIDTH = 512;
 
-    //private static final String SERVER_IP = "192.168.1.172";
-    private static final String SERVER_IP = "51.79.52.211";
+    //static final String SERVER_IP = "192.168.1.172";
+    static final String SERVER_IP = "51.79.52.211";
 
     private final TriviaChanceService service;
-    private final WebSocket socket;
+    private final TriviaSocketInterface socketInterface;
 
     private final List<TriviaChanceListener> listeners = new ArrayList<>();
 
@@ -56,13 +51,8 @@ public class TriviaChanceAPI {
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
-        OkHttpClient client = new OkHttpClient();
-        Request request = new Request.Builder()
-                .url("ws://" + SERVER_IP + ":8083/")
-                .build();
-
-        this.socket = client.newWebSocket(request, new TriviaWebSocket(this));
         this.service = connection.create(TriviaChanceService.class);
+        this.socketInterface = new TriviaSocketInterface(this);
     }
 
     public CompletableFuture<Boolean> ping() {
@@ -105,46 +95,39 @@ public class TriviaChanceAPI {
         return this.enqueue(call, new FutureCallback<>()).whenComplete((game, err) -> {
             if(game == null) return;
 
-            SocketMessageGenerator generator = new SocketMessageGenerator(MessageType.JOIN_GAME);
-            generator.setParam("profileUUID", host.getUUID().toString());
-            generator.setParam("gameUUID", game.getUUID().toString());
-
-            this.getSocket().send(generator.generate());
+            this.getSocketInterface().joinGame(host, game);
         });
     }
 
-    public CompletableFuture<TriviaGame> joinGame(Profile member, String code) {
+    public CompletableFuture<TriviaGame> joinGame(Profile player, String code) {
         Call<TriviaGame> call = this.getService().joinGame(code);
         return this.enqueue(call, new FutureCallback<>()).whenComplete((game, err) -> {
             if(game == null) return;
 
-            SocketMessageGenerator generator = new SocketMessageGenerator(MessageType.JOIN_GAME);
-            generator.setParam("profileUUID", member.getUUID().toString());
-            generator.setParam("gameUUID", game.getUUID().toString());
-
-            this.getSocket().send(generator.generate());
+            this.getSocketInterface().joinGame(player, game);
         });
     }
 
-    public CompletableFuture<Boolean> leaveGame(Profile member, TriviaGame game) {
-        Call<Boolean> call = this.getService().leaveGame(member.getUUID().toString(), game.getUUID().toString());
-        //TODO Disconnect from server socket.
+    public CompletableFuture<Boolean> leaveGame(Profile player, TriviaGame game) {
+        Call<Boolean> call = this.getService().leaveGame(player.getUUID().toString(), game.getUUID().toString());
 
-        return this.enqueue(call, new FutureCallback<>());
+        return this.enqueue(call, new FutureCallback<>()).whenComplete((left, err) -> {
+            this.getSocketInterface().leaveGame(player, game);
+        });
     }
 
-    public CompletableFuture<Question<?>> retrieveQuestion(TriviaGame game) {
+    public CompletableFuture<Question<?>> retrieveQuestion(TriviaGame game, int index) {
 
         //TODO Add more questions besides just text questions
         CompletableFuture<Question<?>> future = new CompletableFuture<>();
-        this.retrieveTextQuestion(game).thenAccept(future::complete);
+        this.retrieveTextQuestion(game, index).thenAccept(future::complete);
         return future;
     }
 
     public CompletableFuture<String> uploadImage(Bitmap bitmap) {
         if(bitmap.getHeight() > MAX_ICON_HEIGHT || bitmap.getWidth() > MAX_ICON_WIDTH) {
             CompletableFuture<String> future = new CompletableFuture<>();
-            future.completeExceptionally(new IllegalStateException("Image too large, max size is 256x256."));
+            future.completeExceptionally(new IllegalStateException("Image too large, max size is " + MAX_ICON_WIDTH + "x" + MAX_ICON_HEIGHT + "."));
             return future;
         }
 
@@ -164,8 +147,8 @@ public class TriviaChanceAPI {
         return future;
     }
 
-    private CompletableFuture<TextQuestion> retrieveTextQuestion(TriviaGame game) {
-        Call<TextQuestion> call = this.getService().retrieveTextQuestion(game.getUUID().toString());
+    private CompletableFuture<TextQuestion> retrieveTextQuestion(TriviaGame game, int index) {
+        Call<TextQuestion> call = this.getService().retrieveTextQuestion(game.getUUID().toString(), index);
         return this.enqueue(call, new FutureCallback<>());
     }
 
@@ -180,11 +163,11 @@ public class TriviaChanceAPI {
         this.currentGame = currentGame;
     }
 
+    public TriviaSocketInterface getSocketInterface() {
+        return socketInterface;
+    }
     public TriviaGame getCurrentGame() {
         return currentGame;
-    }
-    public WebSocket getSocket() {
-        return socket;
     }
     public TriviaChanceService getService() {
         return service;

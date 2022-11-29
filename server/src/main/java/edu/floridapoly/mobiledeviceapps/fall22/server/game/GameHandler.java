@@ -19,8 +19,8 @@ public class GameHandler {
         this.server = server;
 
         new Thread(() -> {
+            System.out.println("Starting websocket server...");
             new TriviaChanceWebSocket(this.getServer(), new InetSocketAddress(8083)).run();
-            System.out.println("Server started on port 8083");
         }).start();
     }
 

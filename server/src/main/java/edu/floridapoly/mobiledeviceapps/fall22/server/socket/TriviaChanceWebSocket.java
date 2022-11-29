@@ -72,16 +72,30 @@ public class TriviaChanceWebSocket extends WebSocketServer {
                             .setParam("gameUUID", gameUUID).generate());
                 }
             }
+
+            case HOST_START_GAME -> {
+                String gameUUID = generator.getParams().get("gameUUID");
+
+                ActiveGame game = this.getServer().getGameHandler().findGame(UUID.fromString(gameUUID));
+                //Update all other players that the game has started.
+                for (Map.Entry<Player, WebSocket> entry : game.getPlayers().entrySet()) {
+                    entry.getValue().send(new SocketMessageGenerator(MessageType.START_GAME)
+                            .setParam("gameUUID", gameUUID).generate());
+                }
+            }
+
         }
     }
 
     @Override
     public void onError(WebSocket conn, Exception ex) {
-
+        ex.printStackTrace();
     }
 
     @Override
-    public void onStart() {}
+    public void onStart() {
+        System.out.println("WebSocket server started on port 8083");
+    }
 
     public TriviaChanceServer getServer() {
         return server;

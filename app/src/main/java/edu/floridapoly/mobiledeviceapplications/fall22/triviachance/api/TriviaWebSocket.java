@@ -4,6 +4,7 @@ import java.util.UUID;
 
 import edu.floridapoly.mobiledeviceapplications.fall22.triviachance.api.events.PlayerJoinGameEvent;
 import edu.floridapoly.mobiledeviceapplications.fall22.triviachance.api.events.PlayerLeaveGameEvent;
+import edu.floridapoly.mobiledeviceapplications.fall22.triviachance.api.events.StartGameEvent;
 import edu.floridapoly.mobiledeviceapps.fall22.api.socket.SocketMessageGenerator;
 import okhttp3.Response;
 import okhttp3.WebSocket;
@@ -49,6 +50,14 @@ public class TriviaWebSocket extends WebSocketListener {
                     });
                 }
 
+                break;
+            }
+
+            case START_GAME: {
+                //If the UUID received and the UUID of the current game don't match, don't start it.
+                if(!generator.getParams().get("gameUUID").equalsIgnoreCase(this.getAPI().getCurrentGame().getUUID().toString())) return;
+
+                this.getAPI().fireEvent(new StartGameEvent(this.getAPI().getCurrentGame()));
                 break;
             }
         }

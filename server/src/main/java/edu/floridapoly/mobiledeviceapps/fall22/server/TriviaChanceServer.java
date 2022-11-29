@@ -75,12 +75,14 @@ public class TriviaChanceServer {
             decomposedObject.addDecomposedKey("username", profile.getUsername());
             decomposedObject.addDecomposedKey("inventory", profile.getInventory());
             decomposedObject.addDecomposedKey("iconURL", profile.getIconURL());
+            decomposedObject.addDecomposedKey("numberOfUnlocks", profile.getNumberOfUnlocks());
 
             return decomposedObject;
         }, (container, recomposer) -> {
             recomposer.addRecomposeKey("uuid", String.class, container::retrieveAsync);
             recomposer.addRecomposeKey("username", String.class, container::retrieveAsync);
             recomposer.addRecomposeKey("iconURL", String.class, container::retrieveAsync);
+            recomposer.addRecomposeKey("numberOfUnlocks", Integer.class, container::retrieveAsync);
             recomposer.addRecomposeKey("inventory", List.class, (path) -> {
                 if(container instanceof ArrayContainer arrayContainer) {
                     return arrayContainer.retrieveListAsync(item.class, path);
@@ -93,8 +95,9 @@ public class TriviaChanceServer {
                 String username = completed.getCompletedObject("username");
                 String iconURL = completed.getCompletedObject("iconURL");
                 List<item> inventory = completed.getCompletedObject("inventory");
+                Integer unlocks = completed.getCompletedObject("numberOfUnlocks");
 
-                return new Profile(UUID.fromString(uuid), username, iconURL, inventory);
+                return new Profile(UUID.fromString(uuid), username, iconURL, inventory, unlocks);
             });
         }));
 
