@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.motion.widget.MotionLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/motionLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    app:layoutDescription="@xml/activity_main_menu_scene"
+    tools:context=".MainMenu">
+
+    <Button
+        android:id="@+id/play_online"
+        android:layout_width="340dp"
+        android:layout_height="75dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginBottom="204dp"
+        android:text="@string/play_online"
+        app:cornerRadius="25dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <Button
+        android:id="@+id/play_solo"
+        android:layout_width="340dp"
+        android:layout_height="75dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginBottom="36dp"
+        android:text="@string/play_solo"
+        app:cornerRadius="25dp"
+        app:layout_constraintBottom_toTopOf="@+id/play_online"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <ImageButton
+        android:id="@+id/settings"
+        android:layout_width="110dp"
+        android:layout_height="110dp"
+        android:layout_marginStart="25dp"
+        android:layout_marginBottom="25dp"
+        android:layout_weight="1"
+        android:backgroundTint="#00FFFFFF"
+        android:scaleType="fitCenter"
+        android:src="@drawable/ic_settings"
+        android:text="@string/settings"
+        app:tint="?attr/colorPrimaryVariant"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <ImageButton
+        android:id="@+id/inventory"
+        android:layout_width="110dp"
+        android:layout_height="110dp"
+        android:layout_marginEnd="25dp"
+        android:layout_marginBottom="25dp"
+        android:layout_weight="1"
+        android:backgroundTint="#00FFFFFF"
+        android:scaleType="fitCenter"
+        android:src="@drawable/ic_inventory"
+        android:text="@string/inventory"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:tint="?attr/colorPrimaryVariant" />
+
+    <Button
+        android:id="@+id/hostButton"
+        android:layout_width="230dp"
+        android:layout_height="61dp"
+        android:layout_marginBottom="44dp"
+        android:alpha="0"
+        android:text="@string/host"
+        app:layout_constraintBottom_toTopOf="@+id/joinGame"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="1.0"
+        tools:visibility="invisible" />
+
+    <EditText
+        android:id="@+id/joinGame"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="340dp"
+        android:alpha="0"
+        android:ems="10"
+        android:hint="@string/join"
+        android:inputType="textPersonName"
+        android:textColor="@color/dark_blue"
+        android:textColorHint="@color/dark_blue"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        tools:visibility="invisible" />
+
+
+    <EditText
+        android:id="@+id/username"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="340dp"
+        android:alpha="0"
+        android:ems="10"
+        android:hint="@string/username"
+        android:inputType="textPersonName"
+        android:textColor="@color/dark_blue"
+        android:textColorHint="@color/dark_blue"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        tools:visibility="invisible" />
+
+    <ImageButton
+        android:id="@+id/hostBackButton"
+        android:layout_width="80dp"
+        android:layout_height="71dp"
+        android:alpha="0"
+        android:backgroundTint="#00FFFFFF"
+        android:scaleType="fitCenter"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:srcCompat="@drawable/ic_back"
+        app:tint="?attr/colorPrimaryVariant"
+        tools:visibility="invisible" />
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cardView"
+        android:layout_width="210dp"
+        android:layout_height="210dp"
+        android:layout_marginBottom="50dp"
+        app:cardCornerRadius="30dp"
+        app:layout_constraintBottom_toTopOf="@+id/play_solo"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <ImageView
+            android:id="@+id/playerIcon"
+            android:layout_width="210dp"
+            android:layout_height="210dp"
+            android:layout_marginBottom="48dp"
+            android:scaleType="centerCrop"
+            app:layout_constraintBottom_toTopOf="@+id/play_solo"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:srcCompat="@color/material_dynamic_neutral30"
+            tools:srcCompat="@tools:sample/avatars" />
+
+    </androidx.cardview.widget.CardView>
+
+</androidx.constraintlayout.motion.widget.MotionLayout>

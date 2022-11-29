@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Im assuming these names will be confusing without context
+     these are the names from https://www.canva.com/colors/color-palettes/ to make it easier to look them up-->
+
+    <!-- Default Android Colors -->
+    <color name="purple_200">#FFBB86FC</color>
+    <color name="purple_500">#FF6200EE</color>
+    <color name="purple_700">#FF3700B3</color>
+    <color name="teal_200">#FF03DAC5</color>
+    <color name="teal_700">#FF018786</color>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+
+    <!-- Extra Colors -->
+    <color name="celadon">#A1AFA0</color>
+    <color name="red">#970C10</color>
+
+    <!-- Foil-Covered Sneakers -->
+    <color name="blue_grey">#90ADC6</color>
+    <color name="pewter">#E9EAEC</color>
+    <color name="yellow">#FAD02C</color>
+    <color name="dark_blue">#333652</color>
+
+    <!-- Emerald Enterance -->
+    <color name="tan">#B68D40</color>
+    <color name="cream">#F4EBD0</color>
+    <color name="charcoal">#122620</color>
+    <color name="gold">#D6AD60</color>
+
+    <!-- Grazing Zebras -->
+    <color name="ivory">#EFF0EC</color>
+    <color name="sand_dollar">#C6BCAB</color>
+    <color name="seafoam_green">#8BE5AD</color>
+    <color name="green_charcoal">#282D30</color>
+
+    <!-- Deep Merlot -->
+    <color name="rose_quartz">#F3E3E2</color>
+    <color name="rose_red">#74112F</color>
+    <color name="dark_blue_merlot">#0C0C1E</color>
+    <color name="midnight_blue">#1B2E3C</color>
+
+    <!-- Bamboo Beach -->
+    <color name="bamboo_cream">#FBF6F3</color>
+    <color name="tangerine">#FEB06A</color>
+    <color name="turquoise">#36D6E7</color>
+    <color name="bamboo_blue_grey">#5D6C89</color>
+
+    <!-- Sugar Frosted Desert -->
+    <color name="sugar_seafoam_green">#ECFDF1</color>
+    <color name="mint">#B4F8C8</color>
+    <color name="beige">#D1BC9F</color>
+    <color name="sugar_rose_red">#E54E7F</color>
+
+    <!-- Sugar Frosted Desert -->
+    <color name="purple">#C55FFC</color>
+    <color name="purple_haze">#EFDCF9</color>
+    <color name="purple_charcoal">#323E42</color>
+    <color name="violoet">#7954A1</color>
+
+</resources>

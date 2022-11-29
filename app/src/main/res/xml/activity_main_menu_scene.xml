@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="utf-8"?>
+<MotionScene 
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:motion="http://schemas.android.com/apk/res-auto">
+
+    <Transition
+        motion:constraintSetEnd="@+id/end"
+        motion:constraintSetStart="@id/start"
+        motion:duration="300">
+       <KeyFrameSet>
+       </KeyFrameSet>
+        <OnClick motion:targetId="@id/hostBackButton"
+            motion:clickAction="transitionToStart" />
+    </Transition>
+
+    <ConstraintSet android:id="@+id/start">
+        <Constraint
+            motion:layout_constraintEnd_toEndOf="parent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            motion:layout_constraintBottom_toBottomOf="parent"
+            android:visibility="invisible"
+            android:layout_marginBottom="325dp"
+            android:alpha="0"
+            android:id="@+id/joinGame" />
+        <Constraint
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="268dp"
+            motion:layout_constraintBottom_toBottomOf="parent"
+            motion:layout_constraintEnd_toEndOf="parent"
+            android:layout_width="wrap_content"
+            android:id="@+id/username" />
+        <Constraint
+            android:id="@+id/username"
+            motion:layout_constraintEnd_toEndOf="parent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            motion:layout_constraintBottom_toBottomOf="parent"
+            android:visibility="invisible"
+            android:layout_marginBottom="268dp"
+            android:alpha="0" />
+    </ConstraintSet>
+
+    <ConstraintSet android:id="@+id/end">
+        <Constraint
+            android:id="@+id/inventory"
+            motion:layout_constraintEnd_toEndOf="parent"
+            android:layout_width="110dp"
+            android:layout_height="110dp"
+            android:layout_marginEnd="25dp"
+            motion:layout_constraintBottom_toBottomOf="parent"
+            android:layout_marginBottom="25dp"
+            android:translationX="200dp" />
+        <Constraint
+            android:id="@+id/settings"
+            android:layout_width="110dp"
+            android:layout_height="110dp"
+            android:layout_marginStart="25dp"
+            motion:layout_constraintStart_toStartOf="parent"
+            motion:layout_constraintBottom_toBottomOf="parent"
+            android:layout_marginBottom="25dp"
+            android:translationX="-200dp" />
+        <Constraint
+            android:id="@+id/play_online"
+            android:layout_width="340dp"
+            android:layout_height="75dp"
+            motion:layout_constraintBottom_toBottomOf="parent"
+            android:layout_marginBottom="204dp"
+            android:layout_marginStart="32dp"
+            motion:layout_constraintStart_toStartOf="parent"
+            android:translationY="100dp" />
+        <Constraint
+            android:id="@+id/play_solo"
+            android:layout_width="340dp"
+            android:layout_height="75dp"
+            android:layout_marginBottom="36dp"
+            motion:layout_constraintBottom_toTopOf="@+id/play_online"
+            android:layout_marginStart="32dp"
+            motion:layout_constraintStart_toStartOf="parent"
+            android:alpha="0"
+            android:visibility="invisible" />
+        <Constraint
+            android:id="@+id/playerIcon"
+            motion:layout_constraintEnd_toEndOf="parent"
+            android:layout_width="160dp"
+            android:layout_height="160dp"
+            android:layout_marginBottom="48dp"
+            motion:layout_constraintBottom_toTopOf="@+id/play_solo"
+            motion:layout_constraintStart_toStartOf="parent"
+            android:alpha="0"
+            android:visibility="invisible"
+            motion:transitionEasing="accelerate" />
+        <Constraint
+            android:id="@+id/editIconButton"
+            android:layout_width="64dp"
+            android:layout_height="62dp"
+            android:layout_marginStart="120dp"
+            motion:layout_constraintTop_toTopOf="@+id/playerIcon"
+            motion:layout_constraintStart_toStartOf="@+id/playerIcon"
+            android:layout_marginTop="124dp"
+            android:alpha="0"
+            android:visibility="invisible" />
+        <Constraint
+            android:layout_height="44dp"
+            android:layout_width="284dp"
+            android:id="@+id/joinGame"
+            motion:layout_constraintStart_toStartOf="parent"
+            motion:layout_constraintEnd_toEndOf="parent"
+            motion:layout_constraintBottom_toBottomOf="parent"
+            android:layout_marginBottom="325dp" />
+        <Constraint
+            android:layout_height="58dp"
+            android:layout_width="243dp"
+            android:id="@+id/hostButton"
+            motion:layout_constraintEnd_toEndOf="parent"
+            motion:layout_constraintStart_toStartOf="parent"
+            motion:layout_constraintBottom_toTopOf="@+id/joinGame"
+            android:layout_marginBottom="32dp"
+            motion:layout_constraintTop_toTopOf="parent"
+            motion:layout_constraintVertical_bias="1.0" />
+        <Constraint
+            android:id="@+id/hostBackButton"
+            android:layout_width="80dp"
+            android:layout_height="71dp"
+            android:visibility="visible"
+            motion:layout_constraintStart_toStartOf="parent"
+            android:layout_marginStart="20dp"
+            motion:layout_constraintBottom_toBottomOf="parent"
+            android:layout_marginBottom="20dp" />
+        <Constraint
+            android:id="@+id/cardView"
+            motion:layout_constraintEnd_toEndOf="parent"
+            android:layout_width="210dp"
+            android:layout_height="210dp"
+            android:layout_marginBottom="50dp"
+            motion:layout_constraintBottom_toTopOf="@+id/play_solo"
+            motion:layout_constraintStart_toStartOf="parent"
+            android:visibility="gone" />
+        <Constraint
+            android:layout_marginEnd="104dp"
+            android:layout_height="48dp"
+            android:layout_marginRight="104dp"
+            android:layout_marginBottom="244dp"
+            motion:layout_constraintBottom_toBottomOf="parent"
+            motion:layout_constraintEnd_toEndOf="parent"
+            android:layout_width="286dp"
+            android:id="@+id/username"
+            motion:layout_constraintStart_toStartOf="@+id/joinGame"
+            motion:layout_constraintHorizontal_bias="0.0" />
+    </ConstraintSet>
+    <Transition
+        motion:constraintSetStart="@+id/start"
+        motion:constraintSetEnd="@+id/end"
+        motion:duration="300"></Transition>
+</MotionScene>
