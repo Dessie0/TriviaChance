@@ -20,8 +20,6 @@ import edu.floridapoly.mobiledeviceapps.fall22.api.gameplay.questions.Question;
 import edu.floridapoly.mobiledeviceapps.fall22.api.gameplay.questions.TextQuestion;
 
 public class QuestionActivity extends AppCompatActivity {
-
-
     ProgressBar questionProgress;
 
     private TriviaGame game;
@@ -47,12 +45,11 @@ public class QuestionActivity extends AppCompatActivity {
         ThemeUtil.onActivityCreateTheme(this);
         setContentView(R.layout.activity_question);
 
-
         questionProgress = findViewById(R.id.questionProgressBar);
         questionProgress.setProgress(currentQuestionIndex);
 
+        this.game = MainMenu.getAPI().getCurrentGame();
 
-        this.game = (TriviaGame) this.getIntent().getSerializableExtra("triviagame");
         questionText = findViewById(R.id.questionTextView);
         answer1 = findViewById(R.id.answer1);
         answer2 = findViewById(R.id.answer2);
@@ -105,7 +102,7 @@ public class QuestionActivity extends AppCompatActivity {
             }
         }
 
-        
+
         /*
         TODO This could be improved, as right now we're just trusting that the server will
             return the question within the 500ms allotted, which is not guaranteed.
@@ -137,7 +134,7 @@ public class QuestionActivity extends AppCompatActivity {
     }
 
     private CompletableFuture<Question<?>> getNextQuestion() {
-        return MainMenu.getInstancePackager().getAPI().retrieveQuestion(this.getGame());
+        return MainMenu.getInstancePackager().getAPI().retrieveQuestion(this.getGame(), this.currentQuestionIndex);
     }
 
     public TriviaGame getGame() {

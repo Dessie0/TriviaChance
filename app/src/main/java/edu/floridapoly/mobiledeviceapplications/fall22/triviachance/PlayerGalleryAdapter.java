@@ -11,7 +11,6 @@ import android.widget.Toast;
 
 import androidx.recyclerview.widget.RecyclerView;
 
-import java.util.Collections;
 import java.util.List;
 
 import edu.floridapoly.mobiledeviceapplications.fall22.triviachance.icon.ProfileIconHelper;
@@ -20,7 +19,7 @@ import edu.floridapoly.mobiledeviceapps.fall22.api.gameplay.Player;
 
 public class PlayerGalleryAdapter extends RecyclerView.Adapter<PlayerViewHolder> {
 
-    List<Player> list = Collections.emptyList();
+    List<Player> list;
     Context context;
 
     public PlayerGalleryAdapter(List<Player> list, Context context) {
@@ -29,8 +28,7 @@ public class PlayerGalleryAdapter extends RecyclerView.Adapter<PlayerViewHolder>
     }
 
     @Override
-    public PlayerViewHolder
-    onCreateViewHolder(ViewGroup parent, int viewType) {
+    public PlayerViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         Context context = parent.getContext();
         LayoutInflater inflater = LayoutInflater.from(context);
 
@@ -47,6 +45,7 @@ public class PlayerGalleryAdapter extends RecyclerView.Adapter<PlayerViewHolder>
             viewHolder.profile_image.setImageURI(Uri.parse(list.get(position).getProfile().getIconURL()));
             ProfileIconHelper.reloadProfileIcon(list.get(position).getProfile(), viewHolder.profile_image);
         }
+
         viewHolder.view.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View view) {

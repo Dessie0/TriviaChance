@@ -26,7 +26,7 @@ public class InstancePackager {
                     .thenRun(mainMenu::onReady);
         } else {
             UUID uuid = UUID.randomUUID();
-            this.getAPI().registerProfile(new Profile(uuid, Profile.generateRandomUsername(), null, new ArrayList<>()))
+            this.getAPI().registerProfile(new Profile(uuid, Profile.generateRandomUsername(), null, new ArrayList<>(), 0))
                     .thenAccept((saved) -> {
                         this.getPreferences().edit().putString("profileUUID", uuid.toString()).apply();
                         this.setLocalProfile(uuid).thenRun(mainMenu::onReady);

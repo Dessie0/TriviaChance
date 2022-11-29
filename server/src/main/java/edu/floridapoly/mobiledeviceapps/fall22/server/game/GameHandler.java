@@ -1,33 +1,27 @@
 package edu.floridapoly.mobiledeviceapps.fall22.server.game;
 
-import java.io.IOException;
-import java.net.ServerSocket;
-import java.net.Socket;
+import java.net.InetSocketAddress;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
 import edu.floridapoly.mobiledeviceapps.fall22.api.gameplay.TriviaGame;
 import edu.floridapoly.mobiledeviceapps.fall22.server.TriviaChanceServer;
-import edu.floridapoly.mobiledeviceapps.fall22.server.socket.PlayerThread;
+import edu.floridapoly.mobiledeviceapps.fall22.server.socket.TriviaChanceWebSocket;
 
 public class GameHandler {
 
     private final List<ActiveGame> activeGames;
     private final TriviaChanceServer server;
-    private ServerSocket gameSocket;
 
     public GameHandler(TriviaChanceServer server) {
         this.activeGames = new ArrayList<>();
         this.server = server;
 
-        try {
-            this.gameSocket = new ServerSocket(8083);
-            System.out.println("Game socket started on port 8083.");
-            this.startGameSocket();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        new Thread(() -> {
+            System.out.println("Starting websocket server...");
+            new TriviaChanceWebSocket(this.getServer(), new InetSocketAddress(8083)).run();
+        }).start();
     }
 
     public ActiveGame startGame(TriviaGame game) {
@@ -51,24 +45,8 @@ public class GameHandler {
                 .findFirst().orElse(null);
     }
 
-    private void startGameSocket() {
-        new Thread(() -> {
-            while(true) {
-                try {
-                    Socket socket = this.getGameSocket().accept();
-                    new PlayerThread(this.getServer(), socket).start();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        }).start();
-    }
-
     public List<ActiveGame> getActiveGames() {
         return activeGames;
-    }
-    public ServerSocket getGameSocket() {
-        return gameSocket;
     }
     public TriviaChanceServer getServer() {
         return server;
