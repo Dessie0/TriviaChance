@@ -8,6 +8,7 @@ import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
 import edu.floridapoly.mobiledeviceapplications.fall22.triviachance.MainMenu;
+import edu.floridapoly.mobiledeviceapplications.fall22.triviachance.R;
 import edu.floridapoly.mobiledeviceapps.fall22.api.profile.Profile;
 
 
@@ -28,7 +29,14 @@ public class InstancePackager {
             UUID uuid = UUID.randomUUID();
             this.getAPI().registerProfile(new Profile(uuid, Profile.generateRandomUsername(), null, new ArrayList<>(), 0))
                     .thenAccept((saved) -> {
-                        this.getPreferences().edit().putString("profileUUID", uuid.toString()).apply();
+                        this.getPreferences().edit().putString("profileUUID", uuid.toString())
+                                .putInt("ctheme", R.style.Theme_TriviaChance)
+                                .putBoolean("sound", true)
+                                .putBoolean("music", true)
+                                .putBoolean("notifications", true)
+                                .putBoolean("vibration", true)
+                                .apply();
+
                         this.setLocalProfile(uuid).thenRun(mainMenu::onReady);
                     });
         }
