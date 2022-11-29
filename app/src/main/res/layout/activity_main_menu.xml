@@ -42,7 +42,7 @@
         android:scaleType="fitCenter"
         android:src="@drawable/ic_settings"
         android:text="@string/settings"
-        android:tint="?attr/colorPrimaryVariant"
+        app:tint="?attr/colorPrimaryVariant"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
@@ -140,20 +140,6 @@
             app:srcCompat="@color/material_dynamic_neutral30"
             tools:srcCompat="@tools:sample/avatars" />
 
-        <ImageButton
-            android:id="@+id/editIconButton"
-            android:layout_width="64dp"
-            android:layout_height="62dp"
-            android:layout_marginStart="152dp"
-            android:layout_marginTop="156dp"
-            android:backgroundTint="#00FFFFFF"
-            android:outlineAmbientShadowColor="#00FFFFFF"
-            android:outlineSpotShadowColor="#00FFFFFF"
-            android:scaleType="fitCenter"
-            android:translationZ="10dp"
-            app:layout_constraintStart_toStartOf="@+id/playerIcon"
-            app:layout_constraintTop_toTopOf="@+id/playerIcon"
-            app:srcCompat="@android:drawable/ic_menu_edit" />
     </androidx.cardview.widget.CardView>
 
 </androidx.constraintlayout.motion.widget.MotionLayout>

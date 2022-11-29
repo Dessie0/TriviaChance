@@ -31,8 +31,11 @@ public class MainMenu extends AppCompatActivity {
     ImageButton back;
     ImageButton settings;
     ImageButton inventory;
+    ImageButton editIcon;
     ImageView playerIcon;
     TextView usernameText;
+
+    int SELECT_PICTURE = 200;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,7 +52,7 @@ public class MainMenu extends AppCompatActivity {
         playSolo = findViewById(R.id.play_solo);
         settings = findViewById(R.id.settings);
         inventory = findViewById(R.id.inventory);
-        usernameText = findViewById(R.id.usernameTextView);
+        usernameText = findViewById(R.id.username);
 
         //Create the static instance packager.
         if(instancePackager == null) {
@@ -68,6 +71,7 @@ public class MainMenu extends AppCompatActivity {
             this.onReady();
         }
 
+
         playSolo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -78,9 +82,8 @@ public class MainMenu extends AppCompatActivity {
 
                 getAPI().createGame(getLocalProfile()).thenAccept(game -> {
                     Intent intent = new Intent(MainMenu.this, QuestionActivity.class);
+                    intent.putExtra("triviagame", game);
                     startActivity(intent);
-
-                    getAPI().setCurrentGame(game);
                 });
             }
         });
@@ -93,6 +96,7 @@ public class MainMenu extends AppCompatActivity {
                 if (joinGame.getText().toString().length() != 0) {
                     if(getLocalProfile() == null) return;
 
+                    System.out.println("Attempting to join " + joinGame.getText().toString());
                     getAPI().joinGame(getLocalProfile(), joinGame.getText().toString()).thenAccept(game -> {
                         if(game == null) {
                             Toast.makeText(MainMenu.this.getBaseContext(), "Unable to find a game with that code!", Toast.LENGTH_LONG).show();
@@ -100,9 +104,10 @@ public class MainMenu extends AppCompatActivity {
                         }
 
                         Intent intent = new Intent(MainMenu.this, HostActivity.class);
+                        intent.putExtra("triviagame", game);
                         startActivity(intent);
 
-                        getAPI().setCurrentGame(game);
+                        System.out.println("Joined game " + game.getUUID());
                     });
 
                     joinGame.setText("");
@@ -110,6 +115,7 @@ public class MainMenu extends AppCompatActivity {
             }
         });
 
+        back = findViewById(R.id.hostBackButton);
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -117,7 +123,30 @@ public class MainMenu extends AppCompatActivity {
             }
         });
 
+        hostGame = findViewById(R.id.hostButton);
         hostGame.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                //Create the game
+                if(getLocalProfile() == null) {
+                    return;
+                }
+
+                System.out.println("Hosting game for " + getLocalProfile().getUsername());
+                getAPI().createGame(getLocalProfile()).thenAccept(game -> {
+                    Intent intent = new Intent(MainMenu.this, HostActivity.class);
+                    intent.putExtra("triviagame", game);
+                    startActivity(intent);
+
+                    System.out.println("Created game " + game.getUUID());
+                    System.out.println(game.getCode());
+                });
+            }
+        });
+
+        playSolo = findViewById(R.id.play_solo);
+        playSolo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 //Create the game
@@ -126,14 +155,14 @@ public class MainMenu extends AppCompatActivity {
                 }
 
                 getAPI().createGame(getLocalProfile()).thenAccept(game -> {
-                    Intent intent = new Intent(MainMenu.this, HostActivity.class);
+                    Intent intent = new Intent(MainMenu.this, QuestionActivity.class);
+                    intent.putExtra("triviagame", game);
                     startActivity(intent);
-
-                    getAPI().setCurrentGame(game);
                 });
             }
         });
 
+        settings = findViewById(R.id.settings);
         settings.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

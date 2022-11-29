@@ -50,8 +50,7 @@ public interface TriviaChanceService {
                               @Query("gameUUID") String gameUuid);
 
     @GET("game/question?type=text")
-    Call<TextQuestion> retrieveTextQuestion(@Query("gameUUID") String gameUuid,
-                                            @Query("questionIndex") int questionIndex);
+    Call<TextQuestion> retrieveTextQuestion(@Query("gameUUID") String gameUuid);
 
     @GET("game/leaderboard")
     Call<List<Player>> retrieveGameLeaderboard(@Query("gameId") String gameId);

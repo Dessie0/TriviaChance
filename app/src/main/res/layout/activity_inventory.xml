@@ -6,6 +6,20 @@
     android:layout_height="match_parent"
     tools:context=".InventoryActivity">
 
+    <ImageButton
+        android:id="@+id/homeButton"
+        android:layout_width="80dp"
+        android:layout_height="71dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginBottom="32dp"
+        android:backgroundTint="#00FFFFFF"
+        android:scaleType="fitCenter"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:srcCompat="@drawable/ic_back"
+        app:tint="?attr/colorPrimaryVariant"
+        tools:ignore="ImageContrastCheck" />
+
     <TableLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -27,7 +41,8 @@
                 android:backgroundTint="#9490ADC6"
                 android:contentDescription="@string/locked_item"
                 android:onClick="changeTheme"
-                app:srcCompat="@android:drawable/ic_lock_lock" />
+                app:srcCompat="@android:drawable/ic_lock_lock"
+                tools:ignore="DuplicateSpeakableTextCheck" />
 
             <ImageButton
                 android:id="@+id/goldThemeButton"
@@ -75,7 +90,8 @@
                 android:backgroundTint="#8C36D6E7"
                 android:contentDescription="@string/locked_item"
                 android:onClick="changeTheme"
-                app:srcCompat="@android:drawable/ic_lock_lock" />
+                app:srcCompat="@android:drawable/ic_lock_lock"
+                tools:ignore="ImageContrastCheck" />
 
             <ImageButton
                 android:id="@+id/sugarThemeButton"
@@ -85,7 +101,8 @@
                 android:backgroundTint="#8CE54E7F"
                 android:contentDescription="@string/locked_item"
                 android:onClick="changeTheme"
-                app:srcCompat="@android:drawable/ic_lock_lock" />
+                app:srcCompat="@android:drawable/ic_lock_lock"
+                tools:ignore="ImageContrastCheck" />
 
         </TableRow>
 
