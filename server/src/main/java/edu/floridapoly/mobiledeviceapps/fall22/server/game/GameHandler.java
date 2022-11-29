@@ -13,6 +13,7 @@ public class GameHandler {
 
     private final List<ActiveGame> activeGames;
     private final TriviaChanceServer server;
+    private TriviaChanceWebSocket webSocket;
 
     public GameHandler(TriviaChanceServer server) {
         this.activeGames = new ArrayList<>();
@@ -20,8 +21,17 @@ public class GameHandler {
 
         new Thread(() -> {
             System.out.println("Starting websocket server...");
-            new TriviaChanceWebSocket(this.getServer(), new InetSocketAddress(8083)).run();
+            this.webSocket = new TriviaChanceWebSocket(this.getServer(), new InetSocketAddress(8083));
+            this.webSocket.run();
         }).start();
+
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            try {
+                this.webSocket.stop();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }));
     }
 
     public ActiveGame startGame(TriviaGame game) {

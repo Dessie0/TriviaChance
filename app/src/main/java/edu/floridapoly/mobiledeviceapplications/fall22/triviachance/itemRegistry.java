@@ -42,7 +42,6 @@ public class itemRegistry extends SQLiteOpenHelper {
     public String getItemName(int rowId){
         String query = "SELECT itemName FROM items WHERE itemId = " + rowId + ";";
         Cursor cursor = this.getReadableDatabase().rawQuery(query, null);
-        System.out.println(cursor.moveToFirst());
         if(cursor!=null) {
             cursor.moveToFirst();
             Log.d("Count",String.valueOf(cursor.getCount()));

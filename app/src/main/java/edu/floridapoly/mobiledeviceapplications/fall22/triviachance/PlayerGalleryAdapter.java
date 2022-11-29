@@ -1,7 +1,6 @@
 package edu.floridapoly.mobiledeviceapplications.fall22.triviachance;
 
 import android.content.Context;
-import android.net.Uri;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
 import android.view.LayoutInflater;
@@ -42,7 +41,6 @@ public class PlayerGalleryAdapter extends RecyclerView.Adapter<PlayerViewHolder>
         //final index = viewHolder.getAdapterPosition();
         viewHolder.user_name.setText(list.get(position).getProfile().getUsername());
         if (list.get(position).getProfile().getIconURL() != null) {
-            viewHolder.profile_image.setImageURI(Uri.parse(list.get(position).getProfile().getIconURL()));
             ProfileIconHelper.reloadProfileIcon(list.get(position).getProfile(), viewHolder.profile_image);
         }
 

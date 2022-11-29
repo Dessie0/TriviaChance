@@ -77,6 +77,7 @@ public class TriviaChanceWebSocket extends WebSocketServer {
                 String gameUUID = generator.getParams().get("gameUUID");
 
                 ActiveGame game = this.getServer().getGameHandler().findGame(UUID.fromString(gameUUID));
+
                 //Update all other players that the game has started.
                 for (Map.Entry<Player, WebSocket> entry : game.getPlayers().entrySet()) {
                     entry.getValue().send(new SocketMessageGenerator(MessageType.START_GAME)
