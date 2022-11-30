@@ -118,6 +118,9 @@ public class HostActivity extends AppCompatActivity implements TriviaChanceListe
     public void onGameStart(StartGameEvent event) {
         Intent intent = new Intent(HostActivity.this, QuestionActivity.class);
         startActivity(intent);
+
+        //Game has started, so no more events need to be fired.
+        MainMenu.getAPI().unregisterListener(this);
     }
 
     @EventHandler

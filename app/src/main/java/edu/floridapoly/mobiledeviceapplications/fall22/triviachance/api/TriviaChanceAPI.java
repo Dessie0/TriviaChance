@@ -13,6 +13,7 @@ import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 
+import edu.floridapoly.mobiledeviceapplications.fall22.triviachance.MainMenu;
 import edu.floridapoly.mobiledeviceapplications.fall22.triviachance.api.callbacks.FutureCallback;
 import edu.floridapoly.mobiledeviceapplications.fall22.triviachance.api.events.GameEvent;
 import edu.floridapoly.mobiledeviceapplications.fall22.triviachance.api.events.util.EventHandler;
@@ -85,11 +86,6 @@ public class TriviaChanceAPI {
         return this.enqueue(call, new FutureCallback<>());
     }
 
-    /*public CompletableFuture<Profile> addToInventory(Profile profile, item Item){
-        Call<Profile> call = this.getService().addToInventory(profile.getUUID(), Item);
-        return this.enqueue(call, new FutureCallback<>());
-    }*/
-
     public CompletableFuture<List<Player>> retrieveGameLeaderboard(TriviaGame game) {
         Call<List<Player>> call = this.getService().retrieveGameLeaderboard(game.getUUID().toString());
         return this.enqueue(call, new FutureCallback<>());
@@ -115,6 +111,8 @@ public class TriviaChanceAPI {
 
     public CompletableFuture<Boolean> leaveGame(Profile player, TriviaGame game) {
         Call<Boolean> call = this.getService().leaveGame(player.getUUID().toString(), game.getUUID().toString());
+
+        MainMenu.getAPI().setCurrentGame(null);
 
         return this.enqueue(call, new FutureCallback<>()).whenComplete((left, err) -> {
             this.getSocketInterface().leaveGame(player, game);

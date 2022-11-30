@@ -120,6 +120,9 @@ public class QuestionActivity extends AppCompatActivity {
                 intent.putExtra("CORRECT", numberCorrect);
                 intent.putExtra("INCORRECT", numberWrong);
                 startActivity(intent);
+
+                //Leave the game, since it's finished.
+                MainMenu.getAPI().leaveGame(MainMenu.getLocalProfile(), MainMenu.getAPI().getCurrentGame());
             }
         }, 500);
     }
