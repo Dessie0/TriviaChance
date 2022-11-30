@@ -82,7 +82,7 @@ public class HostActivity extends AppCompatActivity implements TriviaChanceListe
         });
 
 
-        this.adapter = new PlayerGalleryAdapter(list, getApplication());
+        this.adapter = new PlayerGalleryAdapter(list, getApplication(), isHost);
         playerList.setAdapter(adapter);
         playerList.setLayoutManager(new LinearLayoutManager(HostActivity.this));
 
