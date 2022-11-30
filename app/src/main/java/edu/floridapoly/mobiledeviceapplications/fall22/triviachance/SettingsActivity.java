@@ -1,6 +1,7 @@
 package edu.floridapoly.mobiledeviceapplications.fall22.triviachance;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
@@ -10,6 +11,7 @@ import android.text.TextWatcher;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -44,11 +46,64 @@ public class SettingsActivity extends AppCompatActivity {
         settingsPlayerIcon = findViewById(R.id.playerIcon);
         onReady();
 
+        SharedPreferences preferences = MainMenu.getInstancePackager().getPreferences();
+
         soundToggle = findViewById(R.id.soundToggle);
         musicToggle = findViewById(R.id.musicToggle);
         notificationsToggle = findViewById(R.id.notificationToggle);
         vibrationToggle = findViewById(R.id.vibrationToggle);
 
+        soundToggle.setChecked(preferences.getBoolean("sound", false));
+        soundToggle.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
+                if (isChecked) {
+                    preferences.edit().putBoolean("sound", true).apply();
+                }
+                else {
+                    preferences.edit().putBoolean("sound", false).apply();
+                }
+            }
+        });
+
+        musicToggle.setChecked(preferences.getBoolean("music", false));
+        musicToggle.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
+                if (isChecked) {
+                    preferences.edit().putBoolean("music", true).apply();
+                }
+                else {
+                    preferences.edit().putBoolean("music", false).apply();
+                }
+            }
+        });
+
+        notificationsToggle.setChecked(preferences.getBoolean("notifications", false));
+        notificationsToggle.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
+                if (isChecked) {
+                    preferences.edit().putBoolean("notifications", true).apply();
+                }
+                else {
+                    preferences.edit().putBoolean("notifications", false).apply();
+                }
+            }
+        });
+
+        vibrationToggle.setChecked(preferences.getBoolean("vibration", false));
+        vibrationToggle.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
+                if (isChecked) {
+                    preferences.edit().putBoolean("vibration", true).apply();
+                }
+                else {
+                    preferences.edit().putBoolean("vibration", false).apply();
+                }
+            }
+        });
 
 
         editIcon = findViewById(R.id.editIconButton);

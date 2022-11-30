@@ -68,6 +68,7 @@
         android:layout_marginBottom="44dp"
         android:alpha="0"
         android:text="@string/host"
+        android:translationX="250dp"
         app:layout_constraintBottom_toTopOf="@+id/joinGame"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"

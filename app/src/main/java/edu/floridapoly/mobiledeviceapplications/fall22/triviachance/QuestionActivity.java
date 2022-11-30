@@ -1,9 +1,12 @@
 package edu.floridapoly.mobiledeviceapplications.fall22.triviachance;
 
 import android.animation.ObjectAnimator;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.VibrationEffect;
+import android.os.Vibrator;
 import android.util.TypedValue;
 import android.view.View;
 import android.widget.Button;
@@ -102,14 +105,13 @@ public class QuestionActivity extends AppCompatActivity {
             }
         }
 
-
         /*
         TODO This could be improved, as right now we're just trusting that the server will
             return the question within the 500ms allotted, which is not guaranteed.
          */
         CompletableFuture<Question<?>> nextQuestion = this.getNextQuestion();
         new Handler().postDelayed(() -> {
-            if (currentQuestionIndex++ < 9) {
+            if (currentQuestionIndex < 11) {
                 questionProgress.setSecondaryProgress(currentQuestionIndex * 10);
                 ObjectAnimator.ofInt(questionProgress, "progress", currentQuestionIndex * 10).setDuration(700).start();
                 initQuestion(nextQuestion.join());
@@ -129,12 +131,18 @@ public class QuestionActivity extends AppCompatActivity {
     }
 
     private void markIncorrect(Button button) {
+
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q && MainMenu.getInstancePackager().getPreferences().getBoolean("vibration", false)) {
+            final Vibrator vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+            vibrator.vibrate(VibrationEffect.createPredefined(VibrationEffect.EFFECT_CLICK));
+        }
+
         button.setBackgroundColor(getResources().getColor(R.color.red));
         numberWrong++;
     }
 
     private CompletableFuture<Question<?>> getNextQuestion() {
-        return MainMenu.getInstancePackager().getAPI().retrieveQuestion(this.getGame(), this.currentQuestionIndex);
+        return MainMenu.getInstancePackager().getAPI().retrieveQuestion(this.getGame(), this.currentQuestionIndex++);
     }
 
     public TriviaGame getGame() {

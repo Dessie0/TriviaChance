@@ -27,7 +27,6 @@ public class ResultsActivity extends AppCompatActivity {
         ThemeUtil.onActivityCreateTheme(this);
         setContentView(R.layout.activity_results);
 
-
         Intent intent = getIntent();
         int correct = intent.getIntExtra("CORRECT", 0);
 
