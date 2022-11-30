@@ -85,6 +85,26 @@ public class TriviaChanceWebSocket extends WebSocketServer {
                 }
             }
 
+            case KICK_PLAYER -> {
+                String profileUUID = generator.getParams().get("profileUUID");
+                String gameUUID = generator.getParams().get("gameUUID");
+
+                ActiveGame game = this.getServer().getGameHandler().findGame(UUID.fromString(gameUUID));
+
+                game.getWebSocket(game.findPlayer(profileUUID)).send(new SocketMessageGenerator(MessageType.KICKED)
+                        .setParam("profileUUID", profileUUID)
+                        .setParam("gameUUID", gameUUID).generate());
+
+                game.removePlayer(profileUUID);
+
+                //Update all other players of this player leaving the game.
+                for (Map.Entry<Player, WebSocket> entry : game.getPlayers().entrySet()) {
+                    entry.getValue().send(new SocketMessageGenerator(MessageType.UPDATE_PLAYER)
+                            .setParam("state", "0")
+                            .setParam("profileUUID", profileUUID)
+                            .setParam("gameUUID", gameUUID).generate());
+                }
+            }
         }
     }
 

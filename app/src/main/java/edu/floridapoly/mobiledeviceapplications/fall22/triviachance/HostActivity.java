@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 
+import edu.floridapoly.mobiledeviceapplications.fall22.triviachance.api.events.KickedFromGameEvent;
 import edu.floridapoly.mobiledeviceapplications.fall22.triviachance.api.events.PlayerJoinGameEvent;
 import edu.floridapoly.mobiledeviceapplications.fall22.triviachance.api.events.PlayerLeaveGameEvent;
 import edu.floridapoly.mobiledeviceapplications.fall22.triviachance.api.events.StartGameEvent;
@@ -42,7 +43,6 @@ public class HostActivity extends AppCompatActivity implements TriviaChanceListe
         Intent intent = getIntent();
         boolean isHost = intent.getBooleanExtra("ISHOST", false);
 
-
         TriviaGame game = MainMenu.getAPI().getCurrentGame();
 
         waitingBar = findViewById(R.id.hostWaitingBar);
@@ -52,9 +52,7 @@ public class HostActivity extends AppCompatActivity implements TriviaChanceListe
         playerList = findViewById(R.id.playerRecView);
         gameId = findViewById(R.id.gameID);
 
-
         gameId.setText(game.getCode());
-
 
         if (!isHost) {
             startGameButton.setEnabled(false);
@@ -69,7 +67,6 @@ public class HostActivity extends AppCompatActivity implements TriviaChanceListe
             }
         });
 
-
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -80,7 +77,6 @@ public class HostActivity extends AppCompatActivity implements TriviaChanceListe
                 MainMenu.getAPI().unregisterListener(HostActivity.this);
             }
         });
-
 
         this.adapter = new PlayerGalleryAdapter(list, getApplication(), isHost);
         playerList.setAdapter(adapter);
@@ -122,5 +118,14 @@ public class HostActivity extends AppCompatActivity implements TriviaChanceListe
     public void onGameStart(StartGameEvent event) {
         Intent intent = new Intent(HostActivity.this, QuestionActivity.class);
         startActivity(intent);
+    }
+
+    @EventHandler
+    public void onKicked(KickedFromGameEvent event) {
+        Intent intent = new Intent(HostActivity.this, MainMenu.class);
+        intent.putExtra("kicked", true);
+        startActivity(intent);
+
+        MainMenu.getAPI().setCurrentGame(null);
     }
 }

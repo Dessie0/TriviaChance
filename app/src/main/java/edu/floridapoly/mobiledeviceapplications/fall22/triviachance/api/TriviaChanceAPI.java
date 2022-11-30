@@ -121,6 +121,14 @@ public class TriviaChanceAPI {
         });
     }
 
+    public CompletableFuture<Boolean> kickPlayer(Profile player, TriviaGame game) {
+        Call<Boolean> call = this.getService().kickPlayer(player.getUUID().toString(), game.getUUID().toString());
+
+        return this.enqueue(call, new FutureCallback<>()).whenComplete((left, err) -> {
+            this.getSocketInterface().kickPlayer(player, game);
+        });
+    }
+
     public CompletableFuture<Question<?>> retrieveQuestion(TriviaGame game, int index) {
 
         //TODO Add more questions besides just text questions

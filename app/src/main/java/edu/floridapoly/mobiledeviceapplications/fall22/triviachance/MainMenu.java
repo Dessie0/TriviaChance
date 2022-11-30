@@ -2,9 +2,7 @@ package edu.floridapoly.mobiledeviceapplications.fall22.triviachance;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.res.Resources;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -155,6 +153,10 @@ public class MainMenu extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+
+        if(this.getIntent().getExtras() != null && this.getIntent().getExtras().containsKey("kicked")) {
+            Toast.makeText(this.getBaseContext(), "You were kicked from the game.", Toast.LENGTH_SHORT).show();
+        }
     }
 
     /**
