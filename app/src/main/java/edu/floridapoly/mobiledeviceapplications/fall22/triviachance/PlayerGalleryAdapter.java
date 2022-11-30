@@ -1,8 +1,11 @@
 package edu.floridapoly.mobiledeviceapplications.fall22.triviachance;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,10 +23,12 @@ public class PlayerGalleryAdapter extends RecyclerView.Adapter<PlayerViewHolder>
 
     List<Player> list;
     Context context;
+    boolean isHost;
 
-    public PlayerGalleryAdapter(List<Player> list, Context context) {
+    public PlayerGalleryAdapter(List<Player> list, Context context, boolean isHost) {
         this.list = list;
         this.context = context;
+        this.isHost = isHost;
     }
 
     @Override
@@ -38,25 +43,47 @@ public class PlayerGalleryAdapter extends RecyclerView.Adapter<PlayerViewHolder>
 
     @Override
     public void onBindViewHolder(final PlayerViewHolder viewHolder, final int position) {
-        //final index = viewHolder.getAdapterPosition();
         viewHolder.user_name.setText(list.get(position).getProfile().getUsername());
+
         if (list.get(position).getProfile().getIconURL() != null) {
             ProfileIconHelper.reloadProfileIcon(list.get(position).getProfile(), viewHolder.profile_image);
         }
 
-        viewHolder.view.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View view) {
+        if (isHost) {
+            viewHolder.view.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View view) {
 
-                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q && MainMenu.getInstancePackager().getPreferences().getBoolean("vibration", false)) {
-                    final Vibrator vibrator = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
-                    vibrator.vibrate(VibrationEffect.createPredefined(VibrationEffect.EFFECT_CLICK));
+                    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q && MainMenu.getInstancePackager().getPreferences().getBoolean("vibration", false)) {
+                        final Vibrator vibrator = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
+                        vibrator.vibrate(VibrationEffect.createPredefined(VibrationEffect.EFFECT_CLICK));
+                    }
+
+                    // make sure user does not have option to kick themself
+                    if (!MainMenu.getLocalProfile().getUsername().equals(list.get(viewHolder.getAdapterPosition()).getProfile().getUsername())) {
+                        // Make pop-up for kicking user
+                        AlertDialog.Builder builder = new AlertDialog.Builder(view.getContext());
+                        builder.setTitle("Kick User?");
+                        builder.setMessage("Are you sure you would like to kick \"" + list.get(viewHolder.getAdapterPosition()).getProfile().getUsername() + "\"?");
+                        builder.setCancelable(true);
+
+                        builder.setPositiveButton("Kick", (DialogInterface.OnClickListener) (dialog, which) -> {
+                            //Kick player here ******************************************
+                            Toast.makeText(view.getContext(), "User has been kicked" , Toast.LENGTH_SHORT).show();
+                        });
+                        builder.setNegativeButton("Cancel", (DialogInterface.OnClickListener) (dialog, which) -> {
+                            dialog.cancel();
+                        });
+
+                        AlertDialog alertDialog = builder.create();
+                        alertDialog.show();
+                    }
+
+                    return false;
                 }
-                // Make pop-up for kicking user
-                Toast.makeText(view.getContext(), list.get(viewHolder.getAdapterPosition()).getProfile().getUsername() , Toast.LENGTH_SHORT).show();
-                return false;
-            }
-        });
+            });
+        }
+
     }
 
     @Override
