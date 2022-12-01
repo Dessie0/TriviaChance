@@ -188,6 +188,11 @@ public class MainMenu extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+
+
+
+
+
     }
 
     /**
@@ -203,12 +208,16 @@ public class MainMenu extends AppCompatActivity {
                 ThemeUtil.changeToTheme(this, profileTheme);
             }
             connected = true;
+
+            if (instancePackager.getPreferences().getBoolean("music", false)) {
+                Intent intent = new Intent(MainMenu.this, BackgroundSoundService.class);
+                startService(intent);
+            }
         }
     }
 
     @Override
     public void onBackPressed() {
-        //overrides phone back button to undo animation instead of killing app
         //without this, if user presses back while their in the play online screen they killed the app instead of showing main menu
         // will still kill app if user is in main menu
         if (layout.getProgress() != 0.0f) {
