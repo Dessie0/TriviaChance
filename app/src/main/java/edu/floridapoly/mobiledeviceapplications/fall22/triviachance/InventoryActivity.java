@@ -3,6 +3,8 @@ package edu.floridapoly.mobiledeviceapplications.fall22.triviachance;
 import static android.widget.Toast.LENGTH_SHORT;
 
 import android.content.Intent;
+import android.content.res.ColorStateList;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -12,17 +14,14 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import java.util.ArrayList;
-import java.util.Objects;
+import java.util.Comparator;
 
+import edu.floridapoly.mobiledeviceapps.fall22.api.gameplay.item;
 import edu.floridapoly.mobiledeviceapps.fall22.api.profile.Profile;
 
 public class InventoryActivity extends AppCompatActivity {
 
-
-
-
-    //The below function is never used and shares identical functionality with the redeemItem function.
-
+    ImageButton homeButton;
     ImageButton mainThemeButton;
     ImageButton goldThemeButton;
     ImageButton greenThemeButton;
@@ -32,98 +31,69 @@ public class InventoryActivity extends AppCompatActivity {
     ImageButton purpleThemeButton;
     ImageButton orangeThemeButton;
     ImageButton forestThemeButton;
-    ImageButton homeButton;
     Button redeemPrizesButton;
+
     Profile profile = MainMenu.getInstancePackager().getLocalProfile();
-    itemRegistry items = new itemRegistry(this, 2);
-
-        /*public void addToInventory(Profile profile, item gachaReward) { //Add item from redeemItem to user's inventory
-        for (item collectable : profile.getInventory()) {
-            if (collectable == gachaReward) {
-                collectable.incrementQuantity();
-                break;
-            }
-
-            if(items.getRarity(gachaReward.getItemID()) == "rare") profile.getInventory().add(0, gachaReward);  //Adds the item to the beginning of the list if RARE item
-            else profile.getInventory().add(gachaReward);                                                               //Else adds the item to the end of the list
-                                                                                                                        //Side Note: Could consider adding a sort by alphabetical order
-        }
-    }
-
-    */
-
-
-
-    void displayItems(){ //Displays all items in inventory item frames. Assumes inventory list is sorted by rares first, then commons
-
-    }
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         ThemeUtil.onActivityCreateTheme(this);
         setContentView(R.layout.activity_inventory);
-        ArrayList<ImageButton> imageButtonArrayList = new ArrayList<>();
-
-        redeemPrizesButton = findViewById(R.id.redeemPrizesButton);
 
         mainThemeButton = findViewById(R.id.mainThemeButton);
-        mainThemeButton.setEnabled(false);
+        goldThemeButton = findViewById(R.id.goldThemeButton);
+        greenThemeButton = findViewById(R.id.greenThemeButton);
+        redThemeButton = findViewById(R.id.redThemeButton);
+        bambooThemeButton = findViewById(R.id.bambooThemeButton);
+        sugarThemeButton = findViewById(R.id.sugarThemeButton);
+        purpleThemeButton = findViewById(R.id.purpleThemeButton);
+        orangeThemeButton = findViewById(R.id.orangeThemeButton);
+        forestThemeButton = findViewById(R.id.forestThemeButton);
+
+        ArrayList<ImageButton> imageButtonArrayList = new ArrayList<>();
+
+        mainThemeButton.setEnabled(true);
+        mainThemeButton.setImageResource(0);
+        mainThemeButton.setTag((Integer)1);
         imageButtonArrayList.add(mainThemeButton);
 
-        goldThemeButton = findViewById(R.id.goldThemeButton);
         goldThemeButton.setEnabled(false);
+        goldThemeButton.setTag((Integer)2);
         imageButtonArrayList.add(goldThemeButton);
 
-
-        greenThemeButton = findViewById(R.id.greenThemeButton);
         greenThemeButton.setEnabled(false);
+        greenThemeButton.setTag((Integer)3);
         imageButtonArrayList.add(greenThemeButton);
 
-
-        redThemeButton = findViewById(R.id.redThemeButton);
         redThemeButton.setEnabled(false);
+        redThemeButton.setTag((Integer)4);
         imageButtonArrayList.add(redThemeButton);
 
-
-        bambooThemeButton = findViewById(R.id.bambooThemeButton);
         bambooThemeButton.setEnabled(false);
+        bambooThemeButton.setTag((Integer)5);
         imageButtonArrayList.add(bambooThemeButton);
 
-        sugarThemeButton = findViewById(R.id.sugarThemeButton);
         sugarThemeButton.setEnabled(false);
+        sugarThemeButton.setTag((Integer)6);
         imageButtonArrayList.add(sugarThemeButton);
 
-
-        purpleThemeButton = findViewById(R.id.purpleThemeButton);
         purpleThemeButton.setEnabled(false);
+        purpleThemeButton.setTag((Integer)7);
         imageButtonArrayList.add(purpleThemeButton);
 
-        orangeThemeButton = findViewById(R.id.orangeThemeButton);
         orangeThemeButton.setEnabled(false);
+        orangeThemeButton.setTag((Integer)8);
         imageButtonArrayList.add(orangeThemeButton);
 
-        forestThemeButton = findViewById(R.id.forestThemeButton);
         forestThemeButton.setEnabled(false);
+        forestThemeButton.setTag((Integer)9);
         imageButtonArrayList.add(forestThemeButton);
 
+        profile.getInventory().sort(Comparator.comparing(item::getItemID));
+        setLockStatus(imageButtonArrayList); //Searches for theme items in inventory and enables the buttons for all found themes
 
-        //Sorts the inventory by itemId
-        profile.getInventory().sort((i1, i2) -> i1.getItemID().compareTo(i2.getItemID()));
-
-        for(int i = 0; i < profile.getInventory().size(); i++){
-            if(Objects.equals(items.getItemName(profile.getInventory().get(i).getItemID()), items.getItemName(i))){
-                imageButtonArrayList.get(i).setEnabled(true);
-                System.out.println("Button " + i + " is Enabled.\n");
-                imageButtonArrayList.get(i).setImageResource(0);
-            }
-            else {
-                imageButtonArrayList.get(i).setEnabled(false);
-                System.out.println("Button " + i + " is Disabled.\n");
-            }
-        }
-
+        redeemPrizesButton = findViewById(R.id.redeemPrizesButton);
         redeemPrizesButton.setOnClickListener((View v) -> {
             Intent intent = new Intent(InventoryActivity.this, RedeemActivity.class);
             startActivity(intent);
@@ -137,9 +107,21 @@ public class InventoryActivity extends AppCompatActivity {
 
     }
 
+    public void setLockStatus(ArrayList<ImageButton> imageButtonArrayList){ //Iterates through inventory to determine
+                                                                            //what themes the user has access to
+        for (item i1 : profile.getInventory()) {
+                for(ImageButton b1 : imageButtonArrayList){
+                    if (i1.getItemID() == b1.getTag()){ //Each ImageButton in the List has an
+                        b1.setEnabled(true);            //id tag that matches the itemId associated with it
+                        System.out.println(b1.getTag() + " is Enabled.\n");
+                        b1.setImageResource(0);
 
+                    }
+                }
+            }
+    }
 
-    public void changeTheme(View view) {
+    public void changeTheme(View view) { //Functionality for each theme button on-screen
         switch (view.getId()) {
             case R.id.mainThemeButton:
                 ThemeUtil.changeToTheme(InventoryActivity.this, R.style.Theme_TriviaChance);

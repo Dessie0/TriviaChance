@@ -1,18 +1,26 @@
 package edu.floridapoly.mobiledeviceapplications.fall22.triviachance;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.animation.ObjectAnimator;
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.view.ViewTreeObserver;
+import android.view.animation.AnticipateInterpolator;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.window.SplashScreen;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.motion.widget.MotionLayout;
+import androidx.lifecycle.ViewModelProvider;
 
 import edu.floridapoly.mobiledeviceapplications.fall22.triviachance.api.InstancePackager;
 import edu.floridapoly.mobiledeviceapplications.fall22.triviachance.api.TriviaChanceAPI;
@@ -22,6 +30,7 @@ import edu.floridapoly.mobiledeviceapps.fall22.api.profile.Profile;
 public class MainMenu extends AppCompatActivity {
 
     private static InstancePackager instancePackager;
+    private boolean connected = false;
 
     MotionLayout layout;
     Button playOnline;
@@ -35,11 +44,36 @@ public class MainMenu extends AppCompatActivity {
     TextView usernameText;
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        overridePendingTransition(0, 0);
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         ThemeUtil.onActivityCreateTheme(this);
-
         setContentView(R.layout.activity_main_menu);
+
+
+        // Set up an OnPreDrawListener to the root view.
+        final View content = findViewById(android.R.id.content);
+        content.getViewTreeObserver().addOnPreDrawListener(
+                new ViewTreeObserver.OnPreDrawListener() {
+                    @Override
+                    public boolean onPreDraw() {
+                        // Check if the initial data is ready.
+                        if (connected) {
+                            // The content is ready; start drawing.
+                            content.getViewTreeObserver().removeOnPreDrawListener(this);
+                            return true;
+                        } else {
+                            // The content is not ready; suspend.
+                            return false;
+                        }
+                    }
+                });
+
 
         playerIcon = findViewById(R.id.playerIcon);
         joinGame = findViewById(R.id.joinGame);
@@ -167,8 +201,11 @@ public class MainMenu extends AppCompatActivity {
             ProfileIconHelper.reloadProfileIcon(getLocalProfile(), playerIcon);
             usernameText.setText(getLocalProfile().getUsername());
             int profileTheme = instancePackager.getPreferences().getInt("ctheme", 0);
-            if (ThemeUtil.getCurrentTheme() != profileTheme)
+            if (ThemeUtil.getCurrentTheme() != profileTheme) {
+                Log.e("Testing", Integer.toString(profileTheme));
                 ThemeUtil.changeToTheme(this, profileTheme);
+            }
+            connected = true;
         }
     }
 
