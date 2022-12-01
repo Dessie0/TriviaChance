@@ -24,6 +24,8 @@
     <string name="current_progress">Current Progress:</string>
 
     <string name="locked_item">This item is locked</string>
+    <string name="One">1</string>
+    <string name="backButtonDescription">Button that sends you back to the MainMenu activity</string>
 
 
 </resources>
