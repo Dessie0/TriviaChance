@@ -188,6 +188,11 @@ public class MainMenu extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+
+
+
+
+
     }
 
     /**
@@ -203,6 +208,11 @@ public class MainMenu extends AppCompatActivity {
                 ThemeUtil.changeToTheme(this, profileTheme);
             }
             connected = true;
+
+            if (instancePackager.getPreferences().getBoolean("music", false)) {
+                Intent intent = new Intent(MainMenu.this, BackgroundSoundService.class);
+                startService(intent);
+            }
         }
     }
 
