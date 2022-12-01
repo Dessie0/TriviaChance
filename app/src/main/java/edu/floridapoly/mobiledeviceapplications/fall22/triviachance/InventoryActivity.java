@@ -3,6 +3,8 @@ package edu.floridapoly.mobiledeviceapplications.fall22.triviachance;
 import static android.widget.Toast.LENGTH_SHORT;
 
 import android.content.Intent;
+import android.content.res.ColorStateList;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -113,6 +115,7 @@ public class InventoryActivity extends AppCompatActivity {
                         b1.setEnabled(true);            //id tag that matches the itemId associated with it
                         System.out.println(b1.getTag() + " is Enabled.\n");
                         b1.setImageResource(0);
+
                     }
                 }
             }
