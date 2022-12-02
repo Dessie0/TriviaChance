@@ -2,6 +2,7 @@ package edu.floridapoly.mobiledeviceapplications.fall22.triviachance.api;
 
 import java.util.UUID;
 
+import edu.floridapoly.mobiledeviceapplications.fall22.triviachance.api.events.KickedFromGameEvent;
 import edu.floridapoly.mobiledeviceapplications.fall22.triviachance.api.events.PlayerJoinGameEvent;
 import edu.floridapoly.mobiledeviceapplications.fall22.triviachance.api.events.PlayerLeaveGameEvent;
 import edu.floridapoly.mobiledeviceapplications.fall22.triviachance.api.events.StartGameEvent;
@@ -17,7 +18,6 @@ public class TriviaWebSocket extends WebSocketListener {
     public TriviaWebSocket(TriviaChanceAPI api) {
         this.api = api;
     }
-
 
     @Override
     public void onClosed(WebSocket webSocket, int code, String reason) {
@@ -59,6 +59,10 @@ public class TriviaWebSocket extends WebSocketListener {
 
                 this.getAPI().fireEvent(new StartGameEvent(this.getAPI().getCurrentGame()));
                 break;
+            }
+
+            case KICKED: {
+                this.getAPI().fireEvent(new KickedFromGameEvent(this.getAPI().getCurrentGame()));
             }
         }
     }

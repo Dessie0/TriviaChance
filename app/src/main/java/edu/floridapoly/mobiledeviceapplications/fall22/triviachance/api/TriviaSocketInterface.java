@@ -8,7 +8,6 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.WebSocket;
 
-
 /**
  * Sends Serverbound socket messages to interface with the server about the current game.
  */
@@ -46,6 +45,14 @@ public class TriviaSocketInterface {
 
     public void startGame(TriviaGame game) {
         SocketMessageGenerator generator = new SocketMessageGenerator(MessageType.HOST_START_GAME);
+        generator.setParam("gameUUID", game.getUUID().toString());
+
+        this.getSocket().send(generator.generate());
+    }
+
+    public void kickPlayer(Profile profile, TriviaGame game) {
+        SocketMessageGenerator generator = new SocketMessageGenerator(MessageType.KICK_PLAYER);
+        generator.setParam("profileUUID", profile.getUUID().toString());
         generator.setParam("gameUUID", game.getUUID().toString());
 
         this.getSocket().send(generator.generate());

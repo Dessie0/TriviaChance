@@ -1,27 +1,19 @@
 package edu.floridapoly.mobiledeviceapplications.fall22.triviachance;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
-import android.animation.ObjectAnimator;
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewTreeObserver;
-import android.view.animation.AnticipateInterpolator;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.window.SplashScreen;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.motion.widget.MotionLayout;
-import androidx.lifecycle.ViewModelProvider;
 
 import edu.floridapoly.mobiledeviceapplications.fall22.triviachance.api.InstancePackager;
 import edu.floridapoly.mobiledeviceapplications.fall22.triviachance.api.TriviaChanceAPI;
@@ -188,11 +180,6 @@ public class MainMenu extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-
-
-
-
-
     }
 
     /**
@@ -204,7 +191,6 @@ public class MainMenu extends AppCompatActivity {
             usernameText.setText(getLocalProfile().getUsername());
             int profileTheme = instancePackager.getPreferences().getInt("ctheme", 0);
             if (ThemeUtil.getCurrentTheme() != profileTheme) {
-                Log.e("Testing", Integer.toString(profileTheme));
                 ThemeUtil.changeToTheme(this, profileTheme);
             }
             connected = true;
@@ -213,6 +199,9 @@ public class MainMenu extends AppCompatActivity {
                 Intent intent = new Intent(MainMenu.this, BackgroundSoundService.class);
                 startService(intent);
             }
+
+            System.out.println("Inventory:");
+            System.out.println(getLocalProfile().getInventory());
         }
     }
 
