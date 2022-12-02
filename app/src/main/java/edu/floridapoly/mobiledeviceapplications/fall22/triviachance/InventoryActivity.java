@@ -3,8 +3,6 @@ package edu.floridapoly.mobiledeviceapplications.fall22.triviachance;
 import static android.widget.Toast.LENGTH_SHORT;
 
 import android.content.Intent;
-import android.content.res.ColorStateList;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -107,18 +105,17 @@ public class InventoryActivity extends AppCompatActivity {
 
     }
 
-    public void setLockStatus(ArrayList<ImageButton> imageButtonArrayList){ //Iterates through inventory to determine
-                                                                            //what themes the user has access to
+    public void setLockStatus(ArrayList<ImageButton> imageButtonArrayList) { //Iterates through inventory to determine
+        //what themes the user has access to
         for (item i1 : profile.getInventory()) {
-                for(ImageButton b1 : imageButtonArrayList){
-                    if (i1.getItemID() == b1.getTag()){ //Each ImageButton in the List has an
-                        b1.setEnabled(true);            //id tag that matches the itemId associated with it
-                        System.out.println(b1.getTag() + " is Enabled.\n");
-                        b1.setImageResource(0);
-
-                    }
+            for (ImageButton b1 : imageButtonArrayList) {
+                if (i1.getItemID() == b1.getTag()) { //Each ImageButton in the List has an
+                    b1.setEnabled(true);            //id tag that matches the itemId associated with it
+                    System.out.println(b1.getTag() + " is Enabled.\n");
+                    b1.setImageResource(0);
                 }
             }
+        }
     }
 
     public void changeTheme(View view) { //Functionality for each theme button on-screen

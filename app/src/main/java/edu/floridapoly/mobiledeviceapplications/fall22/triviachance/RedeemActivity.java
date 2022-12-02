@@ -23,7 +23,7 @@ public class RedeemActivity extends AppCompatActivity {
     itemRegistry items = new itemRegistry(this, 4);
     int selectedAmount = 0;
     int colorPrimary, colorSecondary;
-    int unlocksAvailable = 10;//MainMenu.getInstancePackager().getLocalProfile().getNumberOfUnlocks();
+    int unlocksAvailable = MainMenu.getInstancePackager().getLocalProfile().getNumberOfUnlocks();
 
     Button unlockButton;
     Button increaseButton;
@@ -36,7 +36,6 @@ public class RedeemActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
         super.onCreate(savedInstanceState);
         ThemeUtil.onActivityCreateTheme(this);
         setContentView(R.layout.activity_redeem);
@@ -61,7 +60,6 @@ public class RedeemActivity extends AppCompatActivity {
             Intent intent = new Intent(RedeemActivity.this, InventoryActivity.class);
             startActivity(intent);
         });
-
 
         unlockButton = findViewById(R.id.unlockButton);
         unlockButton.setEnabled(false);
@@ -143,6 +141,9 @@ public class RedeemActivity extends AppCompatActivity {
                 Toast.makeText(getApplicationContext(), "You received: " + items.getItemName(gachaReward.getItemID()) + "!", Toast.LENGTH_SHORT).show();
                 System.out.println(items.getItemName(gachaReward.getItemID()) + " Added to Inventory");
                 profile.getInventory().add(gachaReward);
+                
+                //Update the server about the new item.
+                MainMenu.getAPI().updateItem(profile, gachaReward.getItemID(), gachaReward.getQuantity());
             }
         }
     }
