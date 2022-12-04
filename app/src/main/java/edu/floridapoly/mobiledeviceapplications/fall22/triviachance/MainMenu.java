@@ -106,6 +106,7 @@ public class MainMenu extends AppCompatActivity {
 
                 getAPI().createGame(getLocalProfile()).thenAccept(game -> {
                     Intent intent = new Intent(MainMenu.this, QuestionActivity.class);
+                    intent.putExtra("SOLO", true);
                     startActivity(intent);
 
                     getAPI().setCurrentGame(game);

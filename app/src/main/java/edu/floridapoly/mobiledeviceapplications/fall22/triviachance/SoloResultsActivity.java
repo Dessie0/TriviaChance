@@ -1,19 +1,23 @@
 package edu.floridapoly.mobiledeviceapplications.fall22.triviachance;
 
+
 import android.animation.ObjectAnimator;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-public class ResultsActivity extends AppCompatActivity {
+public class SoloResultsActivity extends AppCompatActivity {
 
     TextView numCorrectText;
+    ImageButton homeButton;
+    ImageButton replayButton;
     ProgressBar progressBar;
     Button redeemButton;
 
@@ -38,14 +42,17 @@ public class ResultsActivity extends AppCompatActivity {
         ObjectAnimator.ofInt(progressBar, "progress", currentProgress).setDuration(700).start();
 
 
-        // need to have bar fill up like normal, wait, then start at 0 and refil whats left in a different color
+        redeemButton = findViewById(R.id.resultsRedeemButton);
+        redeemButton.setVisibility(View.GONE);
+
 
         if (currentProgress >= 100) {
-            currentProgress -= 100;
+            currentProgress = 0;
+            redeemButton.setVisibility(View.VISIBLE);
             MainMenu.getInstancePackager().getLocalProfile().incrementUnlocks();
-            progressBar.setSecondaryProgress(currentProgress);
-
-            ObjectAnimator.ofInt(progressBar, "progress", currentProgress).setDuration(700).start();
+        }
+        if (MainMenu.getInstancePackager().getLocalProfile().getNumberOfUnlocks() != 0) {
+            redeemButton.setVisibility(View.VISIBLE);
         }
 
 
@@ -56,12 +63,38 @@ public class ResultsActivity extends AppCompatActivity {
 
 
 
-        redeemButton = findViewById(R.id.resultsRedeemButton);
         redeemButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(ResultsActivity.this, RedeemActivity.class);
+                Intent intent = new Intent(SoloResultsActivity.this, RedeemActivity.class);
                 startActivity(intent);
+            }
+        });
+
+        homeButton = findViewById(R.id.homeButton2);
+        homeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(SoloResultsActivity.this, MainMenu.class);
+                startActivity(intent);
+            }
+        });
+
+        replayButton = findViewById(R.id.replayButton);
+        replayButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //Create the game
+                if(MainMenu.getLocalProfile() == null) {
+                    return;
+                }
+
+                MainMenu.getAPI().createGame(MainMenu.getLocalProfile()).thenAccept(game -> {
+                    Intent intent = new Intent(SoloResultsActivity.this, QuestionActivity.class);
+                    startActivity(intent);
+
+                    MainMenu.getAPI().setCurrentGame(game);
+                });
             }
         });
 
@@ -69,7 +102,7 @@ public class ResultsActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        Intent intent = new Intent(ResultsActivity.this, MainMenu.class);
+        Intent intent = new Intent(SoloResultsActivity.this, MainMenu.class);
         startActivity(intent);
     }
 }

@@ -116,14 +116,19 @@ public class QuestionActivity extends AppCompatActivity {
                 questionProgress.setSecondaryProgress(currentQuestionIndex * 10);
                 ObjectAnimator.ofInt(questionProgress, "progress", currentQuestionIndex * 10).setDuration(700).start();
                 initQuestion(nextQuestion.join());
-            } else {
-                Intent intent = new Intent(QuestionActivity.this, ResultsActivity.class);
+            }
+            else if (getIntent().hasExtra("SOLO")) {
+                Intent intent = new Intent(QuestionActivity.this, SoloResultsActivity.class);
                 intent.putExtra("CORRECT", numberCorrect);
                 intent.putExtra("INCORRECT", numberWrong);
-                startActivity(intent);
-
                 //Leave the game, since it's finished.
                 MainMenu.getAPI().leaveGame(MainMenu.getLocalProfile(), MainMenu.getAPI().getCurrentGame());
+                startActivity(intent);
+            }
+            else {
+                Intent intent = new Intent(QuestionActivity.this, OnlineResultsActivity.class);
+                MainMenu.getAPI().leaveGame(MainMenu.getLocalProfile(), MainMenu.getAPI().getCurrentGame());
+                startActivity(intent);
             }
         }, 500);
     }
