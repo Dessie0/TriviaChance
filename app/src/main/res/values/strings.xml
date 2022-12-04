@@ -20,6 +20,7 @@
 
     <string name="redeem">Redeem Prizes Here</string>
     <string name="results">Game Results:</string>
+    <string name="progress_until">Progress Until Next Unlock:</string>
 
     <string name="current_progress">Current Progress:</string>
 
