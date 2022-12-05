@@ -35,13 +35,6 @@ public class Profile {
         return inventory;
     }
 
-    public Integer getNumberOfUnlocks() {
-        return numberOfUnlocks;
-    }
-
-    public void setNumberOfUnlocks(Integer numberOfUnlocks) {
-        this.numberOfUnlocks = numberOfUnlocks;
-    }
 
     public void setUsername(String username) {
         this.username = username;
@@ -49,7 +42,6 @@ public class Profile {
     public void setIconURL(String iconURL) {
         this.iconURL = iconURL;
     }
-    public void incrementUnlocks(){ this.numberOfUnlocks++; }
 
     public static String generateRandomUsername() {
         return "user_" + new StringGenerator(10).generate();

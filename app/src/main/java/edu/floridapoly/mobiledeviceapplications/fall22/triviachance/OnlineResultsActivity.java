@@ -20,10 +20,14 @@ public class OnlineResultsActivity extends AppCompatActivity {
     ImageView goldBar;
     ImageView silverBar;
     ImageView bronzeBar;
+    ImageView bronzePlayerIco;
+    ImageView silverPlayerIco;
+    ImageView goldPlayerIco;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        ThemeUtil.onActivityCreateTheme(this);
         setContentView(R.layout.activity_online_results);
 
 
@@ -46,11 +50,11 @@ public class OnlineResultsActivity extends AppCompatActivity {
         bronzeScale.setDuration(500);
         bronzeBar.startAnimation(bronzeScale);
 
-        Animation silverScale = new ShowAnimation(silverBar, 625);
+        Animation silverScale = new ShowAnimation(silverBar, 600);
         silverScale.setDuration(700);
         silverBar.startAnimation(silverScale);
 
-        Animation goldScale = new ShowAnimation(goldBar, 925);
+        Animation goldScale = new ShowAnimation(goldBar, 800);
         goldScale.setDuration(900);
         goldBar.startAnimation(goldScale);
 

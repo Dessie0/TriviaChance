@@ -19,91 +19,120 @@
         app:srcCompat="@drawable/ic_back"
         app:tint="?attr/colorPrimaryVariant" />
 
-    <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="449dp"
+    <LinearLayout
+        android:layout_width="413dp"
+        android:layout_height="451dp"
         android:layout_marginTop="40dp"
+        android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/resultsText">
 
-        <androidx.cardview.widget.CardView
-            android:layout_width="101dp"
-            android:layout_height="102dp"
-            android:translationX="20dp"
-            android:translationY="240dp"
-            app:cardCornerRadius="20dp">
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1">
 
-            <ImageView
-                android:id="@+id/imageView5"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                tools:srcCompat="@tools:sample/avatars" />
-        </androidx.cardview.widget.CardView>
+            <androidx.cardview.widget.CardView
+                android:layout_width="101dp"
+                android:layout_height="102dp"
+                android:layout_marginBottom="10dp"
+                app:cardCornerRadius="20dp"
+                app:layout_constraintBottom_toTopOf="@+id/bronzeBar"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent">
 
-        <androidx.cardview.widget.CardView
-            android:layout_width="101dp"
-            android:layout_height="102dp"
-            android:translationX="290dp"
-            android:translationY="30dp"
-            app:cardCornerRadius="20dp">
+                <ImageView
+                    android:id="@+id/bronzePlayerIcon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    tools:srcCompat="@tools:sample/avatars" />
 
-            <ImageView
-                android:id="@+id/imageView5"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:adjustViewBounds="true"
-                tools:srcCompat="@tools:sample/avatars" />
-        </androidx.cardview.widget.CardView>
-
-        <androidx.cardview.widget.CardView
-            android:layout_width="101dp"
-            android:layout_height="102dp"
-            android:translationX="155dp"
-            android:translationY="150dp"
-            app:cardCornerRadius="20dp">
-
-            <ImageView
-                android:id="@+id/imageView5"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                tools:srcCompat="@tools:sample/avatars" />
-        </androidx.cardview.widget.CardView>
-
-        <LinearLayout
-            android:layout_width="413dp"
-            android:layout_height="451dp"
-            android:orientation="horizontal">
+            </androidx.cardview.widget.CardView>
 
             <ImageView
                 android:id="@+id/bronzeBar"
-                android:layout_width="135dp"
-                android:layout_height="138dp"
+                android:layout_width="match_parent"
+                android:layout_height="100dp"
                 android:layout_gravity="bottom"
                 android:layout_weight="1"
                 android:background="#594A2F"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
                 tools:srcCompat="#594A2F" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1">
 
             <ImageView
                 android:id="@+id/silverBar"
-                android:layout_width="135dp"
-                android:layout_height="240dp"
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
                 android:layout_gravity="bottom|center_horizontal"
                 android:layout_weight="1"
                 android:background="@color/material_dynamic_neutral_variant50"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
                 tools:srcCompat="@color/material_dynamic_neutral_variant50" />
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="101dp"
+                android:layout_height="102dp"
+                android:layout_marginBottom="10dp"
+                app:cardCornerRadius="20dp"
+                app:layout_constraintBottom_toTopOf="@+id/silverBar"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent">
+
+                <ImageView
+                    android:id="@+id/silverPlayerIcon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    tools:srcCompat="@tools:sample/avatars" />
+            </androidx.cardview.widget.CardView>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1">
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="101dp"
+                android:layout_height="102dp"
+                android:layout_marginBottom="10dp"
+                app:cardCornerRadius="20dp"
+                app:layout_constraintBottom_toTopOf="@+id/goldBar"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent">
+
+                <ImageView
+                    android:id="@+id/goldPlayerIcon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    tools:srcCompat="@tools:sample/avatars" />
+
+            </androidx.cardview.widget.CardView>
 
             <ImageView
                 android:id="@+id/goldBar"
-                android:layout_width="135dp"
-                android:layout_height="356dp"
+                android:layout_width="match_parent"
+                android:layout_height="300dp"
                 android:layout_gravity="bottom"
                 android:layout_weight="1"
                 android:background="@color/gold"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
                 tools:srcCompat="@color/gold" />
 
-        </LinearLayout>
-    </FrameLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </LinearLayout>
 
     <TextView
         android:id="@+id/resultsText"
