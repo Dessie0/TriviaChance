@@ -24,14 +24,6 @@ public class GameHandler {
             this.webSocket = new TriviaChanceWebSocket(this.getServer(), new InetSocketAddress(8083));
             this.webSocket.run();
         }).start();
-
-        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-            try {
-                this.webSocket.stop();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }));
     }
 
     public ActiveGame startGame(TriviaGame game) {

@@ -67,9 +67,8 @@ public class PlayerGalleryAdapter extends RecyclerView.Adapter<PlayerViewHolder>
                         builder.setCancelable(true);
 
                         builder.setPositiveButton("Kick", (DialogInterface.OnClickListener) (dialog, which) -> {
-                            MainMenu.getAPI().kickPlayer(list.get(viewHolder.getAdapterPosition()).getProfile(), MainMenu.getAPI().getCurrentGame());
+                            MainMenu.getAPI().getSocketInterface().kickPlayer(list.get(viewHolder.getAdapterPosition()).getProfile(), MainMenu.getAPI().getCurrentGame());
 
-                            //Kick player here ******************************************
                             Toast.makeText(view.getContext(), "User has been kicked" , Toast.LENGTH_SHORT).show();
                         });
 

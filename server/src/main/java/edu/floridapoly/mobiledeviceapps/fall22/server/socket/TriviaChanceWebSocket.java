@@ -28,7 +28,11 @@ public class TriviaChanceWebSocket extends WebSocketServer {
     public void onOpen(WebSocket conn, ClientHandshake handshake) {}
 
     @Override
-    public void onClose(WebSocket conn, int code, String reason, boolean remote) {}
+    public void onClose(WebSocket conn, int code, String reason, boolean remote) {
+        //TODO: Should leave any games that this connection currently is on
+
+
+    }
 
     @Override
     public void onMessage(WebSocket conn, String message) {
@@ -83,6 +87,9 @@ public class TriviaChanceWebSocket extends WebSocketServer {
                     entry.getValue().send(new SocketMessageGenerator(MessageType.START_GAME)
                             .setParam("gameUUID", gameUUID).generate());
                 }
+
+                game.nextQuestion();
+                game.setStarted(true);
             }
 
             case KICK_PLAYER -> {
@@ -104,6 +111,24 @@ public class TriviaChanceWebSocket extends WebSocketServer {
                             .setParam("profileUUID", profileUUID)
                             .setParam("gameUUID", gameUUID).generate());
                 }
+            }
+
+            case SUBMIT_QUESTION -> {
+                String profileUUID = generator.getParams().get("profileUUID");
+                String gameUUID = generator.getParams().get("gameUUID");
+                int questionId = Integer.parseInt(generator.getParams().get("questionId"));
+                boolean correct = Boolean.parseBoolean(generator.getParams().get("questionId"));
+
+                ActiveGame game = this.getServer().getGameHandler().findGame(UUID.fromString(gameUUID));
+                Player player = game.findPlayer(profileUUID);
+
+                if(correct) {
+                    player.getStats().setCorrect(player.getStats().getCorrect() + 1);
+                } else {
+                    player.getStats().setIncorrect(player.getStats().getIncorrect() + 1);
+                }
+
+                game.submit(player, questionId);
             }
         }
     }

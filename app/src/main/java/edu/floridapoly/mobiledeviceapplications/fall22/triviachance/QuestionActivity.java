@@ -19,15 +19,19 @@ import androidx.appcompat.app.AppCompatActivity;
 import java.util.Random;
 import java.util.concurrent.CompletableFuture;
 
+import edu.floridapoly.mobiledeviceapplications.fall22.triviachance.api.events.NextQuestionEvent;
+import edu.floridapoly.mobiledeviceapplications.fall22.triviachance.api.events.util.EventHandler;
+import edu.floridapoly.mobiledeviceapplications.fall22.triviachance.api.events.util.TriviaChanceListener;
 import edu.floridapoly.mobiledeviceapps.fall22.api.gameplay.TriviaGame;
 import edu.floridapoly.mobiledeviceapps.fall22.api.gameplay.questions.Question;
 import edu.floridapoly.mobiledeviceapps.fall22.api.gameplay.questions.TextQuestion;
 
-public class QuestionActivity extends AppCompatActivity {
+public class QuestionActivity extends AppCompatActivity implements TriviaChanceListener {
     ProgressBar questionProgress;
 
     private TriviaGame game;
     private Question<?> currentQuestion;
+    private int currentQuestionId;
 
     Button answer1;
     Button answer2;
@@ -36,12 +40,14 @@ public class QuestionActivity extends AppCompatActivity {
     Button[] answerButtons;
     TextView questionText;
 
-    int currentQuestionIndex = 0;
     int numberCorrect;
     int numberWrong;
 
     TypedValue typedValue;
     int colorPrimary, colorSecondary;
+
+    //Determines whether or not the 500ms of delay has passed for the next question to be initialized.
+    private CompletableFuture<Void> canInitQuestion;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,7 +56,7 @@ public class QuestionActivity extends AppCompatActivity {
         setContentView(R.layout.activity_question);
 
         questionProgress = findViewById(R.id.questionProgressBar);
-        questionProgress.setProgress(currentQuestionIndex);
+        questionProgress.setProgress(0);
 
         this.game = MainMenu.getAPI().getCurrentGame();
 
@@ -68,7 +74,9 @@ public class QuestionActivity extends AppCompatActivity {
         getTheme().resolveAttribute(com.google.android.material.R.attr.colorSecondary, typedValue, true);
         colorSecondary = typedValue.resourceId;
 
-        this.getNextQuestion().thenAccept(this::initQuestion);
+        canInitQuestion = CompletableFuture.completedFuture(null);
+
+        MainMenu.getAPI().registerListener(this);
     }
 
     public void initQuestion(Question<?> question) {
@@ -101,35 +109,17 @@ public class QuestionActivity extends AppCompatActivity {
             TextQuestion textQuestion = (TextQuestion) this.getCurrentQuestion();
             if(textQuestion.attempt(clickedButton.getText().toString())) {
                 this.markCorrect(clickedButton);
+                MainMenu.getAPI().getSocketInterface().submitQuestion(MainMenu.getLocalProfile(), this.game, this.currentQuestionId, true);
             } else {
                 this.markIncorrect(clickedButton);
+                MainMenu.getAPI().getSocketInterface().submitQuestion(MainMenu.getLocalProfile(), this.game, this.currentQuestionId, false);
             }
         }
 
-        /*
-        TODO This could be improved, as right now we're just trusting that the server will
-            return the question within the 500ms allotted, which is not guaranteed.
-         */
-        CompletableFuture<Question<?>> nextQuestion = this.getNextQuestion();
+        this.canInitQuestion = new CompletableFuture<>();
+
         new Handler().postDelayed(() -> {
-            if (currentQuestionIndex < 11) {
-                questionProgress.setSecondaryProgress(currentQuestionIndex * 10);
-                ObjectAnimator.ofInt(questionProgress, "progress", currentQuestionIndex * 10).setDuration(700).start();
-                initQuestion(nextQuestion.join());
-            }
-            else if (getIntent().hasExtra("SOLO")) {
-                Intent intent = new Intent(QuestionActivity.this, SoloResultsActivity.class);
-                intent.putExtra("CORRECT", numberCorrect);
-                intent.putExtra("INCORRECT", numberWrong);
-                //Leave the game, since it's finished.
-                MainMenu.getAPI().leaveGame(MainMenu.getLocalProfile(), MainMenu.getAPI().getCurrentGame());
-                startActivity(intent);
-            }
-            else {
-                Intent intent = new Intent(QuestionActivity.this, OnlineResultsActivity.class);
-                MainMenu.getAPI().leaveGame(MainMenu.getLocalProfile(), MainMenu.getAPI().getCurrentGame());
-                startActivity(intent);
-            }
+            this.canInitQuestion.complete(null);
         }, 500);
     }
 
@@ -145,7 +135,6 @@ public class QuestionActivity extends AppCompatActivity {
     }
 
     private void markIncorrect(Button button) {
-
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q && MainMenu.getInstancePackager().getPreferences().getBoolean("vibration", false)) {
             final Vibrator vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
             vibrator.vibrate(VibrationEffect.createPredefined(VibrationEffect.EFFECT_CLICK));
@@ -156,13 +145,44 @@ public class QuestionActivity extends AppCompatActivity {
             incorrectChime.start();
         }
 
-
         button.setBackgroundColor(getResources().getColor(R.color.red));
         numberWrong++;
     }
 
-    private CompletableFuture<Question<?>> getNextQuestion() {
-        return MainMenu.getInstancePackager().getAPI().retrieveQuestion(this.getGame(), this.currentQuestionIndex++);
+    private void openResults() {
+        Intent intent;
+        if (getIntent().hasExtra("SOLO")) {
+            intent = new Intent(QuestionActivity.this, SoloResultsActivity.class);
+            intent.putExtra("CORRECT", numberCorrect);
+            intent.putExtra("INCORRECT", numberWrong);
+
+            //Leave the game, since it's finished.
+            startActivity(intent);
+        }
+        else {
+            intent = new Intent(QuestionActivity.this, OnlineResultsActivity.class);
+        }
+
+        MainMenu.getAPI().unregisterListener(this);
+        MainMenu.getAPI().leaveGame(MainMenu.getLocalProfile(), MainMenu.getAPI().getCurrentGame());
+        startActivity(intent);
+    }
+
+    @EventHandler
+    public void onNextQuestion(NextQuestionEvent event) {
+        this.canInitQuestion.thenRun(() -> {
+            if(event.getQuestionId() == -1) {
+                this.openResults();
+            } else {
+                this.runOnUiThread(() -> {
+                    questionProgress.setSecondaryProgress(event.getQuestionId() * 10);
+                    ObjectAnimator.ofInt(questionProgress, "progress", event.getQuestionId() * 10).setDuration(700).start();
+                });
+
+                initQuestion(event.getQuestion());
+                this.currentQuestionId = event.getQuestionId();
+            }
+        });
     }
 
     public TriviaGame getGame() {

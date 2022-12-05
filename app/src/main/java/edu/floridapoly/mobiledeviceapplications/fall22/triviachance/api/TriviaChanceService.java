@@ -4,7 +4,6 @@ import java.util.List;
 
 import edu.floridapoly.mobiledeviceapps.fall22.api.gameplay.Player;
 import edu.floridapoly.mobiledeviceapps.fall22.api.gameplay.TriviaGame;
-import edu.floridapoly.mobiledeviceapps.fall22.api.gameplay.questions.TextQuestion;
 import edu.floridapoly.mobiledeviceapps.fall22.api.profile.Profile;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -48,14 +47,6 @@ public interface TriviaChanceService {
     @GET("game/leave")
     Call<Boolean> leaveGame(@Query("profileUUID") String profileUuid,
                               @Query("gameUUID") String gameUuid);
-
-    @GET("game/kick")
-    Call<Boolean> kickPlayer(@Query("profileUUID") String profileUuid,
-                            @Query("gameUUID") String gameUuid);
-
-    @GET("game/question?type=text")
-    Call<TextQuestion> retrieveTextQuestion(@Query("gameUUID") String gameUuid,
-                                            @Query("questionIndex") int questionIndex);
 
     @GET("game/leaderboard")
     Call<List<Player>> retrieveGameLeaderboard(@Query("gameId") String gameId);
