@@ -3,6 +3,7 @@ package edu.floridapoly.mobiledeviceapplications.fall22.triviachance;
 import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.content.Intent;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.VibrationEffect;
@@ -115,10 +116,18 @@ public class QuestionActivity extends AppCompatActivity {
                 questionProgress.setSecondaryProgress(currentQuestionIndex * 10);
                 ObjectAnimator.ofInt(questionProgress, "progress", currentQuestionIndex * 10).setDuration(700).start();
                 initQuestion(nextQuestion.join());
-            } else {
-                Intent intent = new Intent(QuestionActivity.this, ResultsActivity.class);
+            }
+            else if (getIntent().hasExtra("SOLO")) {
+                Intent intent = new Intent(QuestionActivity.this, SoloResultsActivity.class);
                 intent.putExtra("CORRECT", numberCorrect);
                 intent.putExtra("INCORRECT", numberWrong);
+                //Leave the game, since it's finished.
+                MainMenu.getAPI().leaveGame(MainMenu.getLocalProfile(), MainMenu.getAPI().getCurrentGame());
+                startActivity(intent);
+            }
+            else {
+                Intent intent = new Intent(QuestionActivity.this, OnlineResultsActivity.class);
+                MainMenu.getAPI().leaveGame(MainMenu.getLocalProfile(), MainMenu.getAPI().getCurrentGame());
                 startActivity(intent);
             }
         }, 500);
@@ -127,6 +136,11 @@ public class QuestionActivity extends AppCompatActivity {
     private void markCorrect(Button button) {
         button.setBackgroundColor(getResources().getColor(colorSecondary));
         button.setTextColor(getResources().getColor(colorPrimary));
+        if (MainMenu.getInstancePackager().getPreferences().getBoolean("sound", false)) {
+            MediaPlayer correctChime = MediaPlayer.create(QuestionActivity.this, R.raw.correct);
+            correctChime.start();
+        }
+
         numberCorrect++;
     }
 
@@ -136,6 +150,12 @@ public class QuestionActivity extends AppCompatActivity {
             final Vibrator vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
             vibrator.vibrate(VibrationEffect.createPredefined(VibrationEffect.EFFECT_CLICK));
         }
+
+        if (MainMenu.getInstancePackager().getPreferences().getBoolean("sound", false)) {
+            MediaPlayer incorrectChime = MediaPlayer.create(QuestionActivity.this, R.raw.incorrect);
+            incorrectChime.start();
+        }
+
 
         button.setBackgroundColor(getResources().getColor(R.color.red));
         numberWrong++;

@@ -23,7 +23,7 @@ public class RedeemActivity extends AppCompatActivity {
     itemRegistry items = new itemRegistry(this, 4);
     int selectedAmount = 0;
     int colorPrimary, colorSecondary;
-    int unlocksAvailable = 10;//MainMenu.getInstancePackager().getLocalProfile().getNumberOfUnlocks();
+    int unlocksAvailable;
 
     Button unlockButton;
     Button increaseButton;
@@ -36,10 +36,13 @@ public class RedeemActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
         super.onCreate(savedInstanceState);
         ThemeUtil.onActivityCreateTheme(this);
         setContentView(R.layout.activity_redeem);
+
+        if (MainMenu.getInstancePackager() != null) {
+            unlocksAvailable = MainMenu.getInstancePackager().getPreferences().getInt("UNLOCKS", 0);
+        }
 
         typedValue = new TypedValue();
         getTheme().resolveAttribute(com.google.android.material.R.attr.colorPrimary, typedValue, true);
@@ -62,13 +65,12 @@ public class RedeemActivity extends AppCompatActivity {
             startActivity(intent);
         });
 
-
         unlockButton = findViewById(R.id.unlockButton);
         unlockButton.setEnabled(false);
         unlockButton.setOnClickListener(view -> {
 
             redeemItem(selectedAmount);
-
+            MainMenu.getInstancePackager().getPreferences().edit().putInt("UNLOCKS", unlocksAvailable - selectedAmount).apply();
             unlocksAvailable -= selectedAmount;
 
             if(unlocksAvailable < 1){
@@ -76,15 +78,14 @@ public class RedeemActivity extends AppCompatActivity {
                 selectedAmount = 0;
                 unlockButton.setEnabled(false);
                 decreaseButton.setEnabled(false);
-                checkColors();
             }
             else if(unlocksAvailable < selectedAmount){
                 selectedAmount = unlocksAvailable;
-                checkColors();
             }
 
             unlockButton.setText(String.format(Locale.ENGLISH, "Unlock %d Items", selectedAmount));
             unlocktext.setText(String.format(Locale.ENGLISH,"Unlocks Available: %d", unlocksAvailable));
+            checkColors();
 
         });
 
@@ -143,6 +144,9 @@ public class RedeemActivity extends AppCompatActivity {
                 Toast.makeText(getApplicationContext(), "You received: " + items.getItemName(gachaReward.getItemID()) + "!", Toast.LENGTH_SHORT).show();
                 System.out.println(items.getItemName(gachaReward.getItemID()) + " Added to Inventory");
                 profile.getInventory().add(gachaReward);
+                
+                //Update the server about the new item.
+                MainMenu.getAPI().updateItem(profile, gachaReward.getItemID(), gachaReward.getQuantity());
             }
         }
     }

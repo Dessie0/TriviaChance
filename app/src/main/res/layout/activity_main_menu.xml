@@ -9,6 +9,7 @@
     app:layoutDescription="@xml/activity_main_menu_scene"
     tools:context=".MainMenu">
 
+
     <Button
         android:id="@+id/play_online"
         android:layout_width="340dp"

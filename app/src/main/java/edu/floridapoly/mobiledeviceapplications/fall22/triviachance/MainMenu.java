@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.view.ViewTreeObserver;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -22,6 +23,7 @@ import edu.floridapoly.mobiledeviceapps.fall22.api.profile.Profile;
 public class MainMenu extends AppCompatActivity {
 
     private static InstancePackager instancePackager;
+    private boolean connected = false;
 
     MotionLayout layout;
     Button playOnline;
@@ -35,11 +37,36 @@ public class MainMenu extends AppCompatActivity {
     TextView usernameText;
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        overridePendingTransition(0, 0);
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         ThemeUtil.onActivityCreateTheme(this);
-
         setContentView(R.layout.activity_main_menu);
+
+
+        // Set up an OnPreDrawListener to the root view.
+        final View content = findViewById(android.R.id.content);
+        content.getViewTreeObserver().addOnPreDrawListener(
+                new ViewTreeObserver.OnPreDrawListener() {
+                    @Override
+                    public boolean onPreDraw() {
+                        // Check if the initial data is ready.
+                        if (connected) {
+                            // The content is ready; start drawing.
+                            content.getViewTreeObserver().removeOnPreDrawListener(this);
+                            return true;
+                        } else {
+                            // The content is not ready; suspend.
+                            return false;
+                        }
+                    }
+                });
+
 
         playerIcon = findViewById(R.id.playerIcon);
         joinGame = findViewById(R.id.joinGame);
@@ -79,6 +106,7 @@ public class MainMenu extends AppCompatActivity {
 
                 getAPI().createGame(getLocalProfile()).thenAccept(game -> {
                     Intent intent = new Intent(MainMenu.this, QuestionActivity.class);
+                    intent.putExtra("SOLO", true);
                     startActivity(intent);
 
                     getAPI().setCurrentGame(game);
@@ -163,14 +191,23 @@ public class MainMenu extends AppCompatActivity {
             ProfileIconHelper.reloadProfileIcon(getLocalProfile(), playerIcon);
             usernameText.setText(getLocalProfile().getUsername());
             int profileTheme = instancePackager.getPreferences().getInt("ctheme", 0);
-            if (ThemeUtil.getCurrentTheme() != profileTheme)
+            if (ThemeUtil.getCurrentTheme() != profileTheme) {
                 ThemeUtil.changeToTheme(this, profileTheme);
+            }
+            connected = true;
+
+            if (instancePackager.getPreferences().getBoolean("music", false)) {
+                Intent intent = new Intent(MainMenu.this, BackgroundSoundService.class);
+                startService(intent);
+            }
+
+            System.out.println("Inventory:");
+            System.out.println(getLocalProfile().getInventory());
         }
     }
 
     @Override
     public void onBackPressed() {
-        //overrides phone back button to undo animation instead of killing app
         //without this, if user presses back while their in the play online screen they killed the app instead of showing main menu
         // will still kill app if user is in main menu
         if (layout.getProgress() != 0.0f) {

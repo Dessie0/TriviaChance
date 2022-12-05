@@ -28,6 +28,15 @@ public class ActiveGame {
         this.getPlayers().entrySet().removeIf(entry -> entry.getKey().getProfile().getUUID().toString().equalsIgnoreCase(uuid));
     }
 
+    public Player findPlayer(String uuid) {
+        return this.getPlayers().keySet().stream().filter(player -> player.getProfile().getUUID().toString().equalsIgnoreCase(uuid))
+                .findFirst().orElse(null);
+    }
+
+    public WebSocket getWebSocket(Player player) {
+        return this.getPlayers().get(player);
+    }
+
     public QuestionRandomizer getQuestionRandomizer() {
         return questionRandomizer;
     }

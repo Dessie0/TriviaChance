@@ -69,9 +69,16 @@ public class SettingsActivity extends AppCompatActivity {
             public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
                 if (isChecked) {
                     preferences.edit().putBoolean("music", true).apply();
+                    if (BackgroundSoundService.mediaPlayer == null) {
+                        Intent intent = new Intent(SettingsActivity.this, BackgroundSoundService.class);
+                        startService(intent);
+                    }
+                    else
+                        BackgroundSoundService.mediaPlayer.start();
                 }
                 else {
                     preferences.edit().putBoolean("music", false).apply();
+                    BackgroundSoundService.mediaPlayer.pause();
                 }
             }
         });

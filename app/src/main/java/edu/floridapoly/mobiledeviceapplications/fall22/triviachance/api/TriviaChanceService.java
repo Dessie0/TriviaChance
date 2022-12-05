@@ -49,6 +49,10 @@ public interface TriviaChanceService {
     Call<Boolean> leaveGame(@Query("profileUUID") String profileUuid,
                               @Query("gameUUID") String gameUuid);
 
+    @GET("game/kick")
+    Call<Boolean> kickPlayer(@Query("profileUUID") String profileUuid,
+                            @Query("gameUUID") String gameUuid);
+
     @GET("game/question?type=text")
     Call<TextQuestion> retrieveTextQuestion(@Query("gameUUID") String gameUuid,
                                             @Query("questionIndex") int questionIndex);

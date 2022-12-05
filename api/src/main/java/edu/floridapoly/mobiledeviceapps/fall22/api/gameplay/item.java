@@ -2,22 +2,22 @@ package edu.floridapoly.mobiledeviceapps.fall22.api.gameplay;
 
 public class item {
 
-    private Integer itemID;
+    private Integer id;
     private Integer quantity;
 
     public item(){
-        this.itemID = 0;
+        this.id = 0;
         this.quantity = 1;
     }
 
     public item(Integer id, Integer quantity) {
-        this.itemID = id;
+        this.id = id;
         this.quantity = quantity;
     }
 
-    public Integer getItemID(){ return itemID; }
+    public Integer getItemID(){ return id; }
     public Integer getQuantity() { return quantity; }
     public void setQuantity(Integer q){ this.quantity = q;}
-    public void setItemID(Integer id){ this.itemID = id; }
+    public void setItemID(Integer id){ this.id = id; }
     public void incrementQuantity() { quantity++;}
 }
