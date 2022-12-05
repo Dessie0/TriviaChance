@@ -24,7 +24,7 @@ public class JoinGameHandler extends TriviaChanceHandler {
 
         ActiveGame game = this.getServer().getGameHandler().findGame(code);
 
-        if(game == null) {
+        if(game == null || game.isStarted()) {
             this.sendResponse(exchange, "null");
             return;
         }

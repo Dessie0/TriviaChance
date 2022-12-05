@@ -27,7 +27,7 @@ public class InstancePackager {
                     .thenRun(mainMenu::onReady);
         } else {
             UUID uuid = UUID.randomUUID();
-            this.getAPI().registerProfile(new Profile(uuid, Profile.generateRandomUsername(), null, new ArrayList<>(), 0))
+            this.getAPI().registerProfile(new Profile(uuid, Profile.generateRandomUsername(), null, new ArrayList<>()))
                     .thenAccept((saved) -> {
                         this.getPreferences().edit().putString("profileUUID", uuid.toString())
                                 .putInt("ctheme", R.style.Theme_TriviaChance)

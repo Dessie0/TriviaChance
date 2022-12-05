@@ -45,7 +45,6 @@ public class SoloResultsActivity extends AppCompatActivity {
         redeemButton = findViewById(R.id.resultsRedeemButton);
         redeemButton.setVisibility(View.GONE);
 
-
         if (currentProgress >= 100) {
             currentProgress = 0;
             MainMenu.getInstancePackager().getPreferences().edit().putInt("PROGRESS", currentProgress).apply();
@@ -57,13 +56,8 @@ public class SoloResultsActivity extends AppCompatActivity {
             redeemButton.setVisibility(View.VISIBLE);
         }
 
-
-
-
         numCorrectText = findViewById(R.id.numCorrectText);
         numCorrectText.setText(String.format("Correct: %s%%", correct * 10));
-
-
 
         redeemButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -97,6 +91,7 @@ public class SoloResultsActivity extends AppCompatActivity {
                     startActivity(intent);
 
                     MainMenu.getAPI().setCurrentGame(game);
+                    MainMenu.getAPI().getSocketInterface().startGame(game);
                 });
             }
         });

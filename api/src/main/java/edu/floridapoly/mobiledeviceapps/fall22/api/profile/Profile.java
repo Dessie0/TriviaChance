@@ -12,14 +12,12 @@ public class Profile {
     private String username;
     private String iconURL;
     private final List<item> inventory;
-    private Integer numberOfUnlocks;
 
-    public Profile(UUID uuid, String username, String iconURL, List<item> inventory, Integer numberOfUnlocks) {
+    public Profile(UUID uuid, String username, String iconURL, List<item> inventory) {
         this.uuid = uuid;
         this.username = username;
         this.iconURL = iconURL;
         this.inventory = inventory;
-        this.numberOfUnlocks = numberOfUnlocks;
     }
 
     public UUID getUUID() {
@@ -34,7 +32,6 @@ public class Profile {
     public List<item> getInventory() {
         return inventory;
     }
-
 
     public void setUsername(String username) {
         this.username = username;
