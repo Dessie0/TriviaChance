@@ -35,6 +35,8 @@ public class InstancePackager {
                                 .putBoolean("music", true)
                                 .putBoolean("notifications", true)
                                 .putBoolean("vibration", true)
+                                .putInt("PROGRESS", 0)
+                                .putInt("UNLOCKS", 0)
                                 .apply();
 
                         this.setLocalProfile(uuid).thenRun(mainMenu::onReady);

@@ -21,8 +21,7 @@ public class SoloResultsActivity extends AppCompatActivity {
     ProgressBar progressBar;
     Button redeemButton;
 
-    static int currentProgress = 0;
-    public static int unlocks = MainMenu.getInstancePackager().getLocalProfile().getNumberOfUnlocks();
+    int currentProgress = MainMenu.getInstancePackager().getPreferences().getInt("PROGRESS", 0);
 
     @SuppressLint("ResourceAsColor")
     @Override
@@ -37,6 +36,7 @@ public class SoloResultsActivity extends AppCompatActivity {
         progressBar = findViewById(R.id.progressBar);
         progressBar.setProgress(currentProgress);
         currentProgress += (correct * 10);
+        MainMenu.getInstancePackager().getPreferences().edit().putInt("PROGRESS", currentProgress).apply();
 
         progressBar.setSecondaryProgress(currentProgress);
         ObjectAnimator.ofInt(progressBar, "progress", currentProgress).setDuration(700).start();
@@ -48,10 +48,12 @@ public class SoloResultsActivity extends AppCompatActivity {
 
         if (currentProgress >= 100) {
             currentProgress = 0;
+            MainMenu.getInstancePackager().getPreferences().edit().putInt("PROGRESS", currentProgress).apply();
             redeemButton.setVisibility(View.VISIBLE);
-            MainMenu.getInstancePackager().getLocalProfile().incrementUnlocks();
+            int currentUnlocks = MainMenu.getInstancePackager().getPreferences().getInt("UNLOCKS", 0);
+            MainMenu.getInstancePackager().getPreferences().edit().putInt("UNLOCKS", currentUnlocks + 1).apply();
         }
-        if (MainMenu.getInstancePackager().getLocalProfile().getNumberOfUnlocks() != 0) {
+        if (MainMenu.getInstancePackager().getPreferences().getInt("UNLOCKS", 0) != 0) {
             redeemButton.setVisibility(View.VISIBLE);
         }
 
@@ -91,6 +93,7 @@ public class SoloResultsActivity extends AppCompatActivity {
 
                 MainMenu.getAPI().createGame(MainMenu.getLocalProfile()).thenAccept(game -> {
                     Intent intent = new Intent(SoloResultsActivity.this, QuestionActivity.class);
+                    intent.putExtra("SOLO", true);
                     startActivity(intent);
 
                     MainMenu.getAPI().setCurrentGame(game);
