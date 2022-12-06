@@ -7,8 +7,6 @@ import android.os.IBinder;
 
 import androidx.annotation.Nullable;
 
-import edu.floridapoly.mobiledeviceapplications.fall22.triviachance.R;
-
 public class BackgroundSoundService extends Service {
     public static MediaPlayer mediaPlayer;
     public static boolean isPlaying;
@@ -24,7 +22,10 @@ public class BackgroundSoundService extends Service {
         super.onCreate();
         mediaPlayer = MediaPlayer.create(this, R.raw.backgroundmusic);
         mediaPlayer.setLooping(true); // Set looping
-        mediaPlayer.setVolume(30, 30);
+        //mediaPlayer.setVolume(AudioManager.STREAM_MUSIC,AudioManager.STREAM_MUSIC);
+        mediaPlayer.setVolume((float) 0.18,(float) 0.18);
+
+
     }
 
     public int onStartCommand(Intent intent, int flags, int startId) {
