@@ -7,6 +7,7 @@ import android.view.animation.Animation;
 import android.view.animation.Transformation;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -24,6 +25,9 @@ public class OnlineResultsActivity extends AppCompatActivity {
     ImageView bronzePlayerIco;
     ImageView silverPlayerIco;
     ImageView goldPlayerIco;
+    TextView bronzeText;
+    TextView silverText;
+    TextView goldText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,6 +43,10 @@ public class OnlineResultsActivity extends AppCompatActivity {
         bronzePlayerIco = findViewById(R.id.bronzePlayerIcon);
         silverPlayerIco = findViewById(R.id.silverPlayerIcon);
         goldPlayerIco = findViewById(R.id.goldPlayerIcon);
+
+        bronzeText = findViewById(R.id.bronzeText);
+        silverText = findViewById(R.id.silverText);
+        goldText = findViewById(R.id.goldText);
 
         homeButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -68,8 +76,13 @@ public class OnlineResultsActivity extends AppCompatActivity {
 
             for(int i = 0; i < Math.min(3, players.size()); i++) {
                 ProfileIconHelper.reloadProfileIcon(players.get(i).getProfile(), i == 0 ? goldPlayerIco : i == 1 ? silverPlayerIco : bronzePlayerIco);
+                changeText(i == 0 ? goldText : i == 1 ? silverText : bronzeText, players.get(i).getStats().getCorrect());
             }
         });
+    }
+
+    public void changeText(TextView view, int correct) {
+        view.setText(correct + " Correct");
     }
 
     @Override
@@ -77,6 +90,12 @@ public class OnlineResultsActivity extends AppCompatActivity {
         super.onStop();
 
         MainMenu.getAPI().leaveGame(MainMenu.getLocalProfile(), MainMenu.getAPI().getCurrentGame());
+    }
+
+    @Override
+    public void onBackPressed() {
+        Intent intent = new Intent(OnlineResultsActivity.this, MainMenu.class);
+        startActivity(intent);
     }
 }
 
