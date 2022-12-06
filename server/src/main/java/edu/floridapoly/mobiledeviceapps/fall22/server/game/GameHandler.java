@@ -3,6 +3,8 @@ package edu.floridapoly.mobiledeviceapps.fall22.server.game;
 import java.net.InetSocketAddress;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.UUID;
 
 import edu.floridapoly.mobiledeviceapps.fall22.api.gameplay.TriviaGame;
@@ -34,7 +36,13 @@ public class GameHandler {
     }
 
     public void stopGame(ActiveGame game) {
-        this.getActiveGames().remove(game);
+        //Queue the game for removal in 5 minutes.
+        new Timer().schedule(new TimerTask() {
+            @Override
+            public void run() {
+                GameHandler.this.getActiveGames().remove(game);
+            }
+        }, 5 * 60 * 1000);
     }
 
     public ActiveGame findGame(String code) {

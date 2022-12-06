@@ -81,20 +81,14 @@ public class QuestionActivity extends AppCompatActivity implements TriviaChanceL
         if (getIntent().hasExtra("SOLO"))
             timeText.setVisibility(View.INVISIBLE);
 
-
         countDownTimer = new CountDownTimer(30 * 1000, 1000) {
-
             public void onTick(long millisUntilFinished) {
                 int second = (int) (millisUntilFinished / 1000) % 60;
                 timeText.setText(String.format("%02d", second));
             }
 
-            public void onFinish() {
-
-            }
+            public void onFinish() {}
         };
-
-
 
         canInitQuestion = CompletableFuture.completedFuture(null);
 
@@ -124,10 +118,9 @@ public class QuestionActivity extends AppCompatActivity implements TriviaChanceL
             }
         }
 
-        if (!getIntent().hasExtra("SOLO"))
+        if (game.isOnline()) {
             countDownTimer.start();
-
-
+        }
     }
 
     public void onClickAnswer(View view) {
@@ -187,17 +180,15 @@ public class QuestionActivity extends AppCompatActivity implements TriviaChanceL
             intent = new Intent(QuestionActivity.this, SoloResultsActivity.class);
             intent.putExtra("CORRECT", numberCorrect);
             intent.putExtra("INCORRECT", numberWrong);
-
-            //Leave the game, since it's finished.
-            startActivity(intent);
-        }
-        else {
+        } else {
             intent = new Intent(QuestionActivity.this, OnlineResultsActivity.class);
+            intent.putExtra("gameUUID", MainMenu.getAPI().getCurrentGame().getUUID().toString());
         }
+
+        startActivity(intent);
 
         MainMenu.getAPI().unregisterListener(this);
         MainMenu.getAPI().leaveGame(MainMenu.getLocalProfile(), MainMenu.getAPI().getCurrentGame());
-        startActivity(intent);
     }
 
     @EventHandler
@@ -209,9 +200,9 @@ public class QuestionActivity extends AppCompatActivity implements TriviaChanceL
                 this.runOnUiThread(() -> {
                     questionProgress.setSecondaryProgress(event.getQuestionId() * 10);
                     ObjectAnimator.ofInt(questionProgress, "progress", event.getQuestionId() * 10).setDuration(700).start();
+                    initQuestion(event.getQuestion());
                 });
 
-                initQuestion(event.getQuestion());
                 this.currentQuestionId = event.getQuestionId();
             }
         });
