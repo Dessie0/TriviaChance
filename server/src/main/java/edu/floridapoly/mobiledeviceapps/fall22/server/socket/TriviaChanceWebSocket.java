@@ -30,11 +30,7 @@ public class TriviaChanceWebSocket extends WebSocketServer {
     @Override
     public void onClose(WebSocket conn, int code, String reason, boolean remote) {
         for(ActiveGame game : this.getServer().getGameHandler().getActiveGames()) {
-            for (Map.Entry<Player, WebSocket> entry : game.getPlayers().entrySet()) {
-                if (entry.getValue().equals(conn)) {
-                    game.removePlayer(entry.getKey().getProfile().getUUID().toString());
-                }
-            }
+            game.getPlayers().entrySet().removeIf(entry -> entry.getValue().equals(conn));
         }
     }
 

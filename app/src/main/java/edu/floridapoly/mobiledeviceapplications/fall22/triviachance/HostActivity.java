@@ -34,6 +34,8 @@ public class HostActivity extends AppCompatActivity implements TriviaChanceListe
     PlayerGalleryAdapter adapter;
     ArrayList<Player> list = new ArrayList<>();
 
+    boolean started = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -86,10 +88,13 @@ public class HostActivity extends AppCompatActivity implements TriviaChanceListe
     }
 
     @Override
-    protected void onDestroy() {
-        super.onDestroy();
+    protected void onStop() {
+        super.onStop();
 
         MainMenu.getAPI().unregisterListener(this);
+        if(!started) {
+            MainMenu.getAPI().leaveGame(MainMenu.getLocalProfile(), MainMenu.getAPI().getCurrentGame());
+        }
     }
 
     @EventHandler
@@ -116,6 +121,8 @@ public class HostActivity extends AppCompatActivity implements TriviaChanceListe
 
     @EventHandler
     public void onGameStart(StartGameEvent event) {
+        this.started = true;
+
         Intent intent = new Intent(HostActivity.this, QuestionActivity.class);
         startActivity(intent);
 
@@ -130,5 +137,6 @@ public class HostActivity extends AppCompatActivity implements TriviaChanceListe
         startActivity(intent);
 
         MainMenu.getAPI().setCurrentGame(null);
+        MainMenu.getAPI().unregisterListener(this);
     }
 }

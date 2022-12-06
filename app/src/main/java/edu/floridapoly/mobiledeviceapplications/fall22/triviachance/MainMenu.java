@@ -87,6 +87,7 @@ public class MainMenu extends AppCompatActivity {
             }).exceptionally(err -> {
                 err.printStackTrace();
                 showNoInternetToast(this);
+
                 return null;
             });
         } else {

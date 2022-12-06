@@ -10,6 +10,7 @@ import android.widget.ImageView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import edu.floridapoly.mobiledeviceapplications.fall22.triviachance.icon.ProfileIconHelper;
 import edu.floridapoly.mobiledeviceapps.fall22.api.gameplay.Player;
 
 public class OnlineResultsActivity extends AppCompatActivity {
@@ -57,6 +58,7 @@ public class OnlineResultsActivity extends AppCompatActivity {
 
         MainMenu.getAPI().retrieveGameLeaderboard(this.getIntent().getExtras().getString("gameUUID")).thenAccept(players -> {
             for(Player player : players) {
+                ProfileIconHelper.reloadProfileIcon(player.getProfile(), goldPlayerIco);
                 System.out.println(player.getProfile().getUsername() + " " + player.getStats().getCorrect());
             }
         });
