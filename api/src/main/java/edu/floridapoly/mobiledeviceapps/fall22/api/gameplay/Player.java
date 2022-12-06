@@ -15,7 +15,6 @@ public class Player {
     public Profile getProfile() {
         return profile;
     }
-
     public GameStats getStats() {
         return stats;
     }

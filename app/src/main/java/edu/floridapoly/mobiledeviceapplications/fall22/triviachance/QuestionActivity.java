@@ -151,7 +151,7 @@ public class QuestionActivity extends AppCompatActivity implements TriviaChanceL
 
     private void openResults() {
         Intent intent;
-        if (getIntent().hasExtra("SOLO")) {
+        if (!this.game.isOnline()) {
             intent = new Intent(QuestionActivity.this, SoloResultsActivity.class);
             intent.putExtra("CORRECT", numberCorrect);
             intent.putExtra("INCORRECT", numberWrong);
