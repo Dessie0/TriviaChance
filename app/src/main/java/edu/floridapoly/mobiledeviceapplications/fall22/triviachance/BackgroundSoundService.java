@@ -23,18 +23,27 @@ public class BackgroundSoundService extends Service {
         mediaPlayer = MediaPlayer.create(this, R.raw.backgroundmusic);
         mediaPlayer.setLooping(true); // Set looping
 
+        if(MainMenu.getInstancePackager() == null) return;
+
+
         float volume = MainMenu.getInstancePackager().getPreferences().getFloat("musicVolume", 0);
         mediaPlayer.setVolume(volume, volume);
     }
 
     public int onStartCommand(Intent intent, int flags, int startId) {
-        mediaPlayer.start();
-        isPlaying = true;
+        System.out.println("Start command");
+        if(!isPlaying) {
+            mediaPlayer.start();
+            isPlaying = true;
+        }
+
         return startId;
     }
 
     @Override
     public void onDestroy() {
+        System.out.println("Stopping");
+
         mediaPlayer.stop();
         isPlaying = false;
         mediaPlayer.release();

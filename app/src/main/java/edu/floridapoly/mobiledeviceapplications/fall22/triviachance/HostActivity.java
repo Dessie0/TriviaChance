@@ -92,7 +92,7 @@ public class HostActivity extends AppCompatActivity implements TriviaChanceListe
         super.onStop();
 
         MainMenu.getAPI().unregisterListener(this);
-        if(!started) {
+        if(!started && MainMenu.getAPI().getCurrentGame() != null) {
             MainMenu.getAPI().leaveGame(MainMenu.getLocalProfile(), MainMenu.getAPI().getCurrentGame());
         }
     }
