@@ -3,6 +3,7 @@ package edu.floridapoly.mobiledeviceapplications.fall22.triviachance;
 import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.CountDownTimer;
@@ -33,7 +34,7 @@ public class QuestionActivity extends AppCompatActivity implements TriviaChanceL
     private TriviaGame game;
     private Question<?> currentQuestion;
     private int currentQuestionId;
-
+    SharedPreferences sharedPreferences;
     Button answer1;
     Button answer2;
     Button answer3;
@@ -41,12 +42,13 @@ public class QuestionActivity extends AppCompatActivity implements TriviaChanceL
     Button[] answerButtons;
     TextView questionText;
     TextView timeText;
-
     int numberCorrect;
     int numberWrong;
-
+    int soundVolume;
     TypedValue typedValue;
     int colorPrimary, colorSecondary;
+
+    boolean gameEnded = false;
 
     //Determines whether or not the 500ms of delay has passed for the next question to be initialized.
     private CompletableFuture<Void> canInitQuestion;
@@ -58,11 +60,14 @@ public class QuestionActivity extends AppCompatActivity implements TriviaChanceL
         ThemeUtil.onActivityCreateTheme(this);
         setContentView(R.layout.activity_question);
 
+        sharedPreferences = MainMenu.getInstancePackager().getPreferences();
+        soundVolume = sharedPreferences.getInt("soundVolume", 0);
+
+
         questionProgress = findViewById(R.id.questionProgressBar);
         questionProgress.setProgress(0);
 
         this.game = MainMenu.getAPI().getCurrentGame();
-
         timeText = findViewById(R.id.timeText);
         questionText = findViewById(R.id.questionTextView);
         answer1 = findViewById(R.id.answer1);
@@ -78,23 +83,17 @@ public class QuestionActivity extends AppCompatActivity implements TriviaChanceL
         getTheme().resolveAttribute(com.google.android.material.R.attr.colorSecondary, typedValue, true);
         colorSecondary = typedValue.resourceId;
 
-        if (!this.game.isOnline())
+        if (getIntent().hasExtra("SOLO"))
             timeText.setVisibility(View.INVISIBLE);
 
-
         countDownTimer = new CountDownTimer(30 * 1000, 1000) {
-
             public void onTick(long millisUntilFinished) {
                 int second = (int) (millisUntilFinished / 1000) % 60;
                 timeText.setText(String.format("%02d", second));
             }
 
-            public void onFinish() {
-
-            }
+            public void onFinish() {}
         };
-
-
 
         canInitQuestion = CompletableFuture.completedFuture(null);
 
@@ -124,10 +123,9 @@ public class QuestionActivity extends AppCompatActivity implements TriviaChanceL
             }
         }
 
-        if (this.game.isOnline())
+        if (game.isOnline()) {
             countDownTimer.start();
-
-
+        }
     }
 
     public void onClickAnswer(View view) {
@@ -160,6 +158,7 @@ public class QuestionActivity extends AppCompatActivity implements TriviaChanceL
         button.setTextColor(getResources().getColor(colorPrimary));
         if (MainMenu.getInstancePackager().getPreferences().getBoolean("sound", false)) {
             MediaPlayer correctChime = MediaPlayer.create(QuestionActivity.this, R.raw.correct);
+            correctChime.setVolume((float) soundVolume, (float) soundVolume);
             correctChime.start();
         }
 
@@ -174,6 +173,7 @@ public class QuestionActivity extends AppCompatActivity implements TriviaChanceL
 
         if (MainMenu.getInstancePackager().getPreferences().getBoolean("sound", false)) {
             MediaPlayer incorrectChime = MediaPlayer.create(QuestionActivity.this, R.raw.incorrect);
+            incorrectChime.setVolume((float) soundVolume, (float) soundVolume);
             incorrectChime.start();
         }
 
@@ -187,31 +187,39 @@ public class QuestionActivity extends AppCompatActivity implements TriviaChanceL
             intent = new Intent(QuestionActivity.this, SoloResultsActivity.class);
             intent.putExtra("CORRECT", numberCorrect);
             intent.putExtra("INCORRECT", numberWrong);
-
-            //Leave the game, since it's finished.
-            startActivity(intent);
-        }
-        else {
+        } else {
             intent = new Intent(QuestionActivity.this, OnlineResultsActivity.class);
+            intent.putExtra("gameUUID", MainMenu.getAPI().getCurrentGame().getUUID().toString());
         }
+
+        startActivity(intent);
 
         MainMenu.getAPI().unregisterListener(this);
-        MainMenu.getAPI().leaveGame(MainMenu.getLocalProfile(), MainMenu.getAPI().getCurrentGame());
-        startActivity(intent);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+
+        MainMenu.getAPI().unregisterListener(this);
+        if(!gameEnded) {
+            MainMenu.getAPI().leaveGame(MainMenu.getLocalProfile(), MainMenu.getAPI().getCurrentGame());
+        }
     }
 
     @EventHandler
     public void onNextQuestion(NextQuestionEvent event) {
         this.canInitQuestion.thenRun(() -> {
             if(event.getQuestionId() == -1) {
+                this.gameEnded = true;
                 this.openResults();
             } else {
                 this.runOnUiThread(() -> {
                     questionProgress.setSecondaryProgress(event.getQuestionId() * 10);
                     ObjectAnimator.ofInt(questionProgress, "progress", event.getQuestionId() * 10).setDuration(700).start();
+                    initQuestion(event.getQuestion());
                 });
 
-                initQuestion(event.getQuestion());
                 this.currentQuestionId = event.getQuestionId();
             }
         });

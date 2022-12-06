@@ -42,6 +42,7 @@
             android:layout_width="55dp"
             android:layout_height="51dp"
             android:backgroundTint="#00FFFFFF"
+            android:contentDescription="Button to edit profile picture"
             android:outlineAmbientShadowColor="#00FFFFFF"
             android:outlineSpotShadowColor="#00FFFFFF"
             android:scaleType="fitCenter"
@@ -55,9 +56,12 @@
         android:id="@+id/notificationToggle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="60dp"
         android:text="ToggleButton"
         app:layout_constraintBottom_toBottomOf="@+id/notificationTextView"
-        app:layout_constraintEnd_toEndOf="@+id/musicToggle" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.17"
+        app:layout_constraintStart_toEndOf="@+id/notificationTextView" />
 
     <TextView
         android:id="@+id/musicTextView"
@@ -69,14 +73,6 @@
         android:textSize="30sp"
         app:layout_constraintStart_toStartOf="@+id/soundTextView"
         app:layout_constraintTop_toBottomOf="@+id/soundTextView" />
-
-    <ToggleButton
-        android:id="@+id/musicToggle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="ToggleButton"
-        app:layout_constraintBottom_toBottomOf="@+id/musicTextView"
-        app:layout_constraintEnd_toEndOf="@+id/soundToggle" />
 
     <TextView
         android:id="@+id/vibrationTextView"
@@ -97,20 +93,11 @@
         app:layout_constraintBottom_toBottomOf="@+id/vibrationTextView"
         app:layout_constraintEnd_toEndOf="@+id/notificationToggle" />
 
-    <ToggleButton
-        android:id="@+id/soundToggle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="52dp"
-        android:text="ToggleButton"
-        app:layout_constraintBottom_toBottomOf="@+id/soundTextView"
-        app:layout_constraintEnd_toEndOf="parent" />
-
     <TextView
         android:id="@+id/soundTextView"
         android:layout_width="139dp"
         android:layout_height="46dp"
-        android:layout_marginStart="60dp"
+        android:layout_marginStart="36dp"
         android:layout_marginTop="68dp"
         android:text="@string/sound"
         android:textAlignment="viewStart"
@@ -131,5 +118,29 @@
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/cardView" />
+
+    <SeekBar
+        android:id="@+id/seekBarMusic"
+        android:layout_width="228dp"
+        android:layout_height="42dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="28dp"
+        android:scaleY="2"
+        app:layout_constraintBottom_toTopOf="@+id/notificationToggle"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toEndOf="@+id/musicTextView" />
+
+    <SeekBar
+        android:id="@+id/seekBarSound"
+        android:layout_width="231dp"
+        android:layout_height="49dp"
+        android:layout_marginTop="60dp"
+        android:layout_marginEnd="4dp"
+        android:scaleY="2"
+        app:layout_constraintBottom_toTopOf="@+id/seekBarMusic"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/username"
+        app:layout_constraintVertical_bias="0.205" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

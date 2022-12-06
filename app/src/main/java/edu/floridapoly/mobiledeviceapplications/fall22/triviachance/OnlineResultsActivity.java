@@ -1,8 +1,5 @@
 package edu.floridapoly.mobiledeviceapplications.fall22.triviachance;
 
-import androidx.appcompat.app.AppCompatActivity;
-
-import android.animation.ObjectAnimator;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -10,9 +7,13 @@ import android.view.animation.Animation;
 import android.view.animation.Transformation;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.TextView;
 
-import java.time.temporal.Temporal;
+import androidx.appcompat.app.AppCompatActivity;
+
+import java.util.Comparator;
+
+import edu.floridapoly.mobiledeviceapplications.fall22.triviachance.icon.ProfileIconHelper;
+import edu.floridapoly.mobiledeviceapps.fall22.api.gameplay.Player;
 
 public class OnlineResultsActivity extends AppCompatActivity {
 
@@ -30,15 +31,14 @@ public class OnlineResultsActivity extends AppCompatActivity {
         ThemeUtil.onActivityCreateTheme(this);
         setContentView(R.layout.activity_online_results);
 
-
-
         homeButton = findViewById(R.id.homeButton3);
         goldBar = findViewById(R.id.goldBar);
         silverBar = findViewById(R.id.silverBar);
         bronzeBar = findViewById(R.id.bronzeBar);
 
-        
-
+        bronzePlayerIco = findViewById(R.id.bronzePlayerIcon);
+        silverPlayerIco = findViewById(R.id.silverPlayerIcon);
+        goldPlayerIco = findViewById(R.id.goldPlayerIcon);
 
         homeButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -60,6 +60,23 @@ public class OnlineResultsActivity extends AppCompatActivity {
         goldScale.setDuration(900);
         goldBar.startAnimation(goldScale);
 
+        if(!this.getIntent().hasExtra("gameUUID")) return;
+
+        MainMenu.getAPI().retrieveGameLeaderboard(this.getIntent().getExtras().getString("gameUUID")).thenAccept(players -> {
+            //Sort players by most correct
+            players.sort(Comparator.comparingInt(player -> ((Player) player).getStats().getCorrect()).reversed());
+
+            for(int i = 0; i < Math.min(3, players.size()); i++) {
+                ProfileIconHelper.reloadProfileIcon(players.get(i).getProfile(), i == 0 ? goldPlayerIco : i == 1 ? silverPlayerIco : bronzePlayerIco);
+            }
+        });
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+
+        MainMenu.getAPI().leaveGame(MainMenu.getLocalProfile(), MainMenu.getAPI().getCurrentGame());
     }
 }
 
