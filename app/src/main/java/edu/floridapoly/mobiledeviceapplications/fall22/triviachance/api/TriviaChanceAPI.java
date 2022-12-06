@@ -8,6 +8,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Base64;
+import java.util.Iterator;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
@@ -162,7 +163,10 @@ public class TriviaChanceAPI {
     }
 
     void fireEvent(GameEvent event) {
-        this.listeners.stream().iterator().forEachRemaining(listener -> {
+        Iterator<TriviaChanceListener> iterator = this.listeners.iterator();
+
+        while(iterator.hasNext()) {
+            TriviaChanceListener listener = iterator.next();
             Class<?> clazz = listener.getClass();
             for (Method method : clazz.getDeclaredMethods()) {
                 if (!method.isAnnotationPresent(EventHandler.class)) continue;
@@ -175,7 +179,7 @@ public class TriviaChanceAPI {
                     e.printStackTrace();
                 }
             }
-        });
+        }
     }
 
     public void registerListener(TriviaChanceListener listener) {
