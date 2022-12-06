@@ -31,7 +31,6 @@ public class BackgroundSoundService extends Service {
     }
 
     public int onStartCommand(Intent intent, int flags, int startId) {
-        System.out.println("Start command");
         if(!isPlaying) {
             mediaPlayer.start();
             isPlaying = true;
@@ -42,8 +41,6 @@ public class BackgroundSoundService extends Service {
 
     @Override
     public void onDestroy() {
-        System.out.println("Stopping");
-
         mediaPlayer.stop();
         isPlaying = false;
         mediaPlayer.release();
