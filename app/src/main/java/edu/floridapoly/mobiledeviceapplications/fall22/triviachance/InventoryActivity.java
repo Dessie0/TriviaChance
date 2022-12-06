@@ -111,7 +111,6 @@ public class InventoryActivity extends AppCompatActivity {
             for (ImageButton b1 : imageButtonArrayList) {
                 if (i1.getItemID() == b1.getTag()) { //Each ImageButton in the List has an
                     b1.setEnabled(true);            //id tag that matches the itemId associated with it
-                    System.out.println(b1.getTag() + " is Enabled.\n");
                     b1.setImageResource(0);
                 }
             }

@@ -24,7 +24,6 @@ public class GameLeaderboardHandler extends TriviaChanceHandler {
         ActiveGame game = this.getServer().getGameHandler().findGame(UUID.fromString(gameUuid));
 
         if(game != null) {
-            System.out.println("Returning " + new Gson().toJson(game.getPlayers().keySet()));
             this.sendResponse(exchange, new Gson().toJson(game.getPlayers().keySet()));
         } else {
             this.sendResponse(exchange, "null");

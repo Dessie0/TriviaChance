@@ -163,10 +163,8 @@ public class RedeemActivity extends AppCompatActivity {
 
         if(rareDrop) { //Sets itemId to a random row in the bounds of common items, or a random row in the bounds of rare items.
             itemId = random.nextInt(numOfCommonItems - numOfRareItems) + numOfCommonItems + 1;
-            System.out.println("RARE itemId = " + itemId + "\n\n");
         } else {
             itemId = random.nextInt(numOfCommonItems) + 1;
-            System.out.println("COMMON itemId = " + itemId + "\n\n");
         }
         return itemId;
     }
