@@ -84,8 +84,8 @@ public class TriviaChanceAPI {
         return this.enqueue(call, new FutureCallback<>());
     }
 
-    public CompletableFuture<List<Player>> retrieveGameLeaderboard(TriviaGame game) {
-        Call<List<Player>> call = this.getService().retrieveGameLeaderboard(game.getUUID().toString());
+    public CompletableFuture<List<Player>> retrieveGameLeaderboard(String gameUUID) {
+        Call<List<Player>> call = this.getService().retrieveGameLeaderboard(gameUUID);
         return this.enqueue(call, new FutureCallback<>());
     }
 
