@@ -89,8 +89,8 @@ public class TriviaChanceAPI {
         return this.enqueue(call, new FutureCallback<>());
     }
 
-    public CompletableFuture<TriviaGame> createGame(Profile host) {
-        Call<TriviaGame> call = this.getService().createGame();
+    public CompletableFuture<TriviaGame> createGame(Profile host, boolean online) {
+        Call<TriviaGame> call = this.getService().createGame(online);
         return this.enqueue(call, new FutureCallback<>()).whenComplete((game, err) -> {
             if(game == null) return;
 
@@ -162,12 +162,12 @@ public class TriviaChanceAPI {
     }
 
     void fireEvent(GameEvent event) {
-        for(TriviaChanceListener listener : this.listeners) {
+        this.listeners.stream().iterator().forEachRemaining(listener -> {
             Class<?> clazz = listener.getClass();
-            for(Method method : clazz.getDeclaredMethods()) {
-                if(!method.isAnnotationPresent(EventHandler.class)) continue;
-                if(method.getParameterCount() != 1) continue;
-                if(method.getParameterTypes()[0] != event.getClass()) continue;
+            for (Method method : clazz.getDeclaredMethods()) {
+                if (!method.isAnnotationPresent(EventHandler.class)) continue;
+                if (method.getParameterCount() != 1) continue;
+                if (method.getParameterTypes()[0] != event.getClass()) continue;
 
                 try {
                     method.invoke(listener, event);
@@ -175,8 +175,7 @@ public class TriviaChanceAPI {
                     e.printStackTrace();
                 }
             }
-        }
-
+        });
     }
 
     public void registerListener(TriviaChanceListener listener) {

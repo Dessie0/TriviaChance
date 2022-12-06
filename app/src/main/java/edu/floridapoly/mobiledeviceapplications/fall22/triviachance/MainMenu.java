@@ -102,9 +102,8 @@ public class MainMenu extends AppCompatActivity {
                     return;
                 }
 
-                getAPI().createGame(getLocalProfile()).thenAccept(game -> {
+                getAPI().createGame(getLocalProfile(), false).thenAccept(game -> {
                     Intent intent = new Intent(MainMenu.this, QuestionActivity.class);
-                    intent.putExtra("SOLO", true);
                     startActivity(intent);
 
                     getAPI().setCurrentGame(game);
@@ -155,7 +154,7 @@ public class MainMenu extends AppCompatActivity {
                     return;
                 }
 
-                getAPI().createGame(getLocalProfile()).thenAccept(game -> {
+                getAPI().createGame(getLocalProfile(), true).thenAccept(game -> {
                     Intent intent = new Intent(MainMenu.this, HostActivity.class);
                     intent.putExtra("ISHOST", true);
                     startActivity(intent);

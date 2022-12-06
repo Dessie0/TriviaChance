@@ -39,7 +39,7 @@ public interface TriviaChanceService {
     Call<ResponseBody> uploadImage(@Query("base64") String base64);
 
     @GET("game/host")
-    Call<TriviaGame> createGame();
+    Call<TriviaGame> createGame(@Query("online") boolean online);
 
     @GET("game/join")
     Call<TriviaGame> joinGame(@Query("code") String code);

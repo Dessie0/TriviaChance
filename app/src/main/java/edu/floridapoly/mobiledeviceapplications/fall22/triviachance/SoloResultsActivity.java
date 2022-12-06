@@ -85,9 +85,8 @@ public class SoloResultsActivity extends AppCompatActivity {
                     return;
                 }
 
-                MainMenu.getAPI().createGame(MainMenu.getLocalProfile()).thenAccept(game -> {
+                MainMenu.getAPI().createGame(MainMenu.getLocalProfile(), false).thenAccept(game -> {
                     Intent intent = new Intent(SoloResultsActivity.this, QuestionActivity.class);
-                    intent.putExtra("SOLO", true);
                     startActivity(intent);
 
                     MainMenu.getAPI().setCurrentGame(game);

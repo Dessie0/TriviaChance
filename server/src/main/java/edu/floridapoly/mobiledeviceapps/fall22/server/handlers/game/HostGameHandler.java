@@ -17,7 +17,9 @@ public class HostGameHandler extends TriviaChanceHandler {
 
     @Override
     public void handle(HttpExchange exchange) throws IOException {
-        TriviaGame game = new TriviaGame(UUID.randomUUID().toString(), TriviaGame.getRandomCode());
+        String online = this.getParams(exchange).get("online");
+
+        TriviaGame game = new TriviaGame(UUID.randomUUID().toString(), TriviaGame.getRandomCode(), Boolean.parseBoolean(online));
         this.getServer().getGameHandler().startGame(game);
         this.sendResponse(exchange, new Gson().toJsonTree(game).getAsJsonObject());
     }
