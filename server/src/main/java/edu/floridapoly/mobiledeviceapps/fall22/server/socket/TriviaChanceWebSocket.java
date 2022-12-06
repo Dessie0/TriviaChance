@@ -29,9 +29,13 @@ public class TriviaChanceWebSocket extends WebSocketServer {
 
     @Override
     public void onClose(WebSocket conn, int code, String reason, boolean remote) {
-        //TODO: Should leave any games that this connection currently is on
-
-
+        for(ActiveGame game : this.getServer().getGameHandler().getActiveGames()) {
+            for (Map.Entry<Player, WebSocket> entry : game.getPlayers().entrySet()) {
+                if (entry.getValue().equals(conn)) {
+                    game.removePlayer(entry.getKey().getProfile().getUUID().toString());
+                }
+            }
+        }
     }
 
     @Override
@@ -117,7 +121,7 @@ public class TriviaChanceWebSocket extends WebSocketServer {
                 String profileUUID = generator.getParams().get("profileUUID");
                 String gameUUID = generator.getParams().get("gameUUID");
                 int questionId = Integer.parseInt(generator.getParams().get("questionId"));
-                boolean correct = Boolean.parseBoolean(generator.getParams().get("questionId"));
+                boolean correct = Boolean.parseBoolean(generator.getParams().get("correct"));
 
                 ActiveGame game = this.getServer().getGameHandler().findGame(UUID.fromString(gameUUID));
                 Player player = game.findPlayer(profileUUID);
