@@ -198,9 +198,11 @@ public class MainMenu extends AppCompatActivity {
                 ThemeUtil.changeToTheme(this, profileTheme);
             }
             connected = true;
-
-            Intent intent = new Intent(MainMenu.this, BackgroundSoundService.class);
-            startService(intent);
+            
+            if(!BackgroundSoundService.isPlaying) {
+                Intent intent = new Intent(MainMenu.this, BackgroundSoundService.class);
+                startService(intent);
+            }
         }
     }
 
