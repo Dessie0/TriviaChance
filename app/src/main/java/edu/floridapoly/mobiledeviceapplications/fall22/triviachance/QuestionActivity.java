@@ -48,6 +48,8 @@ public class QuestionActivity extends AppCompatActivity implements TriviaChanceL
     TypedValue typedValue;
     int colorPrimary, colorSecondary;
 
+    boolean gameEnded = false;
+
     //Determines whether or not the 500ms of delay has passed for the next question to be initialized.
     private CompletableFuture<Void> canInitQuestion;
     CountDownTimer countDownTimer;
@@ -191,10 +193,21 @@ public class QuestionActivity extends AppCompatActivity implements TriviaChanceL
         MainMenu.getAPI().leaveGame(MainMenu.getLocalProfile(), MainMenu.getAPI().getCurrentGame());
     }
 
+    @Override
+    protected void onStop() {
+        super.onStop();
+
+        MainMenu.getAPI().unregisterListener(this);
+        if(!gameEnded) {
+            MainMenu.getAPI().leaveGame(MainMenu.getLocalProfile(), MainMenu.getAPI().getCurrentGame());
+        }
+    }
+
     @EventHandler
     public void onNextQuestion(NextQuestionEvent event) {
         this.canInitQuestion.thenRun(() -> {
             if(event.getQuestionId() == -1) {
+                this.gameEnded = true;
                 this.openResults();
             } else {
                 this.runOnUiThread(() -> {

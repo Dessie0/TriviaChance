@@ -140,13 +140,14 @@ public class RedeemActivity extends AppCompatActivity {
                 System.out.println("'gachaReward' failed to acquire an item from the 'listOfItems' list.");
             }
 
-            if(!duplicate){
+            if(!duplicate) {
                 Toast.makeText(getApplicationContext(), "You received: " + items.getItemName(gachaReward.getItemID()) + "!", Toast.LENGTH_SHORT).show();
-                System.out.println(items.getItemName(gachaReward.getItemID()) + " Added to Inventory");
                 profile.getInventory().add(gachaReward);
                 
                 //Update the server about the new item.
                 MainMenu.getAPI().updateItem(profile, gachaReward.getItemID(), gachaReward.getQuantity());
+            } else {
+                Toast.makeText(this.getApplicationContext(), "You received a duplicate: " + items.getItemName(gachaReward.getItemID()) + "!", Toast.LENGTH_SHORT).show();
             }
         }
     }
