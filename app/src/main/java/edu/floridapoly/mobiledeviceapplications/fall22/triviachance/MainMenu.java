@@ -199,10 +199,8 @@ public class MainMenu extends AppCompatActivity {
             }
             connected = true;
 
-            if (instancePackager.getPreferences().getBoolean("music", false)) {
-                Intent intent = new Intent(MainMenu.this, BackgroundSoundService.class);
-                startService(intent);
-            }
+            Intent intent = new Intent(MainMenu.this, BackgroundSoundService.class);
+            startService(intent);
         }
     }
 

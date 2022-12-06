@@ -44,7 +44,7 @@ public class QuestionActivity extends AppCompatActivity implements TriviaChanceL
     TextView timeText;
     int numberCorrect;
     int numberWrong;
-    int soundVolume;
+    float soundVolume;
     TypedValue typedValue;
     int colorPrimary, colorSecondary;
 
@@ -61,8 +61,7 @@ public class QuestionActivity extends AppCompatActivity implements TriviaChanceL
         setContentView(R.layout.activity_question);
 
         sharedPreferences = MainMenu.getInstancePackager().getPreferences();
-        soundVolume = sharedPreferences.getInt("soundVolume", 0);
-
+        soundVolume = sharedPreferences.getFloat("soundVolume", 0);
 
         questionProgress = findViewById(R.id.questionProgressBar);
         questionProgress.setProgress(0);
@@ -158,7 +157,7 @@ public class QuestionActivity extends AppCompatActivity implements TriviaChanceL
         button.setTextColor(getResources().getColor(colorPrimary));
         if (MainMenu.getInstancePackager().getPreferences().getBoolean("sound", false)) {
             MediaPlayer correctChime = MediaPlayer.create(QuestionActivity.this, R.raw.correct);
-            correctChime.setVolume((float) soundVolume, (float) soundVolume);
+            correctChime.setVolume(soundVolume, soundVolume);
             correctChime.start();
         }
 
@@ -173,7 +172,7 @@ public class QuestionActivity extends AppCompatActivity implements TriviaChanceL
 
         if (MainMenu.getInstancePackager().getPreferences().getBoolean("sound", false)) {
             MediaPlayer incorrectChime = MediaPlayer.create(QuestionActivity.this, R.raw.incorrect);
-            incorrectChime.setVolume((float) soundVolume, (float) soundVolume);
+            incorrectChime.setVolume(soundVolume, soundVolume);
             incorrectChime.start();
         }
 

@@ -22,10 +22,9 @@ public class BackgroundSoundService extends Service {
         super.onCreate();
         mediaPlayer = MediaPlayer.create(this, R.raw.backgroundmusic);
         mediaPlayer.setLooping(true); // Set looping
-        //mediaPlayer.setVolume(AudioManager.STREAM_MUSIC,AudioManager.STREAM_MUSIC);
-        mediaPlayer.setVolume((float) 0.18,(float) 0.18);
 
-
+        float volume = MainMenu.getInstancePackager().getPreferences().getFloat("musicVolume", 0);
+        mediaPlayer.setVolume(volume, volume);
     }
 
     public int onStartCommand(Intent intent, int flags, int startId) {

@@ -30,7 +30,6 @@ public class SettingsActivity extends AppCompatActivity {
 
     SeekBar seekBarMusic;
     SeekBar seekBarSound;
-    ToggleButton musicToggle;
     ToggleButton notificationsToggle;
     ToggleButton vibrationToggle;
     ImageButton editIcon;
@@ -57,17 +56,14 @@ public class SettingsActivity extends AppCompatActivity {
         vibrationToggle = findViewById(R.id.vibrationToggle);
         audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
 
-        int maxVolume = audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
-        int curVolume = audioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
-        seekBarMusic.setMax(maxVolume);
-        seekBarMusic.setProgress(curVolume);
+        seekBarMusic.setProgress((int) (preferences.getFloat("musicVolume", 0.5f) * 100));
+        seekBarSound.setProgress((int) (preferences.getFloat("soundVolume", 0.5f) * 100));
 
         seekBarMusic.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                //audioManager.setStreamVolume(, progress, 1);
-                BackgroundSoundService.mediaPlayer.setVolume((float) progress/100,(float) progress/100);
-
+                BackgroundSoundService.mediaPlayer.setVolume((float) progress / 100,(float) progress / 100);
+                preferences.edit().putFloat("musicVolume", (float) progress / 100).apply();
             }
 
             @Override
@@ -84,10 +80,7 @@ public class SettingsActivity extends AppCompatActivity {
         seekBarSound.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                preferences.edit().putInt("soundVolume", progress);
-                MediaPlayer correctChime = MediaPlayer.create(SettingsActivity.this, R.raw.correct);
-                correctChime.setVolume((float) progress, (float) progress);
-                correctChime.start();
+                preferences.edit().putFloat("soundVolume", (float) progress / 100).apply();
             }
 
             @Override
@@ -97,9 +90,10 @@ public class SettingsActivity extends AppCompatActivity {
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
-                int progress = preferences.getInt("soundVolume", 0);
+                float progress = preferences.getFloat("soundVolume", 0);
                 MediaPlayer correctChime = MediaPlayer.create(SettingsActivity.this, R.raw.correct);
-                correctChime.setVolume((float) progress, (float) progress);
+                correctChime.setVolume(progress, progress);
+                correctChime.start();
             }
         });
 
