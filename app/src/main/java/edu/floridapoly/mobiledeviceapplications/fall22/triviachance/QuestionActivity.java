@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.media.MediaPlayer;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.os.Handler;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
@@ -39,6 +40,7 @@ public class QuestionActivity extends AppCompatActivity implements TriviaChanceL
     Button answer4;
     Button[] answerButtons;
     TextView questionText;
+    TextView timeText;
 
     int numberCorrect;
     int numberWrong;
@@ -48,6 +50,7 @@ public class QuestionActivity extends AppCompatActivity implements TriviaChanceL
 
     //Determines whether or not the 500ms of delay has passed for the next question to be initialized.
     private CompletableFuture<Void> canInitQuestion;
+    CountDownTimer countDownTimer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,6 +63,7 @@ public class QuestionActivity extends AppCompatActivity implements TriviaChanceL
 
         this.game = MainMenu.getAPI().getCurrentGame();
 
+        timeText = findViewById(R.id.timeText);
         questionText = findViewById(R.id.questionTextView);
         answer1 = findViewById(R.id.answer1);
         answer2 = findViewById(R.id.answer2);
@@ -73,6 +77,24 @@ public class QuestionActivity extends AppCompatActivity implements TriviaChanceL
         colorPrimary = typedValue.resourceId;
         getTheme().resolveAttribute(com.google.android.material.R.attr.colorSecondary, typedValue, true);
         colorSecondary = typedValue.resourceId;
+
+        if (getIntent().hasExtra("SOLO"))
+            timeText.setVisibility(View.INVISIBLE);
+
+
+        countDownTimer = new CountDownTimer(30 * 1000, 1000) {
+
+            public void onTick(long millisUntilFinished) {
+                int second = (int) (millisUntilFinished / 1000) % 60;
+                timeText.setText(String.format("%02d", second));
+            }
+
+            public void onFinish() {
+
+            }
+        };
+
+
 
         canInitQuestion = CompletableFuture.completedFuture(null);
 
@@ -91,8 +113,8 @@ public class QuestionActivity extends AppCompatActivity implements TriviaChanceL
             int incorrectIndex = 0;
 
             for (int i = 0; i < 4; i++) {
+                answerButtons[i].setEnabled(true);
                 answerButtons[i].setBackgroundColor(getResources().getColor(colorPrimary));
-                //answerButtons[i].setBackgroundColor(getResources().getColor(R.color.dark_blue));
                 answerButtons[i].setTextColor(getResources().getColor(R.color.pewter));
 
                 String text = i == answerIndex
@@ -101,10 +123,20 @@ public class QuestionActivity extends AppCompatActivity implements TriviaChanceL
                 answerButtons[i].setText(text);
             }
         }
+
+        if (!getIntent().hasExtra("SOLO"))
+            countDownTimer.start();
+
+
     }
 
     public void onClickAnswer(View view) {
         Button clickedButton = (Button) view;
+
+        for (Button b : answerButtons) {
+            b.setEnabled(false);
+        }
+
         if(this.getCurrentQuestion() instanceof TextQuestion) {
             TextQuestion textQuestion = (TextQuestion) this.getCurrentQuestion();
             if(textQuestion.attempt(clickedButton.getText().toString())) {
