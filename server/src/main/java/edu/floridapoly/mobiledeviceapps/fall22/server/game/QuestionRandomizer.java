@@ -53,10 +53,9 @@ public class QuestionRandomizer {
     }
 
     private CompletableFuture<List<Question<?>>> generateQuestionBank() {
-//        //random trivia question API
-//        // can always change if we don't like the questions
-//        // gets 10 "easy" level questions as JSON array
-
+        //random trivia question API
+        // can always change if we don't like the questions
+        // gets 10 "easy" level questions as JSON array
         CompletableFuture<List<Question<?>>> future = new CompletableFuture<>();
 
         OkHttpClient client = new OkHttpClient();

@@ -48,7 +48,6 @@ public class MainMenu extends AppCompatActivity {
         ThemeUtil.onActivityCreateTheme(this);
         setContentView(R.layout.activity_main_menu);
 
-
         // Set up an OnPreDrawListener to the root view.
         final View content = findViewById(android.R.id.content);
         content.getViewTreeObserver().addOnPreDrawListener(
@@ -66,7 +65,6 @@ public class MainMenu extends AppCompatActivity {
                         }
                     }
                 });
-
 
         playerIcon = findViewById(R.id.playerIcon);
         joinGame = findViewById(R.id.joinGame);
@@ -104,12 +102,12 @@ public class MainMenu extends AppCompatActivity {
                     return;
                 }
 
-                getAPI().createGame(getLocalProfile()).thenAccept(game -> {
+                getAPI().createGame(getLocalProfile(), false).thenAccept(game -> {
                     Intent intent = new Intent(MainMenu.this, QuestionActivity.class);
-                    intent.putExtra("SOLO", true);
                     startActivity(intent);
 
                     getAPI().setCurrentGame(game);
+                    getAPI().getSocketInterface().startGame(game);
                 });
             }
         });
@@ -124,7 +122,7 @@ public class MainMenu extends AppCompatActivity {
 
                     getAPI().joinGame(getLocalProfile(), joinGame.getText().toString()).thenAccept(game -> {
                         if(game == null) {
-                            Toast.makeText(MainMenu.this.getBaseContext(), "Unable to find a game with that code!", Toast.LENGTH_LONG).show();
+                            Toast.makeText(MainMenu.this.getBaseContext(), "Game does not exist or has already started!", Toast.LENGTH_LONG).show();
                             return;
                         }
 
@@ -156,7 +154,7 @@ public class MainMenu extends AppCompatActivity {
                     return;
                 }
 
-                getAPI().createGame(getLocalProfile()).thenAccept(game -> {
+                getAPI().createGame(getLocalProfile(), true).thenAccept(game -> {
                     Intent intent = new Intent(MainMenu.this, HostActivity.class);
                     intent.putExtra("ISHOST", true);
                     startActivity(intent);
@@ -181,6 +179,10 @@ public class MainMenu extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+
+        if(this.getIntent().getExtras() != null && this.getIntent().getExtras().containsKey("kicked")) {
+            Toast.makeText(this.getBaseContext(), "You were kicked from the game.", Toast.LENGTH_SHORT).show();
+        }
     }
 
     /**
@@ -200,9 +202,6 @@ public class MainMenu extends AppCompatActivity {
                 Intent intent = new Intent(MainMenu.this, BackgroundSoundService.class);
                 startService(intent);
             }
-
-            System.out.println("Inventory:");
-            System.out.println(getLocalProfile().getInventory());
         }
     }
 

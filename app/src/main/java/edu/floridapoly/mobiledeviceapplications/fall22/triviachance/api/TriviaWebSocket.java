@@ -1,11 +1,15 @@
 package edu.floridapoly.mobiledeviceapplications.fall22.triviachance.api;
 
+import com.google.gson.Gson;
+
 import java.util.UUID;
 
 import edu.floridapoly.mobiledeviceapplications.fall22.triviachance.api.events.KickedFromGameEvent;
+import edu.floridapoly.mobiledeviceapplications.fall22.triviachance.api.events.NextQuestionEvent;
 import edu.floridapoly.mobiledeviceapplications.fall22.triviachance.api.events.PlayerJoinGameEvent;
 import edu.floridapoly.mobiledeviceapplications.fall22.triviachance.api.events.PlayerLeaveGameEvent;
 import edu.floridapoly.mobiledeviceapplications.fall22.triviachance.api.events.StartGameEvent;
+import edu.floridapoly.mobiledeviceapps.fall22.api.gameplay.questions.TextQuestion;
 import edu.floridapoly.mobiledeviceapps.fall22.api.socket.SocketMessageGenerator;
 import okhttp3.Response;
 import okhttp3.WebSocket;
@@ -63,6 +67,19 @@ public class TriviaWebSocket extends WebSocketListener {
 
             case KICKED: {
                 this.getAPI().fireEvent(new KickedFromGameEvent(this.getAPI().getCurrentGame()));
+                break;
+            }
+
+            case NEXT_QUESTION: {
+                //If the UUID received and the UUID of the current game don't match, dont go to the next question
+                if(!generator.getParams().get("gameUUID").equalsIgnoreCase(this.getAPI().getCurrentGame().getUUID().toString())) return;
+
+                //TODO Would need to add support for different question types
+                TextQuestion question = new Gson().fromJson(generator.getParams().get("question"), TextQuestion.class);
+                int questionId = Integer.parseInt(generator.getParams().get("questionId"));
+
+                this.getAPI().fireEvent(new NextQuestionEvent(this.getAPI().getCurrentGame(), question, questionId));
+                break;
             }
         }
     }

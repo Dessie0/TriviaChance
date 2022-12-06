@@ -8,10 +8,12 @@ public class TriviaGame {
 
     private final UUID uuid;
     private final String code;
+    private final boolean online;
 
-    public TriviaGame(String uuid, String code) {
+    public TriviaGame(String uuid, String code, boolean online) {
         this.uuid = UUID.fromString(uuid);
         this.code = code;
+        this.online = online;
     }
 
     public UUID getUUID() {
@@ -19,6 +21,9 @@ public class TriviaGame {
     }
     public String getCode() {
         return this.code;
+    }
+    public boolean isOnline() {
+        return online;
     }
 
     public static String getRandomCode() {

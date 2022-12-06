@@ -31,7 +31,7 @@ public class SocketMessageGenerator {
         builder.append(this.getType().toString());
         builder.append(";");
         for(Map.Entry<String, String> entry : this.getParams().entrySet()) {
-            builder.append(entry.getKey()).append(":").append(entry.getValue()).append(";");
+            builder.append(entry.getKey()).append("¬").append(entry.getValue()).append(";");
         }
 
         builder.deleteCharAt(builder.length() - 1);
@@ -44,8 +44,8 @@ public class SocketMessageGenerator {
 
         for(int i = 1; i < split.length; i++) {
             String param = split[i];
-            String key = param.split(":")[0];
-            String value = param.split(":")[1];
+            String key = param.split("¬")[0];
+            String value = param.split("¬")[1];
 
             generator.setParam(key, value);
         }

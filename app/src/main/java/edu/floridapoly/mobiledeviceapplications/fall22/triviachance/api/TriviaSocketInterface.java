@@ -58,6 +58,16 @@ public class TriviaSocketInterface {
         this.getSocket().send(generator.generate());
     }
 
+    public void submitQuestion(Profile profile, TriviaGame game, int questionId, boolean correct) {
+        SocketMessageGenerator generator = new SocketMessageGenerator(MessageType.SUBMIT_QUESTION);
+        generator.setParam("profileUUID", profile.getUUID().toString());
+        generator.setParam("gameUUID", game.getUUID().toString());
+        generator.setParam("questionId", String.valueOf(questionId));
+        generator.setParam("correct", String.valueOf(correct));
+
+        this.getSocket().send(generator.generate());
+    }
+
     public WebSocket getSocket() {
         return socket;
     }

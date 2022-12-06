@@ -5,13 +5,14 @@ import com.sun.net.httpserver.HttpExchange;
 
 import java.io.IOException;
 import java.util.Map;
+import java.util.UUID;
 
 import edu.floridapoly.mobiledeviceapps.fall22.server.TriviaChanceServer;
 import edu.floridapoly.mobiledeviceapps.fall22.server.game.ActiveGame;
 import edu.floridapoly.mobiledeviceapps.fall22.server.handlers.TriviaChanceHandler;
 
-public class JoinGameHandler extends TriviaChanceHandler {
-    public JoinGameHandler(TriviaChanceServer server) {
+public class GameLeaderboardHandler extends TriviaChanceHandler {
+    public GameLeaderboardHandler(TriviaChanceServer server) {
         super(server);
     }
 
@@ -19,15 +20,13 @@ public class JoinGameHandler extends TriviaChanceHandler {
     public void handle(HttpExchange exchange) throws IOException {
         Map<String, String> params = this.getParams(exchange);
 
-        String code = params.get("code");
+        String gameUuid = params.get("gameUUID");
+        ActiveGame game = this.getServer().getGameHandler().findGame(UUID.fromString(gameUuid));
 
-        ActiveGame game = this.getServer().getGameHandler().findGame(code);
-
-        if(game == null || game.isStarted()) {
+        if(game != null) {
+            this.sendResponse(exchange, new Gson().toJson(game.getPlayers().keySet()));
+        } else {
             this.sendResponse(exchange, "null");
-            return;
         }
-
-        this.sendResponse(exchange, new Gson().toJsonTree(game.getGame()).getAsJsonObject());
     }
 }

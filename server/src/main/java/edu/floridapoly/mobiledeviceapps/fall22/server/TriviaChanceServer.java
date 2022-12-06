@@ -12,6 +12,7 @@ import edu.floridapoly.mobiledeviceapps.fall22.api.gameplay.item;
 import edu.floridapoly.mobiledeviceapps.fall22.api.profile.Profile;
 import edu.floridapoly.mobiledeviceapps.fall22.server.game.GameHandler;
 import edu.floridapoly.mobiledeviceapps.fall22.server.handlers.PingHandler;
+import edu.floridapoly.mobiledeviceapps.fall22.server.handlers.game.GameLeaderboardHandler;
 import edu.floridapoly.mobiledeviceapps.fall22.server.handlers.game.HostGameHandler;
 import edu.floridapoly.mobiledeviceapps.fall22.server.handlers.game.JoinGameHandler;
 import edu.floridapoly.mobiledeviceapps.fall22.server.handlers.game.LeaveGameHandler;
@@ -58,6 +59,7 @@ public class TriviaChanceServer {
             server.createContext("/game/join", new JoinGameHandler(this));
             server.createContext("/game/leave", new LeaveGameHandler(this));
             server.createContext("/game/question", new QuestionRetrieveHandler(this));
+            server.createContext("/game/leaderboard", new GameLeaderboardHandler(this));
 
             System.out.println("Server started on port " + server.getAddress().getPort());
 
@@ -75,14 +77,12 @@ public class TriviaChanceServer {
             decomposedObject.addDecomposedKey("username", profile.getUsername());
             decomposedObject.addDecomposedKey("inventory", profile.getInventory());
             decomposedObject.addDecomposedKey("iconURL", profile.getIconURL());
-            decomposedObject.addDecomposedKey("numberOfUnlocks", profile.getNumberOfUnlocks());
 
             return decomposedObject;
         }, (container, recomposer) -> {
             recomposer.addRecomposeKey("uuid", String.class, container::retrieveAsync);
             recomposer.addRecomposeKey("username", String.class, container::retrieveAsync);
             recomposer.addRecomposeKey("iconURL", String.class, container::retrieveAsync);
-            recomposer.addRecomposeKey("numberOfUnlocks", Integer.class, container::retrieveAsync);
             recomposer.addRecomposeKey("inventory", List.class, (path) -> {
                 if(container instanceof ArrayContainer arrayContainer) {
                     return arrayContainer.retrieveListAsync(item.class, path);
@@ -95,9 +95,8 @@ public class TriviaChanceServer {
                 String username = completed.getCompletedObject("username");
                 String iconURL = completed.getCompletedObject("iconURL");
                 List<item> inventory = completed.getCompletedObject("inventory");
-                Integer unlocks = completed.getCompletedObject("numberOfUnlocks");
 
-                return new Profile(UUID.fromString(uuid), username, iconURL, inventory, unlocks);
+                return new Profile(UUID.fromString(uuid), username, iconURL, inventory);
             });
         }));
 

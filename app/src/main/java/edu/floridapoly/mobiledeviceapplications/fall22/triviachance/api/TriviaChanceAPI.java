@@ -20,8 +20,6 @@ import edu.floridapoly.mobiledeviceapplications.fall22.triviachance.api.events.u
 import edu.floridapoly.mobiledeviceapplications.fall22.triviachance.api.events.util.TriviaChanceListener;
 import edu.floridapoly.mobiledeviceapps.fall22.api.gameplay.Player;
 import edu.floridapoly.mobiledeviceapps.fall22.api.gameplay.TriviaGame;
-import edu.floridapoly.mobiledeviceapps.fall22.api.gameplay.questions.Question;
-import edu.floridapoly.mobiledeviceapps.fall22.api.gameplay.questions.TextQuestion;
 import edu.floridapoly.mobiledeviceapps.fall22.api.profile.Profile;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -86,13 +84,13 @@ public class TriviaChanceAPI {
         return this.enqueue(call, new FutureCallback<>());
     }
 
-    public CompletableFuture<List<Player>> retrieveGameLeaderboard(TriviaGame game) {
-        Call<List<Player>> call = this.getService().retrieveGameLeaderboard(game.getUUID().toString());
+    public CompletableFuture<List<Player>> retrieveGameLeaderboard(String gameUUID) {
+        Call<List<Player>> call = this.getService().retrieveGameLeaderboard(gameUUID);
         return this.enqueue(call, new FutureCallback<>());
     }
 
-    public CompletableFuture<TriviaGame> createGame(Profile host) {
-        Call<TriviaGame> call = this.getService().createGame();
+    public CompletableFuture<TriviaGame> createGame(Profile host, boolean online) {
+        Call<TriviaGame> call = this.getService().createGame(online);
         return this.enqueue(call, new FutureCallback<>()).whenComplete((game, err) -> {
             if(game == null) return;
 
@@ -119,22 +117,6 @@ public class TriviaChanceAPI {
         });
     }
 
-    public CompletableFuture<Boolean> kickPlayer(Profile player, TriviaGame game) {
-        Call<Boolean> call = this.getService().kickPlayer(player.getUUID().toString(), game.getUUID().toString());
-
-        return this.enqueue(call, new FutureCallback<>()).whenComplete((left, err) -> {
-            this.getSocketInterface().kickPlayer(player, game);
-        });
-    }
-
-    public CompletableFuture<Question<?>> retrieveQuestion(TriviaGame game, int index) {
-
-        //TODO Add more questions besides just text questions
-        CompletableFuture<Question<?>> future = new CompletableFuture<>();
-        this.retrieveTextQuestion(game, index).thenAccept(future::complete);
-        return future;
-    }
-
     public CompletableFuture<String> uploadImage(Bitmap bitmap) {
         if(bitmap.getHeight() > MAX_ICON_HEIGHT || bitmap.getWidth() > MAX_ICON_WIDTH) {
             CompletableFuture<String> future = new CompletableFuture<>();
@@ -156,11 +138,6 @@ public class TriviaChanceAPI {
             }
         });
         return future;
-    }
-
-    private CompletableFuture<TextQuestion> retrieveTextQuestion(TriviaGame game, int index) {
-        Call<TextQuestion> call = this.getService().retrieveTextQuestion(game.getUUID().toString(), index);
-        return this.enqueue(call, new FutureCallback<>());
     }
 
     private <T> CompletableFuture<T> enqueue(Call<T> call, FutureCallback<T> callback) {
@@ -185,12 +162,12 @@ public class TriviaChanceAPI {
     }
 
     void fireEvent(GameEvent event) {
-        for(TriviaChanceListener listener : this.listeners) {
+        this.listeners.stream().iterator().forEachRemaining(listener -> {
             Class<?> clazz = listener.getClass();
-            for(Method method : clazz.getDeclaredMethods()) {
-                if(!method.isAnnotationPresent(EventHandler.class)) continue;
-                if(method.getParameterCount() != 1) continue;
-                if(method.getParameterTypes()[0] != event.getClass()) continue;
+            for (Method method : clazz.getDeclaredMethods()) {
+                if (!method.isAnnotationPresent(EventHandler.class)) continue;
+                if (method.getParameterCount() != 1) continue;
+                if (method.getParameterTypes()[0] != event.getClass()) continue;
 
                 try {
                     method.invoke(listener, event);
@@ -198,8 +175,7 @@ public class TriviaChanceAPI {
                     e.printStackTrace();
                 }
             }
-        }
-
+        });
     }
 
     public void registerListener(TriviaChanceListener listener) {
