@@ -190,7 +190,6 @@ public class QuestionActivity extends AppCompatActivity implements TriviaChanceL
         startActivity(intent);
 
         MainMenu.getAPI().unregisterListener(this);
-        MainMenu.getAPI().leaveGame(MainMenu.getLocalProfile(), MainMenu.getAPI().getCurrentGame());
     }
 
     @Override

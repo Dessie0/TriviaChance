@@ -98,6 +98,13 @@ public class SoloResultsActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onStop() {
+        super.onStop();
+
+        MainMenu.getAPI().leaveGame(MainMenu.getLocalProfile(), MainMenu.getAPI().getCurrentGame());
+    }
+
+    @Override
     public void onBackPressed() {
         Intent intent = new Intent(SoloResultsActivity.this, MainMenu.class);
         startActivity(intent);

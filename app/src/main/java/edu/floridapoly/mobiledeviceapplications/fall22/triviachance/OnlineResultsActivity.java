@@ -10,6 +10,8 @@ import android.widget.ImageView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import java.util.Comparator;
+
 import edu.floridapoly.mobiledeviceapplications.fall22.triviachance.icon.ProfileIconHelper;
 import edu.floridapoly.mobiledeviceapps.fall22.api.gameplay.Player;
 
@@ -34,6 +36,10 @@ public class OnlineResultsActivity extends AppCompatActivity {
         silverBar = findViewById(R.id.silverBar);
         bronzeBar = findViewById(R.id.bronzeBar);
 
+        bronzePlayerIco = findViewById(R.id.bronzePlayerIcon);
+        silverPlayerIco = findViewById(R.id.silverPlayerIcon);
+        goldPlayerIco = findViewById(R.id.goldPlayerIcon);
+
         homeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -57,11 +63,20 @@ public class OnlineResultsActivity extends AppCompatActivity {
         if(!this.getIntent().hasExtra("gameUUID")) return;
 
         MainMenu.getAPI().retrieveGameLeaderboard(this.getIntent().getExtras().getString("gameUUID")).thenAccept(players -> {
-            for(Player player : players) {
-                ProfileIconHelper.reloadProfileIcon(player.getProfile(), goldPlayerIco);
-                System.out.println(player.getProfile().getUsername() + " " + player.getStats().getCorrect());
+            //Sort players by most correct
+            players.sort(Comparator.comparingInt(player -> ((Player) player).getStats().getCorrect()).reversed());
+
+            for(int i = 0; i < Math.min(3, players.size()); i++) {
+                ProfileIconHelper.reloadProfileIcon(players.get(i).getProfile(), i == 0 ? goldPlayerIco : i == 1 ? silverPlayerIco : bronzePlayerIco);
             }
         });
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+
+        MainMenu.getAPI().leaveGame(MainMenu.getLocalProfile(), MainMenu.getAPI().getCurrentGame());
     }
 }
 
