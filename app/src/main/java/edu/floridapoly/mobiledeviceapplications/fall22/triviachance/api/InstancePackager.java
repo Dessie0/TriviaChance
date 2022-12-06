@@ -31,8 +31,8 @@ public class InstancePackager {
                     .thenAccept((saved) -> {
                         this.getPreferences().edit().putString("profileUUID", uuid.toString())
                                 .putInt("ctheme", R.style.Theme_TriviaChance)
-                                .putBoolean("sound", true)
-                                .putBoolean("music", true)
+                                .putFloat("soundVolume", 0.5f)
+                                .putFloat("musicVolume", 0.5f)
                                 .putBoolean("notifications", true)
                                 .putBoolean("vibration", true)
                                 .putInt("PROGRESS", 0)
