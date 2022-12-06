@@ -1,8 +1,11 @@
 package edu.floridapoly.mobiledeviceapplications.fall22.triviachance;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
+import android.media.AudioManager;
+import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -13,6 +16,7 @@ import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.SeekBar;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
@@ -24,13 +28,15 @@ import edu.floridapoly.mobiledeviceapplications.fall22.triviachance.icon.Profile
 
 public class SettingsActivity extends AppCompatActivity {
 
-    ToggleButton soundToggle;
+    SeekBar seekBarMusic;
+    SeekBar seekBarSound;
     ToggleButton musicToggle;
     ToggleButton notificationsToggle;
     ToggleButton vibrationToggle;
     ImageButton editIcon;
     ImageView settingsPlayerIcon;
     EditText username;
+    AudioManager audioManager;
 
     int SELECT_PICTURE = 200;
 
@@ -45,41 +51,55 @@ public class SettingsActivity extends AppCompatActivity {
 
         SharedPreferences preferences = MainMenu.getInstancePackager().getPreferences();
 
-        soundToggle = findViewById(R.id.soundToggle);
-        musicToggle = findViewById(R.id.musicToggle);
+        seekBarMusic = findViewById(R.id.seekBarMusic);
+        seekBarSound = findViewById(R.id.seekBarSound);
         notificationsToggle = findViewById(R.id.notificationToggle);
         vibrationToggle = findViewById(R.id.vibrationToggle);
+        audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
 
-        soundToggle.setChecked(preferences.getBoolean("sound", false));
-        soundToggle.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        int maxVolume = audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
+        int curVolume = audioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
+        seekBarMusic.setMax(maxVolume);
+        seekBarMusic.setProgress(curVolume);
+
+        seekBarMusic.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
-                if (isChecked) {
-                    preferences.edit().putBoolean("sound", true).apply();
-                }
-                else {
-                    preferences.edit().putBoolean("sound", false).apply();
-                }
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                //audioManager.setStreamVolume(, progress, 1);
+                BackgroundSoundService.mediaPlayer.setVolume((float) progress/100,(float) progress/100);
+
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
             }
         });
 
-        musicToggle.setChecked(preferences.getBoolean("music", false));
-        musicToggle.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        seekBarSound.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
-                if (isChecked) {
-                    preferences.edit().putBoolean("music", true).apply();
-                    if (BackgroundSoundService.mediaPlayer == null) {
-                        Intent intent = new Intent(SettingsActivity.this, BackgroundSoundService.class);
-                        startService(intent);
-                    }
-                    else
-                        BackgroundSoundService.mediaPlayer.start();
-                }
-                else {
-                    preferences.edit().putBoolean("music", false).apply();
-                    BackgroundSoundService.mediaPlayer.pause();
-                }
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                preferences.edit().putInt("soundVolume", progress);
+                MediaPlayer correctChime = MediaPlayer.create(SettingsActivity.this, R.raw.correct);
+                correctChime.setVolume((float) progress, (float) progress);
+                correctChime.start();
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+                int progress = preferences.getInt("soundVolume", 0);
+                MediaPlayer correctChime = MediaPlayer.create(SettingsActivity.this, R.raw.correct);
+                correctChime.setVolume((float) progress, (float) progress);
             }
         });
 
@@ -140,7 +160,7 @@ public class SettingsActivity extends AppCompatActivity {
             public void afterTextChanged(Editable editable) {
                 if (MainMenu.getLocalProfile() != null)
                     MainMenu.getLocalProfile().setUsername(editable.toString());
-                    MainMenu.getAPI().updateUsername(MainMenu.getLocalProfile(), editable.toString());
+                MainMenu.getAPI().updateUsername(MainMenu.getLocalProfile(), editable.toString());
             }
         });
 

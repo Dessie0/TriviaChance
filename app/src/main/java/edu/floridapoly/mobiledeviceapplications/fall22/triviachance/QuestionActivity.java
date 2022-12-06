@@ -3,6 +3,7 @@ package edu.floridapoly.mobiledeviceapplications.fall22.triviachance;
 import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.CountDownTimer;
@@ -33,7 +34,7 @@ public class QuestionActivity extends AppCompatActivity implements TriviaChanceL
     private TriviaGame game;
     private Question<?> currentQuestion;
     private int currentQuestionId;
-
+    SharedPreferences sharedPreferences;
     Button answer1;
     Button answer2;
     Button answer3;
@@ -41,10 +42,9 @@ public class QuestionActivity extends AppCompatActivity implements TriviaChanceL
     Button[] answerButtons;
     TextView questionText;
     TextView timeText;
-
     int numberCorrect;
     int numberWrong;
-
+    int soundVolume;
     TypedValue typedValue;
     int colorPrimary, colorSecondary;
 
@@ -58,11 +58,14 @@ public class QuestionActivity extends AppCompatActivity implements TriviaChanceL
         ThemeUtil.onActivityCreateTheme(this);
         setContentView(R.layout.activity_question);
 
+        sharedPreferences = MainMenu.getInstancePackager().getPreferences();
+        soundVolume = sharedPreferences.getInt("soundVolume", 0);
+
+
         questionProgress = findViewById(R.id.questionProgressBar);
         questionProgress.setProgress(0);
 
         this.game = MainMenu.getAPI().getCurrentGame();
-
         timeText = findViewById(R.id.timeText);
         questionText = findViewById(R.id.questionTextView);
         answer1 = findViewById(R.id.answer1);
@@ -153,6 +156,7 @@ public class QuestionActivity extends AppCompatActivity implements TriviaChanceL
         button.setTextColor(getResources().getColor(colorPrimary));
         if (MainMenu.getInstancePackager().getPreferences().getBoolean("sound", false)) {
             MediaPlayer correctChime = MediaPlayer.create(QuestionActivity.this, R.raw.correct);
+            correctChime.setVolume((float) soundVolume, (float) soundVolume);
             correctChime.start();
         }
 
@@ -167,6 +171,7 @@ public class QuestionActivity extends AppCompatActivity implements TriviaChanceL
 
         if (MainMenu.getInstancePackager().getPreferences().getBoolean("sound", false)) {
             MediaPlayer incorrectChime = MediaPlayer.create(QuestionActivity.this, R.raw.incorrect);
+            incorrectChime.setVolume((float) soundVolume, (float) soundVolume);
             incorrectChime.start();
         }
 
