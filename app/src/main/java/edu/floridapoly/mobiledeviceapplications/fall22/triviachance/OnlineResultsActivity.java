@@ -37,6 +37,8 @@ public class OnlineResultsActivity extends AppCompatActivity {
         silverBar = findViewById(R.id.silverBar);
         bronzeBar = findViewById(R.id.bronzeBar);
 
+        
+
 
         homeButton.setOnClickListener(new View.OnClickListener() {
             @Override

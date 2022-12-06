@@ -78,7 +78,7 @@ public class QuestionActivity extends AppCompatActivity implements TriviaChanceL
         getTheme().resolveAttribute(com.google.android.material.R.attr.colorSecondary, typedValue, true);
         colorSecondary = typedValue.resourceId;
 
-        if (getIntent().hasExtra("SOLO"))
+        if (!this.game.isOnline())
             timeText.setVisibility(View.INVISIBLE);
 
 
@@ -124,7 +124,7 @@ public class QuestionActivity extends AppCompatActivity implements TriviaChanceL
             }
         }
 
-        if (!getIntent().hasExtra("SOLO"))
+        if (this.game.isOnline())
             countDownTimer.start();
 
 
